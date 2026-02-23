@@ -17,9 +17,18 @@ export default function myIntegration(options: MyIntegrationOptions = {}): Astro
   return {
     name: "astro-intl",
     hooks: {
-      "astro:config:setup": ({ logger }) => {
+      "astro:config:setup": ({ logger, updateConfig }) => {
         if (!enabled) return;
         logger.info("[astro-intl] loaded");
+
+        // Configuración para 'astro add'
+        updateConfig({
+          vite: {
+            optimizeDeps: {
+              include: ["astro-intl"],
+            },
+          },
+        });
       },
     },
   };

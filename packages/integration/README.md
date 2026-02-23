@@ -13,6 +13,24 @@ Sistema de internacionalización simple y type-safe para Astro, inspirado en nex
 
 ## 📦 Instalación
 
+### Instalación automática (Recomendado)
+
+Usa el CLI de Astro para instalar y configurar automáticamente:
+
+```bash
+npx astro add astro-intl
+```
+
+Este comando:
+
+- ✅ Instala el paquete
+- ✅ Agrega la integración a tu `astro.config.mjs`
+- ✅ Configura las dependencias necesarias
+
+### Instalación manual
+
+Si prefieres instalar manualmente:
+
 ```bash
 npm install astro-intl
 # o
@@ -21,9 +39,7 @@ pnpm add astro-intl
 yarn add astro-intl
 ```
 
-## ⚙️ Configuración
-
-Agrega la integración en tu `astro.config.mjs`:
+Luego agrega la integración en tu `astro.config.mjs`:
 
 ```js
 import { defineConfig } from "astro/config";
