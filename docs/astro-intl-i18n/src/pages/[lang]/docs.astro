@@ -19,10 +19,7 @@ const tDocs = getTranslations("docs");
 const tFooter = getTranslations("footer");
 
 export function getStaticPaths() {
-  return [
-    { params: { lang: "en" } },
-    { params: { lang: "es" } },
-  ];
+  return [{ params: { lang: "en" } }, { params: { lang: "es" } }];
 }
 ---
 
@@ -34,7 +31,8 @@ export function getStaticPaths() {
     id="sidebar-overlay"
     class="fixed inset-0 z-40 hidden"
     style="background: rgba(0,0,0,0.6); backdrop-filter: blur(2px);"
-  ></div>
+  >
+  </div>
 
   <!-- Mobile sidebar drawer -->
   <aside
@@ -53,7 +51,8 @@ export function getStaticPaths() {
         aria-label="Close menu"
       >
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"
+          ></path>
         </svg>
       </button>
     </div>
@@ -62,7 +61,6 @@ export function getStaticPaths() {
 
   <!-- Page body -->
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-10">
-
     <!-- Mobile top bar with menu toggle -->
     <div
       class="flex items-center gap-3 mb-6 md:hidden"
@@ -75,14 +73,14 @@ export function getStaticPaths() {
         aria-label="Open menu"
       >
         <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"
+          ></path>
         </svg>
         {tDocs("sidebar.gettingStarted")}
       </button>
     </div>
 
     <div class="docs-layout">
-
       <!-- Desktop sidebar -->
       <aside class="docs-sidebar hidden md:block">
         <DocsSidebar />
@@ -98,20 +96,29 @@ export function getStaticPaths() {
         <DocsAPI />
         <DocsExamples />
       </main>
-
     </div>
   </div>
 
   <footer class="py-10 mt-8" style="border-top: 1px solid var(--color-border);">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+    <div
+      class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4"
+    >
       <div class="flex items-center gap-2">
-        <span class="text-sm font-semibold" style="color: var(--color-text);">astro<span style="color: var(--color-accent);">-intl</span></span>
+        <span class="text-sm font-semibold" style="color: var(--color-text);"
+          >astro<span style="color: var(--color-accent);">-intl</span></span
+        >
         <span class="text-xs" style="color: var(--color-text-tertiary);">—</span>
         <span class="text-xs" style="color: var(--color-text-tertiary);">{tFooter("description")}</span>
       </div>
-      <p class="text-xs" style="color: var(--color-text-tertiary);" set:html={tFooter.markup("madeWith", {
-        heart: (chunks: string) => `<span style="color: #e05c5c;">${chunks}</span>`
-      })} />
+      <p
+        class="text-xs"
+        style="color: var(--color-text-tertiary);"
+        set:html={tFooter.markup("madeWith", {
+          heart: (chunks: string) => `<span style="color: #e05c5c;">${chunks}</span>`,
+          link: (chunks: string) =>
+            `<a href="https://erickcs.com" target="_blank" rel="noopener noreferrer" style="color: var(--color-accent); text-decoration: none; font-weight: 500;">${chunks}</a>`,
+        })}
+      />
     </div>
   </footer>
 </Layout>

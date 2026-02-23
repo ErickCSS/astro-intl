@@ -382,6 +382,7 @@ const t = getTranslations();
         style="color: var(--color-text-tertiary);"
         set:html={tFooter.markup("madeWith", {
           heart: (chunks: string) => `<span style="color: #e05c5c;">${chunks}</span>`,
+          link: (chunks: string) => `<a href="https://erickcs.com" target="_blank" rel="noopener noreferrer" style="color: var(--color-accent); text-decoration: none; font-weight: 500;">${chunks}</a>`,
         })}
       />
     </div>
