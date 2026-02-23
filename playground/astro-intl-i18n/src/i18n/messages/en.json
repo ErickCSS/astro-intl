@@ -1,0 +1,182 @@
+{
+  "nav": {
+    "home": "Home",
+    "features": "Features",
+    "examples": "Examples",
+    "docs": "Documentation"
+  },
+  "hero": {
+    "badge": "Open Source · MIT License",
+    "title": "i18n for Astro,",
+    "titleAccent": "done right.",
+    "subtitle": "Simple and powerful internationalization for Astro",
+    "description": "A <bold>type-safe</bold> i18n solution inspired by next-intl, designed specifically for Astro projects.",
+    "getStarted": "Get Started",
+    "viewDocs": "View Documentation",
+    "ctaTitle": "Ready to go global?",
+    "ctaSubtitle": "Add astro-intl to your project in minutes and start serving users in their language."
+  },
+  "features": {
+    "title": "Why Astro-intl?",
+    "subtitle": "Everything you need for internationalization",
+    "noPropsDrilling": {
+      "title": "No Props Drilling",
+      "description": "Access translations anywhere without passing locale through components"
+    },
+    "typeSafe": {
+      "title": "Type-Safe",
+      "description": "Full TypeScript support with autocomplete for translation keys"
+    },
+    "dynamicLoading": {
+      "title": "Dynamic Loading",
+      "description": "Messages are loaded only when needed, optimizing bundle size"
+    },
+    "namespaces": {
+      "title": "Namespaces",
+      "description": "Organize translations by categories for better maintainability"
+    },
+    "richText": {
+      "title": "Rich Text Support",
+      "description": "Interpolate HTML or React components directly in translations"
+    },
+    "simple": {
+      "title": "Simple API",
+      "description": "Intuitive API inspired by next-intl, easy to learn and use"
+    }
+  },
+  "examples": {
+    "title": "See It In Action",
+    "subtitle": "Real examples of what you can do",
+    "simpleTranslation": {
+      "title": "Simple Translation",
+      "demo": "Welcome to Astro-intl!",
+      "description": "Basic translation using the <code>t()</code> function"
+    },
+    "markupTranslation": {
+      "title": "Markup Translation",
+      "demo": "This text has <bold>bold</bold> and <link>link</link> elements",
+      "description": "Use <code>t.markup()</code> to interpolate HTML tags"
+    },
+    "namespaces": {
+      "title": "Namespaces",
+      "demo": "Translations organized by category",
+      "description": "Use <code>getTranslations('namespace')</code> to access specific namespaces"
+    }
+  },
+  "installation": {
+    "title": "Quick Start",
+    "subtitle": "Get up and running in minutes",
+    "step1": {
+      "title": "Install the package",
+      "description": "Add astro-intl to your project"
+    },
+    "step2": {
+      "title": "Create message files",
+      "description": "Organize your translations in JSON files"
+    },
+    "step3": {
+      "title": "Configure your layout",
+      "description": "Set up the locale in your main layout"
+    },
+    "step4": {
+      "title": "Use translations",
+      "description": "Access translations anywhere in your components"
+    }
+  },
+  "footer": {
+    "description": "A modern internationalization solution for Astro",
+    "madeWith": "Made with <heart>❤️</heart> for the Astro community"
+  },
+  "docs": {
+    "pageTitle": "Documentation",
+    "pageSubtitle": "Everything you need to know about astro-intl",
+    "sidebar": {
+      "gettingStarted": "Getting Started",
+      "installation": "Installation",
+      "fileStructure": "File Structure",
+      "configuration": "Configuration",
+      "usage": "Usage",
+      "api": "API Reference",
+      "examples": "Examples"
+    },
+    "hero": {
+      "badge": "Documentation",
+      "title": "Get Started with",
+      "titleAccent": "astro-intl",
+      "description": "A <bold>type-safe</bold> internationalization library for Astro, inspired by next-intl. No props drilling, dynamic loading, and full TypeScript support."
+    },
+    "installation": {
+      "title": "Installation",
+      "description": "Install astro-intl using your preferred package manager.",
+      "addIntegration": "Optionally register the integration in your astro.config.mjs:",
+      "integrationNote": "The integration is optional — it only logs a startup message. The core API works without it."
+    },
+    "fileStructure": {
+      "title": "File Structure",
+      "description": "astro-intl expects a specific folder structure inside your project. Here is the recommended layout:",
+      "pagesNote": "Pages must be nested under a <code>[lang]</code> dynamic segment so Astro can generate one route per locale.",
+      "messagesNote": "Each locale gets its own JSON file inside <code>src/i18n/messages/</code>. The filename must match the locale code exactly (e.g. <code>en.json</code>, <code>es.json</code>).",
+      "requestNote": "The <code>request.ts</code> file exports a function that receives the locale string and returns the messages for that locale."
+    },
+    "configuration": {
+      "title": "Configuration",
+      "requestTitle": "1. Create request.ts",
+      "requestDescription": "This file is the bridge between the URL locale and your JSON messages. It receives the locale extracted from the URL and returns a <code>RequestConfig</code> object.",
+      "messagesTitle": "2. Create message files",
+      "messagesDescription": "Create one JSON file per locale inside <code>src/i18n/messages/</code>. You can organize keys into namespaces (nested objects).",
+      "layoutTitle": "3. Set up your Layout",
+      "layoutDescription": "Call <code>setRequestLocale</code> at the top of every page (or in a shared layout) so the global context is populated before any component reads translations.",
+      "staticPathsTitle": "4. Export getStaticPaths",
+      "staticPathsDescription": "In every <code>[lang]</code> page, export <code>getStaticPaths</code> returning all supported locales so Astro can pre-render them."
+    },
+    "usage": {
+      "title": "Usage",
+      "basicTitle": "Basic Translation",
+      "basicDescription": "Use <code>getTranslations(namespace)</code> to get a typed translation function for a specific namespace.",
+      "markupTitle": "Markup Translation",
+      "markupDescription": "Use <code>t.markup(key, tags)</code> to interpolate HTML tags inside a translation string. The tags object maps tag names to functions that receive the inner content.",
+      "reactTitle": "React Components",
+      "reactDescription": "Use <code>getTranslationsReact(namespace)</code> inside React components, then call <code>t.rich(key, tags)</code> to interpolate React nodes."
+    },
+    "api": {
+      "title": "API Reference",
+      "setRequestLocale": {
+        "name": "setRequestLocale",
+        "signature": "setRequestLocale(url: URL, getConfig: Function): Promise<void>",
+        "description": "Extracts the locale from the URL pathname (first segment) and calls your <code>getConfig</code> function to load messages. Must be awaited before any other call."
+      },
+      "getLocale": {
+        "name": "getLocale",
+        "signature": "getLocale(): string",
+        "description": "Returns the current locale string set by <code>setRequestLocale</code>. Throws if called before setting the locale."
+      },
+      "getTranslations": {
+        "name": "getTranslations",
+        "signature": "getTranslations<T>(namespace?: string)",
+        "description": "Returns a typed <code>t(key)</code> function scoped to the given namespace. Also exposes <code>t.markup(key, tags)</code> for HTML interpolation."
+      },
+      "getTranslationsReact": {
+        "name": "getTranslationsReact",
+        "signature": "getTranslationsReact<T>(namespace?: string)",
+        "description": "Same as <code>getTranslations</code> but returns a function with <code>t.rich(key, tags)</code> for React node interpolation."
+      },
+      "requestConfig": {
+        "name": "RequestConfig",
+        "description": "Type returned by your <code>getRequestConfig</code> function. Contains <code>locale: string</code> and <code>messages: Record<string, unknown></code>."
+      },
+      "dotPaths": {
+        "name": "DotPaths<T>",
+        "description": "Utility type that generates all valid dot-notation paths for a given messages object. Used internally to provide autocomplete for translation keys."
+      }
+    },
+    "examples": {
+      "title": "Examples",
+      "namespaceTitle": "Using Namespaces",
+      "namespaceDescription": "Namespaces let you split large translation files into logical sections. Pass the namespace name to <code>getTranslations</code>.",
+      "typeTitle": "Type-Safe Keys",
+      "typeDescription": "Pass your messages type as a generic to <code>getTranslations</code> to get full autocomplete and type checking on translation keys.",
+      "localeTitle": "Reading the Current Locale",
+      "localeDescription": "Use <code>getLocale()</code> anywhere after <code>setRequestLocale</code> has been called — for example to build locale-aware URLs."
+    }
+  }
+}

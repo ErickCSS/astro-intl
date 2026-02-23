@@ -1,0 +1,86 @@
+---
+import { getTranslations } from "astro-intl";
+
+const t = getTranslations("docs");
+
+const functions = [
+  {
+    key: "setRequestLocale",
+    type: "function",
+  },
+  {
+    key: "getLocale",
+    type: "function",
+  },
+  {
+    key: "getTranslations",
+    type: "function",
+  },
+  {
+    key: "getTranslationsReact",
+    type: "function",
+  },
+  {
+    key: "requestConfig",
+    type: "type",
+  },
+  {
+    key: "dotPaths",
+    type: "type",
+  },
+] as const;
+---
+
+<section id="api" class="mb-14 scroll-mt-24">
+  <div class="flex items-center gap-3 mb-8">
+    <span class="w-1 h-5 rounded-full" style="background: var(--color-accent);"></span>
+    <h2 class="text-xl font-bold" style="color: var(--color-text);">{t("api.title")}</h2>
+  </div>
+
+  <div class="space-y-4">
+    {functions.map((fn) => (
+      <div
+        class="rounded-xl overflow-hidden"
+        style="border: 1px solid var(--color-border);"
+      >
+        <div
+          class="flex items-center gap-3 px-5 py-4"
+          style="background: var(--color-bg-card); border-bottom: 1px solid var(--color-border);"
+        >
+          <span
+            class="text-xs font-semibold px-2 py-0.5 rounded-full"
+            style={fn.type === "function"
+              ? "background: rgba(111,207,151,0.15); color: var(--color-accent);"
+              : "background: rgba(111,207,151,0.08); color: var(--color-stone); border: 1px solid var(--color-border-hover);"}
+          >
+            {fn.type}
+          </span>
+          <code
+            class="text-sm font-semibold"
+            style="background: transparent; border: none; padding: 0; color: var(--color-text);"
+          >
+            {t(`api.${fn.key}.name` as any)}
+          </code>
+        </div>
+
+        <div class="px-5 py-4" style="background: var(--color-bg-secondary);">
+          {fn.type === "function" && (
+            <div class="mb-3">
+              <pre
+                class="rounded-none! border-0! m-0! p-0! text-xs"
+                style="background: transparent;"
+              ><code style="background: transparent; border: none; padding: 0; color: var(--color-text-tertiary); font-size: 0.78rem;">{t(`api.${fn.key}.signature` as any)}</code></pre>
+            </div>
+          )}
+          <p
+            class="text-sm leading-relaxed"
+            style="color: var(--color-text-secondary);"
+            set:html={t.markup(`api.${fn.key}.description` as any, {
+              code: (c: string) => `<code>${c}</code>`,
+            })}
+          />
+        </div>
+      </div>
+    ))}
+  </div>
+</section>

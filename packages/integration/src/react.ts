@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { createTranslationGetter, type DotPaths } from "./core";
+import { getNestedValue, type DotPaths } from "./core.js";
 
 export function createGetTranslationsReact<
   UI extends Record<string, Record<string, unknown>>,
@@ -11,7 +11,15 @@ export function createGetTranslationsReact<
   ) {
     type Messages = UI[DefaultLocale][N];
 
-    const { t } = createTranslationGetter(ui, defaultLocale, lang, namespace);
+    const resolvedLang = lang && lang in ui ? lang : defaultLocale;
+    const messages = (ui[resolvedLang] as UI[DefaultLocale])[
+      namespace
+    ] as Messages;
+
+    function t(key: DotPaths<Messages>): string {
+      const value = getNestedValue(messages as Record<string, unknown>, key);
+      return (typeof value === "string" ? value : key) as string;
+    }
 
     (t as any).rich = function (
       key: DotPaths<Messages>,
@@ -39,7 +47,10 @@ export function createGetTranslationsReact<
     };
 
     return t as typeof t & {
-      rich: (key: DotPaths<Messages>, tags: Record<string, (chunks: string) => ReactNode>) => ReactNode[];
+      rich: (
+        key: DotPaths<Messages>,
+        tags: Record<string, (chunks: string) => ReactNode>,
+      ) => ReactNode[];
     };
   };
 }

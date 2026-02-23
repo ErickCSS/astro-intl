@@ -1,0 +1,182 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "features": "Características",
+    "examples": "Ejemplos",
+    "docs": "Documentación"
+  },
+  "hero": {
+    "badge": "Código Abierto · Licencia MIT",
+    "title": "i18n para Astro,",
+    "titleAccent": "hecho bien.",
+    "subtitle": "Internacionalización simple y poderosa para Astro",
+    "description": "Una solución i18n <bold>type-safe</bold> inspirada en next-intl, diseñada específicamente para proyectos Astro.",
+    "getStarted": "Comenzar",
+    "viewDocs": "Ver Documentación",
+    "ctaTitle": "¿Listo para ir global?",
+    "ctaSubtitle": "Agrega astro-intl a tu proyecto en minutos y empieza a servir usuarios en su idioma."
+  },
+  "features": {
+    "title": "¿Por qué Astro-intl?",
+    "subtitle": "Todo lo que necesitas para internacionalización",
+    "noPropsDrilling": {
+      "title": "Sin Props Drilling",
+      "description": "Accede a traducciones en cualquier lugar sin pasar el locale entre componentes"
+    },
+    "typeSafe": {
+      "title": "Type-Safe",
+      "description": "Soporte completo de TypeScript con autocompletado para claves de traducción"
+    },
+    "dynamicLoading": {
+      "title": "Carga Dinámica",
+      "description": "Los mensajes se cargan solo cuando se necesitan, optimizando el tamaño del bundle"
+    },
+    "namespaces": {
+      "title": "Namespaces",
+      "description": "Organiza traducciones por categorías para mejor mantenibilidad"
+    },
+    "richText": {
+      "title": "Soporte de Rich Text",
+      "description": "Interpola HTML o componentes React directamente en las traducciones"
+    },
+    "simple": {
+      "title": "API Simple",
+      "description": "API intuitiva inspirada en next-intl, fácil de aprender y usar"
+    }
+  },
+  "examples": {
+    "title": "Míralo en Acción",
+    "subtitle": "Ejemplos reales de lo que puedes hacer",
+    "simpleTranslation": {
+      "title": "Traducción Simple",
+      "demo": "¡Bienvenido a Astro-intl!",
+      "description": "Traducción básica usando la función <code>t()</code>"
+    },
+    "markupTranslation": {
+      "title": "Traducción con Markup",
+      "demo": "Este texto tiene elementos en <bold>negrita</bold> y <link>enlace</link>",
+      "description": "Usa <code>t.markup()</code> para interpolar etiquetas HTML"
+    },
+    "namespaces": {
+      "title": "Namespaces",
+      "demo": "Traducciones organizadas por categoría",
+      "description": "Usa <code>getTranslations('namespace')</code> para acceder a namespaces específicos"
+    }
+  },
+  "installation": {
+    "title": "Inicio Rápido",
+    "subtitle": "Ponte en marcha en minutos",
+    "step1": {
+      "title": "Instala el paquete",
+      "description": "Agrega astro-intl a tu proyecto"
+    },
+    "step2": {
+      "title": "Crea archivos de mensajes",
+      "description": "Organiza tus traducciones en archivos JSON"
+    },
+    "step3": {
+      "title": "Configura tu layout",
+      "description": "Configura el locale en tu layout principal"
+    },
+    "step4": {
+      "title": "Usa las traducciones",
+      "description": "Accede a las traducciones en cualquier lugar de tus componentes"
+    }
+  },
+  "footer": {
+    "description": "Una solución moderna de internacionalización para Astro",
+    "madeWith": "Hecho con <heart>❤️</heart> para la comunidad de Astro"
+  },
+  "docs": {
+    "pageTitle": "Documentación",
+    "pageSubtitle": "Todo lo que necesitas saber sobre astro-intl",
+    "sidebar": {
+      "gettingStarted": "Primeros Pasos",
+      "installation": "Instalación",
+      "fileStructure": "Estructura de Archivos",
+      "configuration": "Configuración",
+      "usage": "Uso",
+      "api": "Referencia de API",
+      "examples": "Ejemplos"
+    },
+    "hero": {
+      "badge": "Documentación",
+      "title": "Comienza con",
+      "titleAccent": "astro-intl",
+      "description": "Una librería de internacionalización <bold>type-safe</bold> para Astro, inspirada en next-intl. Sin props drilling, carga dinámica y soporte completo de TypeScript."
+    },
+    "installation": {
+      "title": "Instalación",
+      "description": "Instala astro-intl usando tu gestor de paquetes preferido.",
+      "addIntegration": "Opcionalmente registra la integración en tu astro.config.mjs:",
+      "integrationNote": "La integración es opcional — solo registra un mensaje de inicio. La API principal funciona sin ella."
+    },
+    "fileStructure": {
+      "title": "Estructura de Archivos",
+      "description": "astro-intl espera una estructura de carpetas específica dentro de tu proyecto. Aquí está el layout recomendado:",
+      "pagesNote": "Las páginas deben estar anidadas bajo un segmento dinámico <code>[lang]</code> para que Astro genere una ruta por locale.",
+      "messagesNote": "Cada locale tiene su propio archivo JSON dentro de <code>src/i18n/messages/</code>. El nombre del archivo debe coincidir exactamente con el código del locale (ej. <code>en.json</code>, <code>es.json</code>).",
+      "requestNote": "El archivo <code>request.ts</code> exporta una función que recibe el string del locale y retorna los mensajes para ese locale."
+    },
+    "configuration": {
+      "title": "Configuración",
+      "requestTitle": "1. Crear request.ts",
+      "requestDescription": "Este archivo es el puente entre el locale de la URL y tus mensajes JSON. Recibe el locale extraído de la URL y retorna un objeto <code>RequestConfig</code>.",
+      "messagesTitle": "2. Crear archivos de mensajes",
+      "messagesDescription": "Crea un archivo JSON por locale dentro de <code>src/i18n/messages/</code>. Puedes organizar las claves en namespaces (objetos anidados).",
+      "layoutTitle": "3. Configurar tu Layout",
+      "layoutDescription": "Llama a <code>setRequestLocale</code> al inicio de cada página (o en un layout compartido) para que el contexto global se llene antes de que cualquier componente lea traducciones.",
+      "staticPathsTitle": "4. Exportar getStaticPaths",
+      "staticPathsDescription": "En cada página <code>[lang]</code>, exporta <code>getStaticPaths</code> retornando todos los locales soportados para que Astro pueda pre-renderizarlos."
+    },
+    "usage": {
+      "title": "Uso",
+      "basicTitle": "Traducción Básica",
+      "basicDescription": "Usa <code>getTranslations(namespace)</code> para obtener una función de traducción tipada para un namespace específico.",
+      "markupTitle": "Traducción con Markup",
+      "markupDescription": "Usa <code>t.markup(key, tags)</code> para interpolar etiquetas HTML dentro de un string de traducción. El objeto tags mapea nombres de etiquetas a funciones que reciben el contenido interno.",
+      "reactTitle": "Componentes React",
+      "reactDescription": "Usa <code>getTranslationsReact(namespace)</code> dentro de componentes React, luego llama a <code>t.rich(key, tags)</code> para interpolar nodos React."
+    },
+    "api": {
+      "title": "Referencia de API",
+      "setRequestLocale": {
+        "name": "setRequestLocale",
+        "signature": "setRequestLocale(url: URL, getConfig: Function): Promise<void>",
+        "description": "Extrae el locale del pathname de la URL (primer segmento) y llama a tu función <code>getConfig</code> para cargar los mensajes. Debe ser awaited antes de cualquier otra llamada."
+      },
+      "getLocale": {
+        "name": "getLocale",
+        "signature": "getLocale(): string",
+        "description": "Retorna el string del locale actual establecido por <code>setRequestLocale</code>. Lanza un error si se llama antes de establecer el locale."
+      },
+      "getTranslations": {
+        "name": "getTranslations",
+        "signature": "getTranslations<T>(namespace?: string)",
+        "description": "Retorna una función <code>t(key)</code> tipada con scope al namespace dado. También expone <code>t.markup(key, tags)</code> para interpolación HTML."
+      },
+      "getTranslationsReact": {
+        "name": "getTranslationsReact",
+        "signature": "getTranslationsReact<T>(namespace?: string)",
+        "description": "Igual que <code>getTranslations</code> pero retorna una función con <code>t.rich(key, tags)</code> para interpolación de nodos React."
+      },
+      "requestConfig": {
+        "name": "RequestConfig",
+        "description": "Tipo retornado por tu función <code>getRequestConfig</code>. Contiene <code>locale: string</code> y <code>messages: Record<string, unknown></code>."
+      },
+      "dotPaths": {
+        "name": "DotPaths<T>",
+        "description": "Tipo utilitario que genera todos los paths válidos en notación de puntos para un objeto de mensajes dado. Se usa internamente para proveer autocompletado en las claves de traducción."
+      }
+    },
+    "examples": {
+      "title": "Ejemplos",
+      "namespaceTitle": "Usando Namespaces",
+      "namespaceDescription": "Los namespaces te permiten dividir archivos de traducción grandes en secciones lógicas. Pasa el nombre del namespace a <code>getTranslations</code>.",
+      "typeTitle": "Claves Type-Safe",
+      "typeDescription": "Pasa el tipo de tus mensajes como genérico a <code>getTranslations</code> para obtener autocompletado completo y verificación de tipos en las claves de traducción.",
+      "localeTitle": "Leyendo el Locale Actual",
+      "localeDescription": "Usa <code>getLocale()</code> en cualquier lugar después de que <code>setRequestLocale</code> haya sido llamado — por ejemplo para construir URLs con locale."
+    }
+  }
+}

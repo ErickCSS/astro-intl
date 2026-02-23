@@ -1,13 +1,24 @@
-import type { I18nConfig } from "./types";
-import { createGetTranslationsReact } from "./react";
+import type { RequestConfig } from "./types/index.js";
+import { createGetTranslationsReact } from "./react.js";
+
+// Global context para almacenar la configuración del request actual
+let globalRequestConfig: {
+  locale: string;
+  messages: Record<string, unknown>;
+} | null = null;
 
 export type DotPaths<T> = T extends object
   ? {
-      [K in keyof T & string]: T[K] extends object ? `${K}` | `${K}.${DotPaths<T[K]>}` : `${K}`;
+      [K in keyof T & string]: T[K] extends object
+        ? `${K}` | `${K}.${DotPaths<T[K]>}`
+        : `${K}`;
     }[keyof T & string]
   : never;
 
-export function getNestedValue(obj: Record<string, unknown>, path: string): unknown {
+export function getNestedValue(
+  obj: Record<string, unknown>,
+  path: string,
+): unknown {
   return path.split(".").reduce<unknown>((acc, key) => {
     if (acc && typeof acc === "object") {
       return (acc as Record<string, unknown>)[key];
@@ -16,73 +27,88 @@ export function getNestedValue(obj: Record<string, unknown>, path: string): unkn
   }, obj);
 }
 
-export function createTranslationGetter<
-  UI extends Record<string, Record<string, unknown>>,
-  DefaultLocale extends keyof UI,
-  N extends keyof UI[DefaultLocale],
->(ui: UI, defaultLocale: DefaultLocale, lang: string | undefined, namespace: N) {
-  type Locale = keyof UI;
-  type Messages = UI[DefaultLocale][N];
+// Configurar el request actual
+export async function setRequestLocale(
+  url: URL,
+  getConfig: (locale: string) => Promise<RequestConfig> | RequestConfig,
+) {
+  const [, lang] = url.pathname.split("/");
+  const locale = lang || "en"; // Fallback temporal
 
-  const resolvedLang: Locale = lang && lang in ui ? (lang as Locale) : defaultLocale;
-  const localeMessages = (ui[resolvedLang] as UI[DefaultLocale])[namespace] as Messages;
-  const fallbackMessages = (ui[defaultLocale] as UI[DefaultLocale])[namespace] as Messages;
+  const config = await getConfig(locale);
+  globalRequestConfig = {
+    locale: config.locale,
+    messages: config.messages,
+  };
+}
 
-  function t(key: DotPaths<Messages>): string {
-    const value =
-      getNestedValue(localeMessages as Record<string, unknown>, key) ??
-      getNestedValue(fallbackMessages as Record<string, unknown>, key);
+// Obtener el locale actual
+export function getLocale(): string {
+  if (!globalRequestConfig) {
+    throw new Error(
+      "[astro-intl] No request config found. Did you call setRequestLocale()?",
+    );
+  }
+  return globalRequestConfig.locale;
+}
 
+// Obtener traducciones sin pasar locale
+export function getTranslations<
+  T extends Record<string, unknown> = Record<string, unknown>,
+>(namespace?: string) {
+  if (!globalRequestConfig) {
+    throw new Error(
+      "[astro-intl] No request config found. Did you call setRequestLocale()?",
+    );
+  }
+
+  const messages = namespace
+    ? (globalRequestConfig.messages[namespace] as T)
+    : (globalRequestConfig.messages as T);
+
+  function t(key: DotPaths<T>): string {
+    const value = getNestedValue(messages as Record<string, unknown>, key);
     return (typeof value === "string" ? value : key) as string;
   }
 
-  return { t, localeMessages, fallbackMessages };
+  (t as any).markup = function (
+    key: DotPaths<T>,
+    tags: Record<string, (chunks: string) => string>,
+  ): string {
+    let str = t(key);
+
+    for (const [tag, fn] of Object.entries(tags)) {
+      const regex = new RegExp(`<${tag}>(.*?)</${tag}>`, "g");
+      str = str.replace(regex, (_, chunks) => fn(chunks));
+    }
+
+    return str;
+  };
+
+  return t as typeof t & {
+    markup: (
+      key: DotPaths<T>,
+      tags: Record<string, (chunks: string) => string>,
+    ) => string;
+  };
 }
 
-export function createI18n<
-  UI extends Record<string, Record<string, unknown>>,
-  DefaultLocale extends keyof UI,
->(config: I18nConfig<UI, DefaultLocale>) {
-  const { ui, defaultLocale } = config;
-
-  type Locale = keyof UI;
-  type Namespace = keyof UI[DefaultLocale];
-
-  function getLangFromUrl(url: URL): Locale {
-    const [, lang] = url.pathname.split("/");
-    if (lang && lang in ui) return lang as Locale;
-    return defaultLocale;
+// Obtener traducciones para React
+export function getTranslationsReact<
+  T extends Record<string, unknown> = Record<string, unknown>,
+>(namespace?: string) {
+  if (!globalRequestConfig) {
+    throw new Error(
+      "[astro-intl] No request config found. Did you call setRequestLocale()?",
+    );
   }
 
-  function getTranslations<N extends Namespace>(lang: string | undefined, namespace: N) {
-    type Messages = UI[DefaultLocale][N];
+  const messages = namespace
+    ? (globalRequestConfig.messages[namespace] as T)
+    : (globalRequestConfig.messages as T);
 
-    const { t } = createTranslationGetter(ui, defaultLocale, lang, namespace);
-
-    (t as any).markup = function (
-      key: DotPaths<Messages>,
-      tags: Record<string, (chunks: string) => string>,
-    ): string {
-      let str = t(key);
-
-      for (const [tag, fn] of Object.entries(tags)) {
-        const regex = new RegExp(`<${tag}>(.*?)</${tag}>`, "g");
-        str = str.replace(regex, (_, chunks) => fn(chunks));
-      }
-
-      return str;
-    };
-
-    return t as typeof t & {
-      markup: (key: DotPaths<Messages>, tags: Record<string, (chunks: string) => string>) => string;
-    };
-  }
-
-  return {
-    ui,
-    defaultLocale,
-    getLangFromUrl,
-    getTranslations,
-    getTranslationsReact: createGetTranslationsReact(ui, defaultLocale),
-  };
+  return createGetTranslationsReact(
+    { [globalRequestConfig.locale]: { default: messages } } as any,
+    globalRequestConfig.locale as any,
+  )(globalRequestConfig.locale, "default" as any);
 }

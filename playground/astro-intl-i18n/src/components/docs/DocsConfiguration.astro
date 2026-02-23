@@ -1,0 +1,112 @@
+---
+import { getTranslations } from "astro-intl";
+
+const t = getTranslations("docs");
+---
+
+<section id="configuration" class="mb-14 scroll-mt-24">
+  <div class="flex items-center gap-3 mb-8">
+    <span class="w-1 h-5 rounded-full" style="background: var(--color-accent);"></span>
+    <h2 class="text-xl font-bold" style="color: var(--color-text);">{t("configuration.title")}</h2>
+  </div>
+
+  <!-- Step 1: request.ts -->
+  <div class="mb-10">
+    <h3 class="text-sm font-semibold mb-1" style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;">{t("configuration.requestTitle")}</h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("configuration.requestDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+    <div class="rounded-xl overflow-hidden" style="border: 1px solid var(--color-border);">
+      <div class="flex items-center px-4 py-2.5" style="background: var(--color-bg-tertiary); border-bottom: 1px solid var(--color-border);">
+        <span class="text-xs font-medium" style="color: var(--color-text-tertiary);">src/i18n/request.ts</span>
+      </div>
+      <pre class="rounded-none! border-0! m-0!"><code>{`import type { RequestConfig } from "astro-intl";
+
+export default async function getRequestConfig(
+  locale: string,
+): Promise<RequestConfig> {
+  return {
+    locale,
+    messages: (await import(\`./messages/\${locale}.json\`)).default,
+  };
+}`}</code></pre>
+    </div>
+  </div>
+
+  <!-- Step 2: messages -->
+  <div class="mb-10">
+    <h3 class="text-sm font-semibold mb-1" style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;">{t("configuration.messagesTitle")}</h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("configuration.messagesDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+    <div class="rounded-xl overflow-hidden" style="border: 1px solid var(--color-border);">
+      <div class="flex items-center px-4 py-2.5" style="background: var(--color-bg-tertiary); border-bottom: 1px solid var(--color-border);">
+        <span class="text-xs font-medium" style="color: var(--color-text-tertiary);">src/i18n/messages/en.json</span>
+      </div>
+      <pre class="rounded-none! border-0! m-0!"><code>{`{
+  "nav": {
+    "home": "Home",
+    "docs": "Documentation"
+  },
+  "hero": {
+    "title": "Hello, World!",
+    "description": "Welcome to <bold>astro-intl</bold>"
+  }
+}`}</code></pre>
+    </div>
+  </div>
+
+  <!-- Step 3: Layout -->
+  <div class="mb-10">
+    <h3 class="text-sm font-semibold mb-1" style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;">{t("configuration.layoutTitle")}</h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("configuration.layoutDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+    <div class="rounded-xl overflow-hidden" style="border: 1px solid var(--color-border);">
+      <div class="flex items-center px-4 py-2.5" style="background: var(--color-bg-tertiary); border-bottom: 1px solid var(--color-border);">
+        <span class="text-xs font-medium" style="color: var(--color-text-tertiary);">src/pages/[lang]/index.astro</span>
+      </div>
+      <pre class="rounded-none! border-0! m-0!"><code>{`---
+import { setRequestLocale } from "astro-intl";
+import getRequestConfig from "../../i18n/request";
+
+await setRequestLocale(Astro.url, getRequestConfig);
+---`}</code></pre>
+    </div>
+  </div>
+
+  <!-- Step 4: getStaticPaths -->
+  <div class="mb-2">
+    <h3 class="text-sm font-semibold mb-1" style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;">{t("configuration.staticPathsTitle")}</h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("configuration.staticPathsDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+    <div class="rounded-xl overflow-hidden" style="border: 1px solid var(--color-border);">
+      <div class="flex items-center px-4 py-2.5" style="background: var(--color-bg-tertiary); border-bottom: 1px solid var(--color-border);">
+        <span class="text-xs font-medium" style="color: var(--color-text-tertiary);">src/pages/[lang]/index.astro</span>
+      </div>
+      <pre class="rounded-none! border-0! m-0!"><code>{`export function getStaticPaths() {
+  return [
+    { params: { lang: "en" } },
+    { params: { lang: "es" } },
+  ];
+}`}</code></pre>
+    </div>
+  </div>
+</section>

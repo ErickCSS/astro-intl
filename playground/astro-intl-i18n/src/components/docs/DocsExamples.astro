@@ -1,0 +1,99 @@
+---
+import { getTranslations } from "astro-intl";
+
+const t = getTranslations("docs");
+---
+
+<section id="examples" class="mb-14 scroll-mt-24">
+  <div class="flex items-center gap-3 mb-8">
+    <span class="w-1 h-5 rounded-full" style="background: var(--color-accent);"></span>
+    <h2 class="text-xl font-bold" style="color: var(--color-text);">{t("examples.title")}</h2>
+  </div>
+
+  <!-- Namespaces -->
+  <div class="mb-10">
+    <h3 class="text-sm font-semibold mb-1" style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;">{t("examples.namespaceTitle")}</h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("examples.namespaceDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+    <div class="rounded-xl overflow-hidden" style="border: 1px solid var(--color-border);">
+      <div class="flex items-center px-4 py-2.5" style="background: var(--color-bg-tertiary); border-bottom: 1px solid var(--color-border);">
+        <span class="text-xs font-medium" style="color: var(--color-text-tertiary);">Multiple namespaces in one page</span>
+      </div>
+      <pre class="rounded-none! border-0! m-0!"><code>{`---
+import { setRequestLocale, getTranslations } from "astro-intl";
+import getRequestConfig from "../../i18n/request";
+
+await setRequestLocale(Astro.url, getRequestConfig);
+
+// Each call is scoped to its namespace
+const tNav    = getTranslations("nav");
+const tHero   = getTranslations("hero");
+const tFooter = getTranslations("footer");
+---
+
+<nav>{tNav("home")}</nav>
+<h1>{tHero("title")}</h1>
+<footer>{tFooter("description")}</footer>`}</code></pre>
+    </div>
+  </div>
+
+  <!-- Type-safe keys -->
+  <div class="mb-10">
+    <h3 class="text-sm font-semibold mb-1" style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;">{t("examples.typeTitle")}</h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("examples.typeDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+    <div class="rounded-xl overflow-hidden" style="border: 1px solid var(--color-border);">
+      <div class="flex items-center px-4 py-2.5" style="background: var(--color-bg-tertiary); border-bottom: 1px solid var(--color-border);">
+        <span class="text-xs font-medium" style="color: var(--color-text-tertiary);">Type-safe with generics</span>
+      </div>
+      <pre class="rounded-none! border-0! m-0!"><code>{`import type en from "../i18n/messages/en.json";
+
+// Pass the type of your messages JSON
+type HeroMessages = typeof en["hero"];
+
+const tHero = getTranslations<HeroMessages>("hero");
+
+// ✅ Autocomplete works — "title", "description", etc.
+tHero("title");
+
+// ❌ TypeScript error — key doesn't exist
+tHero("nonExistentKey");`}</code></pre>
+    </div>
+  </div>
+
+  <!-- Reading locale -->
+  <div class="mb-2">
+    <h3 class="text-sm font-semibold mb-1" style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;">{t("examples.localeTitle")}</h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("examples.localeDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+    <div class="rounded-xl overflow-hidden" style="border: 1px solid var(--color-border);">
+      <div class="flex items-center px-4 py-2.5" style="background: var(--color-bg-tertiary); border-bottom: 1px solid var(--color-border);">
+        <span class="text-xs font-medium" style="color: var(--color-text-tertiary);">Locale-aware links</span>
+      </div>
+      <pre class="rounded-none! border-0! m-0!"><code>{`---
+import { getLocale } from "astro-intl";
+
+const locale = getLocale(); // "en" | "es"
+---
+
+<!-- Build locale-prefixed URLs -->
+<a href={\`/\${locale}/docs\`}>Documentation</a>
+<a href={\`/\${locale}/about\`}>About</a>`}</code></pre>
+    </div>
+  </div>
+</section>

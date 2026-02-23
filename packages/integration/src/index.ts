@@ -4,7 +4,9 @@ export type MyIntegrationOptions = {
   enabled?: boolean;
 };
 
-export default function myIntegration(options: MyIntegrationOptions = {}): AstroIntegration {
+export default function myIntegration(
+  options: MyIntegrationOptions = {},
+): AstroIntegration {
   const { enabled = true } = options;
 
   return {
@@ -17,3 +19,15 @@ export default function myIntegration(options: MyIntegrationOptions = {}): Astro
     },
   };
 }
+
+// Exportar API
+export {
+  setRequestLocale,
+  getLocale,
+  getTranslations,
+  getTranslationsReact,
+} from "./core.js";
+
+// Exportar tipos
+export type { RequestConfig } from "./types/index.js";
+export type { DotPaths } from "./core.js";
