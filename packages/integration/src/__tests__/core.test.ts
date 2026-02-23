@@ -4,12 +4,13 @@ import {
   getLocale,
   getTranslations,
   getNestedValue,
+  __resetRequestConfig,
 } from "../core.js";
 import type { RequestConfig } from "../types/index.js";
 
 describe("core.ts", () => {
   beforeEach(() => {
-    (globalThis as any).globalRequestConfig = null;
+    __resetRequestConfig();
   });
 
   describe("getNestedValue", () => {
@@ -98,9 +99,7 @@ describe("core.ts", () => {
         messages: {},
       };
 
-      await expect(setRequestLocale(url, () => config)).rejects.toThrow(
-        /Invalid locale/,
-      );
+      await expect(setRequestLocale(url, () => config)).rejects.toThrow(/Invalid locale/);
     });
   });
 
@@ -142,7 +141,7 @@ describe("core.ts", () => {
     });
 
     it("should throw error when called before setRequestLocale", () => {
-      (globalThis as any).globalRequestConfig = null;
+      __resetRequestConfig();
       expect(() => getTranslations()).toThrow(/No request config found/);
     });
 
@@ -169,9 +168,9 @@ describe("core.ts", () => {
     });
 
     describe("t.markup", () => {
-      it("should interpolate HTML tags", () => {
+      it("should interpolate HTML tags", async () => {
         const url = new URL("https://example.com/en/home");
-        setRequestLocale(url, () => ({
+        await setRequestLocale(url, () => ({
           locale: "en",
           messages: {
             text: "Click <link>here</link> to continue",
@@ -186,9 +185,9 @@ describe("core.ts", () => {
         expect(result).toBe('Click <a href="/test">here</a> to continue');
       });
 
-      it("should handle multiple tags", () => {
+      it("should handle multiple tags", async () => {
         const url = new URL("https://example.com/en/home");
-        setRequestLocale(url, () => ({
+        await setRequestLocale(url, () => ({
           locale: "en",
           messages: {
             text: "Text with <bold>bold</bold> and <italic>italic</italic>",
@@ -204,9 +203,9 @@ describe("core.ts", () => {
         expect(result).toBe("Text with <strong>bold</strong> and <em>italic</em>");
       });
 
-      it("should sanitize dangerous HTML", () => {
+      it("should sanitize dangerous HTML", async () => {
         const url = new URL("https://example.com/en/home");
-        setRequestLocale(url, () => ({
+        await setRequestLocale(url, () => ({
           locale: "en",
           messages: {
             dangerous: "<script>alert('xss')</script>Safe text",
@@ -220,9 +219,9 @@ describe("core.ts", () => {
         expect(result).toContain("Safe text");
       });
 
-      it("should remove event handlers", () => {
+      it("should remove event handlers", async () => {
         const url = new URL("https://example.com/en/home");
-        setRequestLocale(url, () => ({
+        await setRequestLocale(url, () => ({
           locale: "en",
           messages: {
             text: '<div onclick="alert()">Click</div>',
@@ -235,9 +234,9 @@ describe("core.ts", () => {
         expect(result).not.toContain("onclick");
       });
 
-      it("should remove javascript: URIs", () => {
+      it("should remove javascript: URIs", async () => {
         const url = new URL("https://example.com/en/home");
-        setRequestLocale(url, () => ({
+        await setRequestLocale(url, () => ({
           locale: "en",
           messages: {
             text: '<a href="javascript:alert()">Link</a>',

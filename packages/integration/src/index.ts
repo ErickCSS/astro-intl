@@ -4,6 +4,7 @@ import {
   getLocale as _getLocale,
   getTranslations as _getTranslations,
   getTranslationsReact as _getTranslationsReact,
+  __resetRequestConfig as _resetRequestConfig,
 } from "./core.js";
 
 export type MyIntegrationOptions = {
@@ -29,6 +30,7 @@ export const setRequestLocale = _setRequestLocale;
 export const getLocale = _getLocale;
 export const getTranslations = _getTranslations;
 export const getTranslationsReact = _getTranslationsReact;
+export const __resetRequestConfig = _resetRequestConfig;
 
 // Exportar tipos
 export type { RequestConfig } from "./types/index.js";

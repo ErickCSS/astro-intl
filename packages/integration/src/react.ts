@@ -28,24 +28,37 @@ export function createGetTranslationsReact<
       tags: Record<string, (chunks: string) => ReactNode>,
     ): ReactNode[] {
       const str = t(key);
-      const tagNames = Object.keys(tags).map(escapeRegExp);
-      const regex = new RegExp(`<(${tagNames.join("|")})>(.*?)<\\/\\1>`, "g");
 
-      const result: ReactNode[] = [];
-      let lastIndex = 0;
-      let match: RegExpExecArray | null;
+      // Función recursiva para procesar tags anidados
+      function processString(input: string): ReactNode[] {
+        const tagNames = Object.keys(tags).map(escapeRegExp);
+        const regex = new RegExp(`<(${tagNames.join("|")})>(.*?)<\\/\\1>`, "g");
 
-      while ((match = regex.exec(str)) !== null) {
-        if (match.index > lastIndex) {
-          result.push(str.slice(lastIndex, match.index));
+        const result: ReactNode[] = [];
+        let lastIndex = 0;
+        let match: RegExpExecArray | null;
+
+        while ((match = regex.exec(input)) !== null) {
+          if (match.index > lastIndex) {
+            result.push(input.slice(lastIndex, match.index));
+          }
+          const [, tag, chunks] = match;
+
+          // Procesar recursivamente el contenido del tag
+          const processedChunks = processString(chunks);
+          const chunksAsString = processedChunks
+            .map((chunk) => (typeof chunk === "string" ? chunk : String(chunk)))
+            .join("");
+
+          result.push(tags[tag](chunksAsString));
+          lastIndex = match.index + match[0].length;
         }
-        const [, tag, chunks] = match;
-        result.push(tags[tag](chunks));
-        lastIndex = match.index + match[0].length;
+
+        if (lastIndex < input.length) result.push(input.slice(lastIndex));
+        return result;
       }
 
-      if (lastIndex < str.length) result.push(str.slice(lastIndex));
-      return result;
+      return processString(str);
     };
 
     return t as typeof t & {

@@ -41,6 +41,11 @@ let globalRequestConfig: {
   messages: Record<string, unknown>;
 } | null = null;
 
+// Función para resetear el config (solo para testing)
+export function __resetRequestConfig() {
+  globalRequestConfig = null;
+}
+
 export type DotPaths<T> = T extends object
   ? {
       [K in keyof T & string]: T[K] extends object ? `${K}` | `${K}.${DotPaths<T[K]>}` : `${K}`;
@@ -106,7 +111,9 @@ export function getTranslations<T extends Record<string, unknown> = Record<strin
       str = str.replace(regex, (_, chunks) => fn(chunks));
     }
 
-    return sanitizeHtml(str);
+    str = sanitizeHtml(str);
+
+    return str;
   };
 
   return t as typeof t & {

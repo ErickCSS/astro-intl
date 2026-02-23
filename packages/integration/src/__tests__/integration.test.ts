@@ -4,18 +4,19 @@ import {
   getLocale,
   getTranslations,
   getTranslationsReact,
+  __resetRequestConfig,
 } from "../index.js";
 import type { RequestConfig } from "../types/index.js";
 
 describe("Integration Tests", () => {
   beforeEach(() => {
-    (globalThis as any).globalRequestConfig = null;
+    __resetRequestConfig();
   });
 
   describe("Complete workflow", () => {
     it("should handle complete translation workflow", async () => {
       const url = new URL("https://example.com/es/products");
-      
+
       const getRequestConfig = async (locale: string): Promise<RequestConfig> => {
         const messages = {
           en: {
@@ -91,7 +92,7 @@ describe("Integration Tests", () => {
 
     it("should work with deeply nested translations", async () => {
       const url = new URL("https://example.com/en/page");
-      
+
       await setRequestLocale(url, () => ({
         locale: "en",
         messages: {
@@ -117,11 +118,12 @@ describe("Integration Tests", () => {
 
     it("should handle markup with complex HTML", async () => {
       const url = new URL("https://example.com/en/page");
-      
+
       await setRequestLocale(url, () => ({
         locale: "en",
         messages: {
-          legal: "By clicking continue, you agree to our <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>.",
+          legal:
+            "By clicking continue, you agree to our <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>.",
         },
       }));
 
@@ -137,7 +139,7 @@ describe("Integration Tests", () => {
 
     it("should handle React translations", async () => {
       const url = new URL("https://example.com/en/page");
-      
+
       await setRequestLocale(url, () => ({
         locale: "en",
         messages: {
@@ -150,32 +152,28 @@ describe("Integration Tests", () => {
         count: (chunks) => `<span class="badge">${chunks}</span>`,
       });
 
-      expect(result).toEqual([
-        "You have ",
-        '<span class="badge">5</span>',
-        " new messages",
-      ]);
+      expect(result).toEqual(["You have ", '<span class="badge">5</span>', " new messages"]);
     });
   });
 
   describe("Error handling", () => {
     it("should throw descriptive error when accessing translations before setup", () => {
       expect(() => getLocale()).toThrow(
-        "[astro-intl] No request config found. Did you call setRequestLocale()?"
+        "[astro-intl] No request config found. Did you call setRequestLocale()?",
       );
 
       expect(() => getTranslations()).toThrow(
-        "[astro-intl] No request config found. Did you call setRequestLocale()?"
+        "[astro-intl] No request config found. Did you call setRequestLocale()?",
       );
 
       expect(() => getTranslationsReact()).toThrow(
-        "[astro-intl] No request config found. Did you call setRequestLocale()?"
+        "[astro-intl] No request config found. Did you call setRequestLocale()?",
       );
     });
 
     it("should handle missing translations gracefully", async () => {
       const url = new URL("https://example.com/en/page");
-      
+
       await setRequestLocale(url, () => ({
         locale: "en",
         messages: {
@@ -193,7 +191,7 @@ describe("Integration Tests", () => {
   describe("Security", () => {
     it("should prevent XSS attacks in markup", async () => {
       const url = new URL("https://example.com/en/page");
-      
+
       await setRequestLocale(url, () => ({
         locale: "en",
         messages: {
@@ -211,7 +209,7 @@ describe("Integration Tests", () => {
 
     it("should prevent prototype pollution", async () => {
       const url = new URL("https://example.com/en/page");
-      
+
       await setRequestLocale(url, () => ({
         locale: "en",
         messages: {
@@ -227,7 +225,7 @@ describe("Integration Tests", () => {
 
     it("should sanitize javascript: URIs", async () => {
       const url = new URL("https://example.com/en/page");
-      
+
       await setRequestLocale(url, () => ({
         locale: "en",
         messages: {
@@ -243,7 +241,7 @@ describe("Integration Tests", () => {
 
     it("should sanitize data: URIs", async () => {
       const url = new URL("https://example.com/en/page");
-      
+
       await setRequestLocale(url, () => ({
         locale: "en",
         messages: {
@@ -273,14 +271,7 @@ describe("Integration Tests", () => {
     });
 
     it("should reject invalid locale formats", async () => {
-      const invalidLocales = [
-        "invalid@locale",
-        "123",
-        "en_US",
-        "en-",
-        "-en",
-        "en--US",
-      ];
+      const invalidLocales = ["invalid@locale", "123", "en_US", "en-", "-en", "en--US"];
 
       for (const locale of invalidLocales) {
         const url = new URL(`https://example.com/${locale}/page`);
@@ -288,7 +279,7 @@ describe("Integration Tests", () => {
           setRequestLocale(url, () => ({
             locale,
             messages: {},
-          }))
+          })),
         ).rejects.toThrow(/Invalid locale/);
       }
     });
