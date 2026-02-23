@@ -1,12 +1,16 @@
 import type { AstroIntegration } from "astro";
+import {
+  setRequestLocale as _setRequestLocale,
+  getLocale as _getLocale,
+  getTranslations as _getTranslations,
+  getTranslationsReact as _getTranslationsReact,
+} from "./core.js";
 
 export type MyIntegrationOptions = {
   enabled?: boolean;
 };
 
-export default function myIntegration(
-  options: MyIntegrationOptions = {},
-): AstroIntegration {
+export default function myIntegration(options: MyIntegrationOptions = {}): AstroIntegration {
   const { enabled = true } = options;
 
   return {
@@ -21,12 +25,10 @@ export default function myIntegration(
 }
 
 // Exportar API
-export {
-  setRequestLocale,
-  getLocale,
-  getTranslations,
-  getTranslationsReact,
-} from "./core.js";
+export const setRequestLocale = _setRequestLocale;
+export const getLocale = _getLocale;
+export const getTranslations = _getTranslations;
+export const getTranslationsReact = _getTranslationsReact;
 
 // Exportar tipos
 export type { RequestConfig } from "./types/index.js";

@@ -125,14 +125,14 @@
       "messagesTitle": "2. Create message files",
       "messagesDescription": "Create one JSON file per locale inside <code>src/i18n/messages/</code>. You can organize keys into namespaces (nested objects).",
       "layoutTitle": "3. Set up your Layout",
-      "layoutDescription": "Call <code>setRequestLocale</code> at the top of every page (or in a shared layout) so the global context is populated before any component reads translations.",
+      "layoutDescription": "<strong>Best practice:</strong> Call <code>setRequestLocale</code> once in a shared layout (e.g., <code>src/layouts/Layout.astro</code>) instead of repeating it on every page. This initializes the global i18n context before any component reads translations.",
       "staticPathsTitle": "4. Export getStaticPaths",
       "staticPathsDescription": "In every <code>[lang]</code> page, export <code>getStaticPaths</code> returning all supported locales so Astro can pre-render them."
     },
     "usage": {
       "title": "Usage",
       "basicTitle": "Basic Translation",
-      "basicDescription": "Use <code>getTranslations(namespace)</code> to get a typed translation function for a specific namespace.",
+      "basicDescription": "Once your layout is configured, simply use <code>getTranslations(namespace)</code> in any page to get a typed translation function for a specific namespace.",
       "markupTitle": "Markup Translation",
       "markupDescription": "Use <code>t.markup(key, tags)</code> to interpolate HTML tags inside a translation string. The tags object maps tag names to functions that receive the inner content.",
       "reactTitle": "React Components",

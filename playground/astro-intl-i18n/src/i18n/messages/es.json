@@ -125,14 +125,14 @@
       "messagesTitle": "2. Crear archivos de mensajes",
       "messagesDescription": "Crea un archivo JSON por locale dentro de <code>src/i18n/messages/</code>. Puedes organizar las claves en namespaces (objetos anidados).",
       "layoutTitle": "3. Configurar tu Layout",
-      "layoutDescription": "Llama a <code>setRequestLocale</code> al inicio de cada página (o en un layout compartido) para que el contexto global se llene antes de que cualquier componente lea traducciones.",
+      "layoutDescription": "<strong>Mejor práctica:</strong> Llama a <code>setRequestLocale</code> una sola vez en un layout compartido (ej: <code>src/layouts/Layout.astro</code>) en lugar de repetirlo en cada página. Esto inicializa el contexto global de i18n antes de que cualquier componente lea traducciones.",
       "staticPathsTitle": "4. Exportar getStaticPaths",
       "staticPathsDescription": "En cada página <code>[lang]</code>, exporta <code>getStaticPaths</code> retornando todos los locales soportados para que Astro pueda pre-renderizarlos."
     },
     "usage": {
       "title": "Uso",
       "basicTitle": "Traducción Básica",
-      "basicDescription": "Usa <code>getTranslations(namespace)</code> para obtener una función de traducción tipada para un namespace específico.",
+      "basicDescription": "Una vez configurado tu layout, simplemente usa <code>getTranslations(namespace)</code> en cualquier página para obtener una función de traducción tipada para un namespace específico.",
       "markupTitle": "Traducción con Markup",
       "markupDescription": "Usa <code>t.markup(key, tags)</code> para interpolar etiquetas HTML dentro de un string de traducción. El objeto tags mapea nombres de etiquetas a funciones que reciben el contenido interno.",
       "reactTitle": "Componentes React",

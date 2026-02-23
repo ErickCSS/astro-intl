@@ -1,0 +1,14 @@
+# Archivos fuente (solo publicar dist/)
+src/
+tsconfig.json
+
+# Archivos de desarrollo
+*.log
+*.tgz
+node_modules/
+.DS_Store
+
+# Archivos de configuración local
+.env
+.env.local
+pnpm-lock.yaml

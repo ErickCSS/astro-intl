@@ -1,5 +1,6 @@
 ---
 import { getTranslations } from "astro-intl";
+import CodeBlock from "../CodeBlock.astro";
 
 const t = getTranslations("docs");
 ---
@@ -12,7 +13,12 @@ const t = getTranslations("docs");
 
   <!-- Step 1: request.ts -->
   <div class="mb-10">
-    <h3 class="text-sm font-semibold mb-1" style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;">{t("configuration.requestTitle")}</h3>
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("configuration.requestTitle")}
+    </h3>
     <p
       class="text-sm mb-4"
       style="color: var(--color-text-tertiary);"
@@ -20,26 +26,21 @@ const t = getTranslations("docs");
         code: (c: string) => `<code>${c}</code>`,
       })}
     />
-    <div class="rounded-xl overflow-hidden" style="border: 1px solid var(--color-border);">
-      <div class="flex items-center px-4 py-2.5" style="background: var(--color-bg-tertiary); border-bottom: 1px solid var(--color-border);">
-        <span class="text-xs font-medium" style="color: var(--color-text-tertiary);">src/i18n/request.ts</span>
-      </div>
-      <pre class="rounded-none! border-0! m-0!"><code>{`import type { RequestConfig } from "astro-intl";
-
-export default async function getRequestConfig(
-  locale: string,
-): Promise<RequestConfig> {
-  return {
-    locale,
-    messages: (await import(\`./messages/\${locale}.json\`)).default,
-  };
-}`}</code></pre>
-    </div>
+    <CodeBlock
+      title="src/i18n/request.ts"
+      lang="typescript"
+      code={'import type { RequestConfig } from "astro-intl";\n\nexport default async function getRequestConfig(\n  locale: string,\n): Promise<RequestConfig> {\n  return {\n    locale,\n    messages: (await import(`./messages/${locale}.json`)).default,\n  };\n}'}
+    />
   </div>
 
   <!-- Step 2: messages -->
   <div class="mb-10">
-    <h3 class="text-sm font-semibold mb-1" style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;">{t("configuration.messagesTitle")}</h3>
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("configuration.messagesTitle")}
+    </h3>
     <p
       class="text-sm mb-4"
       style="color: var(--color-text-tertiary);"
@@ -47,11 +48,10 @@ export default async function getRequestConfig(
         code: (c: string) => `<code>${c}</code>`,
       })}
     />
-    <div class="rounded-xl overflow-hidden" style="border: 1px solid var(--color-border);">
-      <div class="flex items-center px-4 py-2.5" style="background: var(--color-bg-tertiary); border-bottom: 1px solid var(--color-border);">
-        <span class="text-xs font-medium" style="color: var(--color-text-tertiary);">src/i18n/messages/en.json</span>
-      </div>
-      <pre class="rounded-none! border-0! m-0!"><code>{`{
+    <CodeBlock
+      title="src/i18n/messages/en.json"
+      lang="json"
+      code={`{
   "nav": {
     "home": "Home",
     "docs": "Documentation"
@@ -60,13 +60,18 @@ export default async function getRequestConfig(
     "title": "Hello, World!",
     "description": "Welcome to <bold>astro-intl</bold>"
   }
-}`}</code></pre>
-    </div>
+}`}
+    />
   </div>
 
   <!-- Step 3: Layout -->
   <div class="mb-10">
-    <h3 class="text-sm font-semibold mb-1" style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;">{t("configuration.layoutTitle")}</h3>
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("configuration.layoutTitle")}
+    </h3>
     <p
       class="text-sm mb-4"
       style="color: var(--color-text-tertiary);"
@@ -74,22 +79,21 @@ export default async function getRequestConfig(
         code: (c: string) => `<code>${c}</code>`,
       })}
     />
-    <div class="rounded-xl overflow-hidden" style="border: 1px solid var(--color-border);">
-      <div class="flex items-center px-4 py-2.5" style="background: var(--color-bg-tertiary); border-bottom: 1px solid var(--color-border);">
-        <span class="text-xs font-medium" style="color: var(--color-text-tertiary);">src/pages/[lang]/index.astro</span>
-      </div>
-      <pre class="rounded-none! border-0! m-0!"><code>{`---
-import { setRequestLocale } from "astro-intl";
-import getRequestConfig from "../../i18n/request";
-
-await setRequestLocale(Astro.url, getRequestConfig);
----`}</code></pre>
-    </div>
+    <CodeBlock
+      title="src/layouts/Layout.astro"
+      lang="astro"
+      code={'---\nimport { setRequestLocale } from "astro-intl";\nimport getRequestConfig from "../i18n/request";\n\n// Initialize i18n context once for all pages using this layout\nawait setRequestLocale(Astro.url, getRequestConfig);\n---\n\n<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Site</title>\n  </head>\n  <body>\n    <slot />\n  </body>\n</html>'}
+    />
   </div>
 
   <!-- Step 4: getStaticPaths -->
   <div class="mb-2">
-    <h3 class="text-sm font-semibold mb-1" style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;">{t("configuration.staticPathsTitle")}</h3>
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("configuration.staticPathsTitle")}
+    </h3>
     <p
       class="text-sm mb-4"
       style="color: var(--color-text-tertiary);"
@@ -97,16 +101,15 @@ await setRequestLocale(Astro.url, getRequestConfig);
         code: (c: string) => `<code>${c}</code>`,
       })}
     />
-    <div class="rounded-xl overflow-hidden" style="border: 1px solid var(--color-border);">
-      <div class="flex items-center px-4 py-2.5" style="background: var(--color-bg-tertiary); border-bottom: 1px solid var(--color-border);">
-        <span class="text-xs font-medium" style="color: var(--color-text-tertiary);">src/pages/[lang]/index.astro</span>
-      </div>
-      <pre class="rounded-none! border-0! m-0!"><code>{`export function getStaticPaths() {
+    <CodeBlock
+      title="src/pages/[lang]/index.astro"
+      lang="typescript"
+      code={`export function getStaticPaths() {
   return [
     { params: { lang: "en" } },
     { params: { lang: "es" } },
   ];
-}`}</code></pre>
-    </div>
+}`}
+    />
   </div>
 </section>

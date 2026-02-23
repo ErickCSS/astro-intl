@@ -1,5 +1,6 @@
 ---
 import { getTranslations } from "astro-intl";
+import CodeBlock from "../CodeBlock.astro";
 
 const t = getTranslations("docs");
 ---
@@ -12,7 +13,12 @@ const t = getTranslations("docs");
 
   <!-- Namespaces -->
   <div class="mb-10">
-    <h3 class="text-sm font-semibold mb-1" style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;">{t("examples.namespaceTitle")}</h3>
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("examples.namespaceTitle")}
+    </h3>
     <p
       class="text-sm mb-4"
       style="color: var(--color-text-tertiary);"
@@ -20,11 +26,10 @@ const t = getTranslations("docs");
         code: (c: string) => `<code>${c}</code>`,
       })}
     />
-    <div class="rounded-xl overflow-hidden" style="border: 1px solid var(--color-border);">
-      <div class="flex items-center px-4 py-2.5" style="background: var(--color-bg-tertiary); border-bottom: 1px solid var(--color-border);">
-        <span class="text-xs font-medium" style="color: var(--color-text-tertiary);">Multiple namespaces in one page</span>
-      </div>
-      <pre class="rounded-none! border-0! m-0!"><code>{`---
+    <CodeBlock
+      title="Multiple namespaces in one page"
+      lang="astro"
+      code={`---
 import { setRequestLocale, getTranslations } from "astro-intl";
 import getRequestConfig from "../../i18n/request";
 
@@ -38,13 +43,18 @@ const tFooter = getTranslations("footer");
 
 <nav>{tNav("home")}</nav>
 <h1>{tHero("title")}</h1>
-<footer>{tFooter("description")}</footer>`}</code></pre>
-    </div>
+<footer>{tFooter("description")}</footer>`}
+    />
   </div>
 
   <!-- Type-safe keys -->
   <div class="mb-10">
-    <h3 class="text-sm font-semibold mb-1" style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;">{t("examples.typeTitle")}</h3>
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("examples.typeTitle")}
+    </h3>
     <p
       class="text-sm mb-4"
       style="color: var(--color-text-tertiary);"
@@ -52,11 +62,10 @@ const tFooter = getTranslations("footer");
         code: (c: string) => `<code>${c}</code>`,
       })}
     />
-    <div class="rounded-xl overflow-hidden" style="border: 1px solid var(--color-border);">
-      <div class="flex items-center px-4 py-2.5" style="background: var(--color-bg-tertiary); border-bottom: 1px solid var(--color-border);">
-        <span class="text-xs font-medium" style="color: var(--color-text-tertiary);">Type-safe with generics</span>
-      </div>
-      <pre class="rounded-none! border-0! m-0!"><code>{`import type en from "../i18n/messages/en.json";
+    <CodeBlock
+      title="Type-safe with generics"
+      lang="typescript"
+      code={`import type en from "../i18n/messages/en.json";
 
 // Pass the type of your messages JSON
 type HeroMessages = typeof en["hero"];
@@ -67,13 +76,18 @@ const tHero = getTranslations<HeroMessages>("hero");
 tHero("title");
 
 // ❌ TypeScript error — key doesn't exist
-tHero("nonExistentKey");`}</code></pre>
-    </div>
+tHero("nonExistentKey");`}
+    />
   </div>
 
   <!-- Reading locale -->
   <div class="mb-2">
-    <h3 class="text-sm font-semibold mb-1" style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;">{t("examples.localeTitle")}</h3>
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("examples.localeTitle")}
+    </h3>
     <p
       class="text-sm mb-4"
       style="color: var(--color-text-tertiary);"
@@ -81,19 +95,10 @@ tHero("nonExistentKey");`}</code></pre>
         code: (c: string) => `<code>${c}</code>`,
       })}
     />
-    <div class="rounded-xl overflow-hidden" style="border: 1px solid var(--color-border);">
-      <div class="flex items-center px-4 py-2.5" style="background: var(--color-bg-tertiary); border-bottom: 1px solid var(--color-border);">
-        <span class="text-xs font-medium" style="color: var(--color-text-tertiary);">Locale-aware links</span>
-      </div>
-      <pre class="rounded-none! border-0! m-0!"><code>{`---
-import { getLocale } from "astro-intl";
-
-const locale = getLocale(); // "en" | "es"
----
-
-<!-- Build locale-prefixed URLs -->
-<a href={\`/\${locale}/docs\`}>Documentation</a>
-<a href={\`/\${locale}/about\`}>About</a>`}</code></pre>
-    </div>
+    <CodeBlock
+      title="Locale-aware links"
+      lang="astro"
+      code={'---\nimport { getLocale } from "astro-intl";\n\nconst locale = getLocale(); // "en" | "es"\n---\n\n<!-- Build locale-prefixed URLs -->\n<a href={`/${locale}/docs`}>Documentation</a>\n<a href={`/${locale}/about`}>About</a>'}
+    />
   </div>
 </section>

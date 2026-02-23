@@ -13,6 +13,7 @@
     "astro": "^5.17.1",
     "astro-intl": "workspace:*",
     "flag-icons": "^7.2.3",
+    "shiki": "^3.22.0",
     "tailwindcss": "^4.2.1"
   }
 }

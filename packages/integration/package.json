@@ -2,10 +2,18 @@
   "name": "astro-intl",
   "version": "1.0.0",
   "type": "module",
-  "description": "",
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "description": "Sistema de internacionalización simple y type-safe para Astro, inspirado en next-intl",
+  "keywords": [
+    "astro",
+    "astro-integration",
+    "i18n",
+    "internationalization",
+    "intl",
+    "translations",
+    "typescript"
+  ],
+  "author": "Erick Cruz <erickj.cruzs@gmail.com>",
+  "license": "MIT",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc -p tsconfig.json",
@@ -29,6 +37,17 @@
     "react": {
       "optional": true
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tu-usuario/astro-intl.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tu-usuario/astro-intl/issues"
+  },
+  "homepage": "https://github.com/tu-usuario/astro-intl#readme",
+  "publishConfig": {
+    "access": "public"
   },
   "devDependencies": {
     "@types/react": "^18.3.18",

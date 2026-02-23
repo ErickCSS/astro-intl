@@ -1,5 +1,6 @@
 ---
 import { getTranslations } from "astro-intl";
+import CodeBlock from "../CodeBlock.astro";
 
 const t = getTranslations("docs");
 ---
@@ -12,7 +13,12 @@ const t = getTranslations("docs");
 
   <!-- Basic Translation -->
   <div class="mb-10">
-    <h3 class="text-sm font-semibold mb-1" style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;">{t("usage.basicTitle")}</h3>
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("usage.basicTitle")}
+    </h3>
     <p
       class="text-sm mb-4"
       style="color: var(--color-text-tertiary);"
@@ -20,29 +26,21 @@ const t = getTranslations("docs");
         code: (c: string) => `<code>${c}</code>`,
       })}
     />
-    <div class="rounded-xl overflow-hidden" style="border: 1px solid var(--color-border);">
-      <div class="flex items-center px-4 py-2.5" style="background: var(--color-bg-tertiary); border-bottom: 1px solid var(--color-border);">
-        <span class="text-xs font-medium" style="color: var(--color-text-tertiary);">src/pages/[lang]/index.astro</span>
-      </div>
-      <pre class="rounded-none! border-0! m-0!"><code>{`---
-import { setRequestLocale, getTranslations } from "astro-intl";
-import getRequestConfig from "../../i18n/request";
-
-await setRequestLocale(Astro.url, getRequestConfig);
-
-const tHero = getTranslations("hero");
-const tNav  = getTranslations("nav");
----
-
-<h1>{tHero("title")}</h1>
-<p>{tHero("description")}</p>
-<a href="/">{tNav("home")}</a>`}</code></pre>
-    </div>
+    <CodeBlock
+      title="src/pages/[lang]/index.astro"
+      lang="astro"
+      code={'---\nimport { getTranslations } from "astro-intl";\n\n// No need to call setRequestLocale here - it\'s already in the layout!\nconst tHero = getTranslations("hero");\nconst tNav  = getTranslations("nav");\n---\n\n<h1>{tHero("title")}</h1>\n<p>{tHero("description")}</p>\n<a href="/">{tNav("home")}</a>'}
+    />
   </div>
 
   <!-- Markup Translation -->
   <div class="mb-10">
-    <h3 class="text-sm font-semibold mb-1" style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;">{t("usage.markupTitle")}</h3>
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("usage.markupTitle")}
+    </h3>
     <p
       class="text-sm mb-4"
       style="color: var(--color-text-tertiary);"
@@ -50,34 +48,32 @@ const tNav  = getTranslations("nav");
         code: (c: string) => `<code>${c}</code>`,
       })}
     />
-    <div class="rounded-xl overflow-hidden mb-3" style="border: 1px solid var(--color-border);">
-      <div class="flex items-center px-4 py-2.5" style="background: var(--color-bg-tertiary); border-bottom: 1px solid var(--color-border);">
-        <span class="text-xs font-medium" style="color: var(--color-text-tertiary);">en.json — message with tags</span>
-      </div>
-      <pre class="rounded-none! border-0! m-0!"><code>{`{
+    <div class="mb-3">
+      <CodeBlock
+        title="en.json — message with tags"
+        lang="json"
+        code={`{
   "hero": {
     "description": "A <bold>type-safe</bold> solution for <link>Astro</link>"
   }
-}`}</code></pre>
+}`}
+      />
     </div>
-    <div class="rounded-xl overflow-hidden" style="border: 1px solid var(--color-border);">
-      <div class="flex items-center px-4 py-2.5" style="background: var(--color-bg-tertiary); border-bottom: 1px solid var(--color-border);">
-        <span class="text-xs font-medium" style="color: var(--color-text-tertiary);">Component.astro — t.markup()</span>
-      </div>
-      <pre class="rounded-none! border-0! m-0!"><code>{`---
-const tHero = getTranslations("hero");
----
-
-<p set:html={tHero.markup("description", {
-  bold: (chunks) => \`<strong>\${chunks}</strong>\`,
-  link: (chunks) => \`<a href="https://astro.build">\${chunks}</a>\`,
-})} />`}</code></pre>
-    </div>
+    <CodeBlock
+      title="Component.astro — t.markup()"
+      lang="astro"
+      code={'---\nconst tHero = getTranslations("hero");\n---\n\n<p set:html={tHero.markup("description", {\n  bold: (chunks) => `<strong>${chunks}</strong>`,\n  link: (chunks) => `<a href="https://astro.build">${chunks}</a>`,\n})} />'}
+    />
   </div>
 
   <!-- React -->
   <div class="mb-2">
-    <h3 class="text-sm font-semibold mb-1" style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;">{t("usage.reactTitle")}</h3>
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("usage.reactTitle")}
+    </h3>
     <p
       class="text-sm mb-4"
       style="color: var(--color-text-tertiary);"
@@ -85,11 +81,10 @@ const tHero = getTranslations("hero");
         code: (c: string) => `<code>${c}</code>`,
       })}
     />
-    <div class="rounded-xl overflow-hidden" style="border: 1px solid var(--color-border);">
-      <div class="flex items-center px-4 py-2.5" style="background: var(--color-bg-tertiary); border-bottom: 1px solid var(--color-border);">
-        <span class="text-xs font-medium" style="color: var(--color-text-tertiary);">MyComponent.tsx — t.rich()</span>
-      </div>
-      <pre class="rounded-none! border-0! m-0!"><code>{`import { getTranslationsReact } from "astro-intl";
+    <CodeBlock
+      title="MyComponent.tsx — t.rich()"
+      lang="tsx"
+      code={`import { getTranslationsReact } from "astro-intl";
 
 export default function MyComponent() {
   const t = getTranslationsReact("hero");
@@ -102,7 +97,7 @@ export default function MyComponent() {
       })}
     </p>
   );
-}`}</code></pre>
-    </div>
+}`}
+    />
   </div>
 </section>

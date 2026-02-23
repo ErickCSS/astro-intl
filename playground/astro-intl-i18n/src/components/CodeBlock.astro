@@ -1,0 +1,46 @@
+---
+import { codeToHtml } from 'shiki';
+
+interface Props {
+  code: string;
+  lang?: string;
+  title?: string;
+}
+
+const { code, lang = 'typescript', title } = Astro.props;
+
+const html = await codeToHtml(code.trim(), {
+  lang,
+  theme: 'github-dark',
+});
+---
+
+<div class="rounded-xl overflow-hidden" style="border: 1px solid var(--color-border);">
+  {title && (
+    <div class="flex items-center px-4 py-2.5" style="background: var(--color-bg-tertiary); border-bottom: 1px solid var(--color-border);">
+      <span class="text-xs font-medium" style="color: var(--color-text-tertiary);">{title}</span>
+    </div>
+  )}
+  <div class="shiki-wrapper" set:html={html} />
+</div>
+
+<style>
+  .shiki-wrapper :global(pre) {
+    margin: 0 !important;
+    padding: 1rem !important;
+    border-radius: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+
+  .shiki-wrapper :global(code) {
+    display: block;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .shiki-wrapper :global(.line) {
+    display: inline-block;
+    width: 100%;
+  }
+</style>
