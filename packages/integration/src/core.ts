@@ -9,7 +9,7 @@ function sanitizeLocale(locale: string): string {
   const trimmed = locale.trim();
   if (!LOCALE_REGEX.test(trimmed)) {
     throw new Error(
-      `[astro-intl] Invalid locale "${trimmed}". Locale must be a valid BCP-47 language tag (e.g. "en", "es", "pt-BR").`,
+      `[astro-intl] Invalid locale "${trimmed}". Locale must be a valid BCP-47 language tag (e.g. "en", "es", "pt-BR").`
     );
   }
   return trimmed;
@@ -65,7 +65,7 @@ export function getNestedValue(obj: Record<string, unknown>, path: string): unkn
 // Configurar el request actual
 export async function setRequestLocale(
   url: URL,
-  getConfig: (locale: string) => Promise<RequestConfig> | RequestConfig,
+  getConfig: (locale: string) => Promise<RequestConfig> | RequestConfig
 ) {
   const [, lang] = url.pathname.split("/");
   const locale = sanitizeLocale(lang || "en");
@@ -87,7 +87,7 @@ export function getLocale(): string {
 
 // Obtener traducciones sin pasar locale
 export function getTranslations<T extends Record<string, unknown> = Record<string, unknown>>(
-  namespace?: string,
+  namespace?: string
 ) {
   if (!globalRequestConfig) {
     throw new Error("[astro-intl] No request config found. Did you call setRequestLocale()?");
@@ -99,16 +99,19 @@ export function getTranslations<T extends Record<string, unknown> = Record<strin
 
   function t(key: DotPaths<T>): string {
     const value = getNestedValue(messages as Record<string, unknown>, key);
-    return (typeof value === "string" ? value : key) as string;
+    return typeof value === "string" ? value : (key as string);
   }
 
-  (t as any).markup = function (key: DotPaths<T>, tags: Record<string, (chunks: string) => string>): string {
+  const markup = function (
+    key: DotPaths<T>,
+    tags: Record<string, (chunks: string) => string>
+  ): string {
     let str = t(key);
 
     for (const [tag, fn] of Object.entries(tags)) {
       const escaped = escapeRegExp(tag);
       const regex = new RegExp(`<${escaped}>(.*?)</${escaped}>`, "g");
-      str = str.replace(regex, (_, chunks) => fn(chunks));
+      str = str.replace(regex, (_match, chunks: string) => fn(chunks));
     }
 
     str = sanitizeHtml(str);
@@ -116,14 +119,16 @@ export function getTranslations<T extends Record<string, unknown> = Record<strin
     return str;
   };
 
+  Object.assign(t, { markup });
+
   return t as typeof t & {
-    markup: (key: DotPaths<T>, tags: Record<string, (chunks: string) => string>) => string;
+    markup: typeof markup;
   };
 }
 
 // Obtener traducciones para React
 export function getTranslationsReact<T extends Record<string, unknown> = Record<string, unknown>>(
-  namespace?: string,
+  namespace?: string
 ) {
   if (!globalRequestConfig) {
     throw new Error("[astro-intl] No request config found. Did you call setRequestLocale()?");
@@ -133,8 +138,11 @@ export function getTranslationsReact<T extends Record<string, unknown> = Record<
     ? (globalRequestConfig.messages[namespace] as T)
     : (globalRequestConfig.messages as T);
 
-  return createGetTranslationsReact(
-    { [globalRequestConfig.locale]: { default: messages } } as any,
-    globalRequestConfig.locale as any,
-  )(globalRequestConfig.locale, "default" as any);
+  type UI = Record<string, Record<string, T>>;
+  const ui: UI = { [globalRequestConfig.locale]: { default: messages } };
+
+  return createGetTranslationsReact(ui, globalRequestConfig.locale)(
+    globalRequestConfig.locale,
+    "default"
+  );
 }

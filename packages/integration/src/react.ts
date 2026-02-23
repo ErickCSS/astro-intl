@@ -11,7 +11,7 @@ export function createGetTranslationsReact<
 >(ui: UI, defaultLocale: DefaultLocale) {
   return function getTranslationsReact<N extends keyof UI[DefaultLocale]>(
     lang: string | undefined,
-    namespace: N,
+    namespace: N
   ) {
     type Messages = UI[DefaultLocale][N];
 
@@ -20,19 +20,19 @@ export function createGetTranslationsReact<
 
     function t(key: DotPaths<Messages>): string {
       const value = getNestedValue(messages as Record<string, unknown>, key);
-      return (typeof value === "string" ? value : key) as string;
+      return typeof value === "string" ? value : (key as string);
     }
 
-    (t as any).rich = function (
+    const rich = function (
       key: DotPaths<Messages>,
-      tags: Record<string, (chunks: string) => ReactNode>,
+      tags: Record<string, (chunks: string) => ReactNode>
     ): ReactNode[] {
       const str = t(key);
 
       // Función recursiva para procesar tags anidados
       function processString(input: string): ReactNode[] {
         const tagNames = Object.keys(tags).map(escapeRegExp);
-        const regex = new RegExp(`<(${tagNames.join("|")})>(.*?)<\\/\\1>`, "g");
+        const regex = new RegExp(`<(${tagNames.join("|")})>(.*?)<\\/(\\1)>`, "g");
 
         const result: ReactNode[] = [];
         let lastIndex = 0;
@@ -47,7 +47,7 @@ export function createGetTranslationsReact<
           // Procesar recursivamente el contenido del tag
           const processedChunks = processString(chunks);
           const chunksAsString = processedChunks
-            .map((chunk) => (typeof chunk === "string" ? chunk : String(chunk)))
+            .map((chunk) => (typeof chunk === "string" ? chunk : ""))
             .join("");
 
           result.push(tags[tag](chunksAsString));
@@ -61,8 +61,10 @@ export function createGetTranslationsReact<
       return processString(str);
     };
 
+    Object.assign(t, { rich });
+
     return t as typeof t & {
-      rich: (key: DotPaths<Messages>, tags: Record<string, (chunks: string) => ReactNode>) => ReactNode[];
+      rich: typeof rich;
     };
   };
 }

@@ -3,9 +3,11 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "astro-intl": ["../../packages/integration/src/index.ts"]
+      "astro-intl": ["../../packages/integration/src/index.ts"],
+      "@/*": ["src/*"]
     }
   },
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist"]
+  "exclude": ["dist"],
+  
 }

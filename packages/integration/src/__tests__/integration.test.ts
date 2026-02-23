@@ -17,7 +17,7 @@ describe("Integration Tests", () => {
     it("should handle complete translation workflow", async () => {
       const url = new URL("https://example.com/es/products");
 
-      const getRequestConfig = async (locale: string): Promise<RequestConfig> => {
+      const getRequestConfig = (locale: string): RequestConfig => {
         const messages = {
           en: {
             common: {
@@ -61,7 +61,7 @@ describe("Integration Tests", () => {
     });
 
     it("should handle locale switching", async () => {
-      const getRequestConfig = async (locale: string): Promise<RequestConfig> => {
+      const getRequestConfig = (locale: string): RequestConfig => {
         const messages = {
           en: { greeting: "Hello" },
           fr: { greeting: "Bonjour" },
@@ -159,15 +159,15 @@ describe("Integration Tests", () => {
   describe("Error handling", () => {
     it("should throw descriptive error when accessing translations before setup", () => {
       expect(() => getLocale()).toThrow(
-        "[astro-intl] No request config found. Did you call setRequestLocale()?",
+        "[astro-intl] No request config found. Did you call setRequestLocale()?"
       );
 
       expect(() => getTranslations()).toThrow(
-        "[astro-intl] No request config found. Did you call setRequestLocale()?",
+        "[astro-intl] No request config found. Did you call setRequestLocale()?"
       );
 
       expect(() => getTranslationsReact()).toThrow(
-        "[astro-intl] No request config found. Did you call setRequestLocale()?",
+        "[astro-intl] No request config found. Did you call setRequestLocale()?"
       );
     });
 
@@ -279,7 +279,7 @@ describe("Integration Tests", () => {
           setRequestLocale(url, () => ({
             locale,
             messages: {},
-          })),
+          }))
         ).rejects.toThrow(/Invalid locale/);
       }
     });

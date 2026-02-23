@@ -1,17 +1,17 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import Navigation from "../../components/Navigation.astro";
-import DocsSidebar from "../../components/docs/DocsSidebar.astro";
-import DocsHero from "../../components/docs/DocsHero.astro";
-import DocsInstallation from "../../components/docs/DocsInstallation.astro";
-import DocsFileStructure from "../../components/docs/DocsFileStructure.astro";
-import DocsConfiguration from "../../components/docs/DocsConfiguration.astro";
-import DocsUsage from "../../components/docs/DocsUsage.astro";
-import DocsAPI from "../../components/docs/DocsAPI.astro";
-import DocsExamples from "../../components/docs/DocsExamples.astro";
+import Layout from "@/layouts/Layout.astro";
+import Navigation from "@/components/Navigation.astro";
+import DocsSidebar from "@/components/docs/DocsSidebar.astro";
+import DocsHero from "@/components/docs/DocsHero.astro";
+import DocsInstallation from "@/components/docs/DocsInstallation.astro";
+import DocsFileStructure from "@/components/docs/DocsFileStructure.astro";
+import DocsConfiguration from "@/components/docs/DocsConfiguration.astro";
+import DocsUsage from "@/components/docs/DocsUsage.astro";
+import DocsAPI from "@/components/docs/DocsAPI.astro";
+import DocsExamples from "@/components/docs/DocsExamples.astro";
 import { setRequestLocale, getTranslations } from "astro-intl";
-import getRequestConfig from "../../i18n/request";
-import "../../styles/global.css";
+import getRequestConfig from "@/i18n/request";
+import "@/styles/global.css";
 
 await setRequestLocale(Astro.url, getRequestConfig);
 
