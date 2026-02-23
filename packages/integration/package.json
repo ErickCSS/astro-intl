@@ -47,12 +47,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/tu-usuario/astro-intl.git"
+    "url": "https://github.com/ErickCSS/astro-intl"
   },
   "bugs": {
-    "url": "https://github.com/tu-usuario/astro-intl/issues"
+    "url": "https://github.com/ErickCSS/astro-intl/issues"
   },
-  "homepage": "https://github.com/tu-usuario/astro-intl#readme",
+  "homepage": "https://github.com/ErickCSS/astro-intl#readme",
   "publishConfig": {
     "access": "public"
   },
