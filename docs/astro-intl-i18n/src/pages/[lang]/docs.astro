@@ -23,7 +23,18 @@ export function getStaticPaths() {
 }
 ---
 
-<Layout title={`${tDocs("pageTitle")} — astro-intl`} description={tDocs("pageSubtitle")}>
+<Layout
+  title={`${tDocs("pageTitle")} — astro-intl`}
+  description={tDocs("pageSubtitle")}
+  type="article"
+  keywords={[
+    "astro-intl documentation",
+    "astro i18n guide",
+    "astro internationalization tutorial",
+    "type-safe translations",
+    "astro localization setup",
+  ]}
+>
   <Navigation activePage="docs" />
 
   <!-- Mobile sidebar overlay -->

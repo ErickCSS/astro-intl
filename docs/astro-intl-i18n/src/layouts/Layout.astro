@@ -1,5 +1,6 @@
 ---
 import { getLocale } from "astro-intl";
+import SEO from "@/components/SEO.astro";
 import "flag-icons/css/flag-icons.min.css";
 
 const locale = getLocale();
@@ -7,20 +8,33 @@ const locale = getLocale();
 interface Props {
   title?: string;
   description?: string;
+  type?: "website" | "article";
+  image?: string;
+  keywords?: string[];
+  noindex?: boolean;
 }
 
-const { title = "Astro-intl", description = "Simple and powerful internationalization for Astro" } =
-  Astro.props;
+const {
+  title = "Astro-intl — Simple and powerful i18n for Astro",
+  description = "Type-safe internationalization library for Astro. No props drilling, dynamic loading, namespaces support, and rich text formatting.",
+  type = "website",
+  image,
+  keywords = [],
+  noindex = false,
+} = Astro.props;
 ---
 
 <!doctype html>
 <html lang={locale}>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="description" content={description} />
-    <link rel="icon" type="image/svg+xml" href="/logo-astro-intl.svg" />
-    <title>{title}</title>
+    <SEO
+      title={title}
+      description={description}
+      type={type}
+      image={image}
+      keywords={keywords}
+      noindex={noindex}
+    />
   </head>
   <body>
     <slot />

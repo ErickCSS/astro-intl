@@ -1,0 +1,9 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Disallow temporary redirect page
+Disallow: /index.html
+
+# Sitemap
+Sitemap: https://astro-intl.vercel.app/sitemap-index.xml
