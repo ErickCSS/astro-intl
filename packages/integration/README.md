@@ -26,15 +26,15 @@ yarn add astro-intl
 Agrega la integración en tu `astro.config.mjs`:
 
 ```js
-import { defineConfig } from 'astro/config';
-import astroIntl from 'astro-intl';
+import { defineConfig } from "astro/config";
+import astroIntl from "astro-intl";
 
 export default defineConfig({
   integrations: [
     astroIntl({
-      enabled: true  // opcional, por defecto es true
-    })
-  ]
+      enabled: true, // opcional, por defecto es true
+    }),
+  ],
 });
 ```
 
@@ -113,16 +113,16 @@ const t = getTranslations();
 ### En componentes React
 
 ```tsx
-import { getTranslationsReact } from 'astro-intl';
+import { getTranslationsReact } from "astro-intl";
 
 export function MyComponent() {
   const t = getTranslationsReact();
-  
+
   return (
     <div>
-      <h1>{t('welcome')}</h1>
+      <h1>{t("welcome")}</h1>
       <nav>
-        <a href="/">{t('nav.home')}</a>
+        <a href="/">{t("nav.home")}</a>
       </nav>
     </div>
   );
@@ -132,18 +132,18 @@ export function MyComponent() {
 ### Traducciones con componentes React (rich text)
 
 ```tsx
-import { getTranslationsReact } from 'astro-intl';
+import { getTranslationsReact } from "astro-intl";
 
 export function MyComponent() {
   const t = getTranslationsReact();
-  
+
   // src/i18n/es.json
   // { "terms": "Acepto los <link>términos y condiciones</link>" }
-  
+
   return (
     <p>
-      {t.rich('terms', {
-        link: (chunks) => <a href="/terms">{chunks}</a>
+      {t.rich("terms", {
+        link: (chunks) => <a href="/terms">{chunks}</a>,
       })}
     </p>
   );
@@ -192,14 +192,16 @@ const t = getTranslations<Messages>('nav');
 Configura el locale para la petición actual.
 
 **Parámetros:**
+
 - `url: URL` - El objeto URL de Astro (`Astro.url`)
 - `getConfig: (locale: string) => RequestConfig | Promise<RequestConfig>` - Función que retorna la configuración
 
 **Ejemplo:**
+
 ```ts
 await setRequestLocale(Astro.url, async (locale) => ({
   locale,
-  messages: ui[locale]
+  messages: ui[locale],
 }));
 ```
 
@@ -208,6 +210,7 @@ await setRequestLocale(Astro.url, async (locale) => ({
 Obtiene la función de traducción para componentes Astro.
 
 **Parámetros:**
+
 - `namespace?: string` - Namespace opcional para obtener solo un subconjunto de traducciones
 
 **Retorna:** Función `t(key)` con método `t.markup(key, tags)`
@@ -217,6 +220,7 @@ Obtiene la función de traducción para componentes Astro.
 Obtiene la función de traducción para componentes React.
 
 **Parámetros:**
+
 - `namespace?: string` - Namespace opcional
 
 **Retorna:** Función `t(key)` con método `t.rich(key, tags)`
@@ -279,6 +283,7 @@ packages/integration/
 ## 🔧 Configuración TypeScript
 
 El paquete usa:
+
 - `module: "Node16"` para soporte ESM completo
 - `declaration: true` para generar archivos `.d.ts`
 - Imports con extensión `.js` para compatibilidad ESM

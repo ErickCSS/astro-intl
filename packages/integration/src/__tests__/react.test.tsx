@@ -102,12 +102,7 @@ describe("react.ts", () => {
         italic: (chunks) => `<em>${chunks}</em>`,
       });
 
-      expect(result).toEqual([
-        "Text with ",
-        "<strong>bold</strong>",
-        " and ",
-        "<em>italic</em>",
-      ]);
+      expect(result).toEqual(["Text with ", "<strong>bold</strong>", " and ", "<em>italic</em>"]);
     });
 
     it("should handle text without tags", () => {

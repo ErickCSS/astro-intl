@@ -13,6 +13,7 @@
 ### 1. Actualizar información del package.json
 
 Edita estos campos en `package.json`:
+
 - **author**: Reemplaza `"Tu Nombre <tu@email.com>"` con tu información
 - **repository**: Actualiza la URL de tu repositorio de GitHub
 - **name**: Verifica que el nombre `"astro-intl"` esté disponible en npm (o cámbialo si ya existe)
@@ -37,6 +38,7 @@ npm pack --dry-run
 ```
 
 Esto mostrará una lista de archivos. Deberías ver:
+
 - `dist/` (archivos compilados)
 - `package.json`
 - `README.md`
@@ -48,6 +50,7 @@ npm publish
 ```
 
 Si el nombre ya existe, puedes usar un scope:
+
 ```bash
 # Cambia el nombre en package.json a "@tu-usuario/astro-intl"
 npm publish --access public
@@ -62,6 +65,7 @@ Visita: `https://www.npmjs.com/package/astro-intl` (o el nombre que hayas usado)
 Para publicar nuevas versiones:
 
 1. Actualiza la versión en `package.json`:
+
    ```bash
    npm version patch  # 1.0.0 -> 1.0.1
    npm version minor  # 1.0.0 -> 1.1.0
@@ -77,13 +81,16 @@ Para publicar nuevas versiones:
 ## Solución de Problemas
 
 ### Error: "You do not have permission to publish"
+
 - Asegúrate de estar autenticado: `npm whoami`
 - Verifica que `publishConfig.access` esté en `"public"`
 
 ### Error: "Package name already exists"
+
 - Cambia el nombre en `package.json` o usa un scope: `@tu-usuario/astro-intl`
 
 ### Error: "Missing files"
+
 - Verifica que hayas ejecutado `npm run build`
 - Revisa que el campo `files` en `package.json` incluya `"dist"`
 
@@ -108,15 +115,15 @@ yarn add astro-intl
 En `astro.config.mjs`:
 
 ```js
-import { defineConfig } from 'astro/config';
-import astroIntl from 'astro-intl';
+import { defineConfig } from "astro/config";
+import astroIntl from "astro-intl";
 
 export default defineConfig({
   integrations: [
     astroIntl({
-      enabled: true  // opcional, por defecto es true
-    })
-  ]
+      enabled: true, // opcional, por defecto es true
+    }),
+  ],
 });
 ```
 
@@ -146,14 +153,14 @@ const t = getTranslations();
 ## Uso en componentes React
 
 ```tsx
-import { getTranslationsReact } from 'astro-intl/react';
+import { getTranslationsReact } from "astro-intl/react";
 
 export function MyComponent() {
   const t = getTranslationsReact();
-  
+
   return (
     <div>
-      <h1>{t('welcome')}</h1>
+      <h1>{t("welcome")}</h1>
     </div>
   );
 }
@@ -172,6 +179,7 @@ src/
 ```
 
 Ejemplo de `src/i18n/es.json`:
+
 ```json
 {
   "nav": {
@@ -186,13 +194,14 @@ Ejemplo de `src/i18n/es.json`:
 ```
 
 Ejemplo de `src/i18n/index.ts`:
+
 ```ts
-import es from './es.json';
-import en from './en.json';
+import es from "./es.json";
+import en from "./en.json";
 
 export const messages = {
   es,
-  en
+  en,
 };
 
 export type Messages = typeof es;
