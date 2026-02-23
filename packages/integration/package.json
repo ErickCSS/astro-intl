@@ -15,7 +15,10 @@
   "author": "Erick Cruz <erickj.cruzs@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
     "build": "tsc -p tsconfig.json",
     "dev": "tsc -p tsconfig.json --watch"
   },
@@ -50,8 +53,15 @@
     "access": "public"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/react": "^18.3.18",
+    "@vitest/ui": "^4.0.18",
     "astro": "^5.17.3",
-    "typescript": "^5.9.3"
+    "happy-dom": "^20.7.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
   }
 }
