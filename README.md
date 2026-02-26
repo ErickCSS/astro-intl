@@ -111,6 +111,7 @@ MIT © [Erick Cruz](https://github.com/ErickCSS)
 - [npm](https://www.npmjs.com/package/astro-intl)
 - [GitHub](https://github.com/ErickCSS/astro-intl)
 - [Issues](https://github.com/ErickCSS/astro-intl/issues)
+- [Buy Me a Coffee](https://buymeacoffee.com/erickcs) ☕
 
 ---
 

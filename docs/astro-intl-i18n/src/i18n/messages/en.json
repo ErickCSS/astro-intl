@@ -125,14 +125,21 @@
       "messagesDescription": "Create one JSON file per locale inside <code>src/i18n/messages/</code>. You can organize keys into namespaces (nested objects).",
       "approachTitle": "2. Choose your approach",
       "approachDescription": "astro-intl offers two ways to load messages. Pick the one that fits your project best.",
+      "noMiddlewareNote": "If you are <strong>not</strong> using <code>createIntlMiddleware</code>, you must pass <code>defaultLocale</code> and <code>locales</code> directly in <code>astro.config.mjs</code> so that functions like <code>getLocales()</code>, <code>getDefaultLocale()</code>, and <code>isValidLocale()</code> work correctly.",
       "simpleTitle": "Option A — Messages in config (recommended)",
-      "simpleDescription": "Pass your message imports directly in <code>astro.config.mjs</code>. No extra files needed.",
+      "simpleDescription": "Pass your message imports along with <code>defaultLocale</code> and <code>locales</code> directly in <code>astro.config.mjs</code>. No extra files needed.",
       "advancedTitle": "Option B — Custom request.ts (advanced)",
-      "advancedDescription": "For full control, use <code>defineRequestConfig</code> to create a request file — similar to <code>next-intl</code>. This lets you add custom logic like fetching messages from a CMS.",
+      "advancedDescription": "For full control, use <code>defineRequestConfig</code> to create a request file — similar to <code>next-intl</code>. This lets you add custom logic like fetching messages from a CMS. You still need to pass <code>defaultLocale</code> and <code>locales</code> in <code>astro.config.mjs</code>.",
+      "advancedConfigLabel": "astro.config.mjs with locales:",
       "layoutTitle": "3. Set up your Layout",
       "layoutDescription": "<strong>Best practice:</strong> Call <code>setRequestLocale</code> once in a shared layout (e.g., <code>src/layouts/Layout.astro</code>) instead of repeating it on every page. This initializes the global i18n context before any component reads translations.",
       "layoutSimpleLabel": "With Option A (messages in config):",
       "layoutAdvancedLabel": "With Option B (defineRequestConfig):",
+      "middlewareTitle": "3b. Middleware approach (alternative)",
+      "middlewareDescription": "Instead of calling <code>setRequestLocale</code> in every layout, you can use <code>createIntlMiddleware</code> to handle it automatically for all routes. This also sets <code>locales</code> and <code>defaultLocale</code> in the store, so you don't need to pass them in <code>astro.config.mjs</code>.",
+      "middlewareRoutingLabel": "Create a routing config:",
+      "middlewareFileLabel": "Create the middleware:",
+      "middlewareConfigLabel": "Your astro.config.mjs stays simple:",
       "staticPathsTitle": "4. Export getStaticPaths",
       "staticPathsDescription": "In every <code>[lang]</code> page, export <code>getStaticPaths</code> returning all supported locales so Astro can pre-render them."
     },
@@ -187,6 +194,31 @@
       "intlConfig": {
         "name": "IntlConfig",
         "description": "Configuration type for the integration options. Contains <code>defaultLocale: string</code> — the locale used when the URL has no language prefix."
+      },
+      "getDefaultLocale": {
+        "name": "getDefaultLocale",
+        "signature": "getDefaultLocale(): string",
+        "description": "Returns the <code>defaultLocale</code> configured via the integration options or <code>createIntlMiddleware</code>. Defaults to <code>\"en\"</code> if not set."
+      },
+      "getLocales": {
+        "name": "getLocales",
+        "signature": "getLocales(): string[]",
+        "description": "Returns the array of <code>locales</code> configured via the integration options or <code>createIntlMiddleware</code>. Returns an empty array if not set."
+      },
+      "isValidLocale": {
+        "name": "isValidLocale",
+        "signature": "isValidLocale(locale: string): boolean",
+        "description": "Checks whether a locale string is in the configured <code>locales</code> list. Returns <code>true</code> for any string if no locales have been configured."
+      },
+      "getMessages": {
+        "name": "getMessages",
+        "signature": "getMessages(): Record<string, unknown>",
+        "description": "Returns the full messages object for the current request. Throws if called before <code>setRequestLocale</code>."
+      },
+      "createIntlMiddleware": {
+        "name": "createIntlMiddleware",
+        "signature": "createIntlMiddleware(options: { locales: string[]; defaultLocale?: string })",
+        "description": "Creates an Astro middleware that automatically calls <code>setRequestLocale</code> on every request. Also sets <code>locales</code> and <code>defaultLocale</code> in the intl store, so you don't need to pass them in <code>astro.config.mjs</code>. Import from <code>astro-intl/middleware</code>."
       },
       "dotPaths": {
         "name": "DotPaths<T>",

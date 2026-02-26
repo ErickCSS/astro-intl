@@ -125,14 +125,21 @@
       "messagesDescription": "Crea un archivo JSON por locale dentro de <code>src/i18n/messages/</code>. Puedes organizar las claves en namespaces (objetos anidados).",
       "approachTitle": "2. Elige tu enfoque",
       "approachDescription": "astro-intl ofrece dos formas de cargar mensajes. Elige la que mejor se adapte a tu proyecto.",
+      "noMiddlewareNote": "Si <strong>no</strong> estás usando <code>createIntlMiddleware</code>, debes pasar <code>defaultLocale</code> y <code>locales</code> directamente en <code>astro.config.mjs</code> para que funciones como <code>getLocales()</code>, <code>getDefaultLocale()</code> e <code>isValidLocale()</code> funcionen correctamente.",
       "simpleTitle": "Opción A — Messages en config (recomendado)",
-      "simpleDescription": "Pasa tus imports de mensajes directamente en <code>astro.config.mjs</code>. No se necesitan archivos extra.",
+      "simpleDescription": "Pasa tus imports de mensajes junto con <code>defaultLocale</code> y <code>locales</code> directamente en <code>astro.config.mjs</code>. No se necesitan archivos extra.",
       "advancedTitle": "Opción B — Custom request.ts (avanzado)",
-      "advancedDescription": "Para control total, usa <code>defineRequestConfig</code> para crear un archivo request — similar a <code>next-intl</code>. Esto te permite agregar lógica personalizada como obtener mensajes desde un CMS.",
+      "advancedDescription": "Para control total, usa <code>defineRequestConfig</code> para crear un archivo request — similar a <code>next-intl</code>. Esto te permite agregar lógica personalizada como obtener mensajes desde un CMS. Aún necesitas pasar <code>defaultLocale</code> y <code>locales</code> en <code>astro.config.mjs</code>.",
+      "advancedConfigLabel": "astro.config.mjs con locales:",
       "layoutTitle": "3. Configurar tu Layout",
       "layoutDescription": "<strong>Mejor práctica:</strong> Llama a <code>setRequestLocale</code> una sola vez en un layout compartido (ej: <code>src/layouts/Layout.astro</code>) en lugar de repetirlo en cada página. Esto inicializa el contexto global de i18n antes de que cualquier componente lea traducciones.",
       "layoutSimpleLabel": "Con Opción A (messages en config):",
       "layoutAdvancedLabel": "Con Opción B (defineRequestConfig):",
+      "middlewareTitle": "3b. Enfoque con Middleware (alternativa)",
+      "middlewareDescription": "En lugar de llamar a <code>setRequestLocale</code> en cada layout, puedes usar <code>createIntlMiddleware</code> para manejarlo automáticamente en todas las rutas. Esto también establece <code>locales</code> y <code>defaultLocale</code> en el store, por lo que no necesitas pasarlos en <code>astro.config.mjs</code>.",
+      "middlewareRoutingLabel": "Crea un archivo de routing:",
+      "middlewareFileLabel": "Crea el middleware:",
+      "middlewareConfigLabel": "Tu astro.config.mjs se mantiene simple:",
       "staticPathsTitle": "4. Exportar getStaticPaths",
       "staticPathsDescription": "En cada página <code>[lang]</code>, exporta <code>getStaticPaths</code> retornando todos los locales soportados para que Astro pueda pre-renderizarlos."
     },
@@ -188,6 +195,31 @@
         "name": "IntlConfig",
         "description": "Tipo de configuración para las opciones de la integración. Contiene <code>defaultLocale: string</code> — el locale usado cuando la URL no tiene prefijo de idioma."
       },
+      "getDefaultLocale": {
+        "name": "getDefaultLocale",
+        "signature": "getDefaultLocale(): string",
+        "description": "Retorna el <code>defaultLocale</code> configurado via las opciones de la integración o <code>createIntlMiddleware</code>. Por defecto es <code>\"en\"</code> si no se establece."
+      },
+      "getLocales": {
+        "name": "getLocales",
+        "signature": "getLocales(): string[]",
+        "description": "Retorna el array de <code>locales</code> configurados via las opciones de la integración o <code>createIntlMiddleware</code>. Retorna un array vacío si no se establece."
+      },
+      "isValidLocale": {
+        "name": "isValidLocale",
+        "signature": "isValidLocale(locale: string): boolean",
+        "description": "Verifica si un string de locale está en la lista de <code>locales</code> configurada. Retorna <code>true</code> para cualquier string si no se han configurado locales."
+      },
+      "getMessages": {
+        "name": "getMessages",
+        "signature": "getMessages(): Record<string, unknown>",
+        "description": "Retorna el objeto completo de mensajes para el request actual. Lanza un error si se llama antes de <code>setRequestLocale</code>."
+      },
+      "createIntlMiddleware": {
+        "name": "createIntlMiddleware",
+        "signature": "createIntlMiddleware(options: { locales: string[]; defaultLocale?: string })",
+        "description": "Crea un middleware de Astro que llama automáticamente a <code>setRequestLocale</code> en cada request. También establece <code>locales</code> y <code>defaultLocale</code> en el store de intl, por lo que no necesitas pasarlos en <code>astro.config.mjs</code>. Importar desde <code>astro-intl/middleware</code>."
+      },
       "dotPaths": {
         "name": "DotPaths<T>",
         "description": "Tipo utilitario que genera todos los paths válidos en notación de puntos para un objeto de mensajes dado. Se usa internamente para proveer autocompletado en las claves de traducción."
@@ -219,8 +251,21 @@
       "changed": "Cambiado",
       "fixed": "Corregido"
     },
-    "unreleased": {
-      "title": "No publicado",
+    "v103": {
+      "title": "1.0.3",
+      "items": [
+        {
+          "type": "changed",
+          "text": "<code>createIntlMiddleware()</code> ahora establece automáticamente <code>locales</code> y <code>defaultLocale</code> en el store de intl. Los usuarios que usan middleware ya no necesitan pasar estas opciones a <code>intl()</code> en <code>astro.config.mjs</code>."
+        },
+        {
+          "type": "added",
+          "text": "Opción <code>defaultLocale</code> en el tipo <code>IntlMiddlewareOptions</code>."
+        }
+      ]
+    },
+    "v102": {
+      "title": "1.0.2",
       "items": [
         {
           "type": "added",
