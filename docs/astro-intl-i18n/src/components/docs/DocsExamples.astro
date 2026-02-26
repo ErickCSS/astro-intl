@@ -47,6 +47,28 @@ const tFooter = getTranslations("footer");
     />
   </div>
 
+  <!-- Interpolation -->
+  <div class="mb-10">
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("examples.interpolationTitle")}
+    </h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("examples.interpolationDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+    <CodeBlock
+      title="Interpolation with variables"
+      lang="astro"
+      code={'---\nimport { setRequestLocale, getTranslations } from "astro-intl";\nimport getRequestConfig from "../../i18n/request";\n\nawait setRequestLocale(Astro.url, getRequestConfig);\n\nconst tHero = getTranslations("hero");\n// en.json: { "hero": { "greeting": "Hello, {name}! You have {count} items." } }\n---\n\n<!-- Simple interpolation -->\n<p>{tHero("greeting", { name: "John", count: 3 })}</p>\n<!-- "Hello, John! You have 3 items." -->\n\n<!-- Markup + interpolation combined -->\n<p set:html={tHero.markup("welcome", {\n  values: { name: "John" },\n  tags: {\n    link: (chunks) => `<a href="/docs">${chunks}</a>`,\n  }\n})} />\n<!-- en.json: "welcome": "Hi {name}, check our <link>docs</link>" -->\n<!-- Result: "Hi John, check our <a href="/docs">docs</a>" -->'}
+    />
+  </div>
+
   <!-- Type-safe keys -->
   <div class="mb-10">
     <h3

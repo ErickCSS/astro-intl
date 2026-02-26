@@ -3,7 +3,8 @@
     "home": "Inicio",
     "features": "Características",
     "examples": "Ejemplos",
-    "docs": "Documentación"
+    "docs": "Documentación",
+    "changelog": "Changelog"
   },
   "hero": {
     "badge": "Código Abierto · Licencia MIT",
@@ -120,12 +121,18 @@
     },
     "configuration": {
       "title": "Configuración",
-      "requestTitle": "1. Crear request.ts",
-      "requestDescription": "Este archivo es el puente entre el locale de la URL y tus mensajes JSON. Recibe el locale extraído de la URL y retorna un objeto <code>RequestConfig</code>.",
-      "messagesTitle": "2. Crear archivos de mensajes",
+      "messagesTitle": "1. Crear archivos de mensajes",
       "messagesDescription": "Crea un archivo JSON por locale dentro de <code>src/i18n/messages/</code>. Puedes organizar las claves en namespaces (objetos anidados).",
+      "approachTitle": "2. Elige tu enfoque",
+      "approachDescription": "astro-intl ofrece dos formas de cargar mensajes. Elige la que mejor se adapte a tu proyecto.",
+      "simpleTitle": "Opción A — Messages en config (recomendado)",
+      "simpleDescription": "Pasa tus imports de mensajes directamente en <code>astro.config.mjs</code>. No se necesitan archivos extra.",
+      "advancedTitle": "Opción B — Custom request.ts (avanzado)",
+      "advancedDescription": "Para control total, usa <code>defineRequestConfig</code> para crear un archivo request — similar a <code>next-intl</code>. Esto te permite agregar lógica personalizada como obtener mensajes desde un CMS.",
       "layoutTitle": "3. Configurar tu Layout",
       "layoutDescription": "<strong>Mejor práctica:</strong> Llama a <code>setRequestLocale</code> una sola vez en un layout compartido (ej: <code>src/layouts/Layout.astro</code>) en lugar de repetirlo en cada página. Esto inicializa el contexto global de i18n antes de que cualquier componente lea traducciones.",
+      "layoutSimpleLabel": "Con Opción A (messages en config):",
+      "layoutAdvancedLabel": "Con Opción B (defineRequestConfig):",
       "staticPathsTitle": "4. Exportar getStaticPaths",
       "staticPathsDescription": "En cada página <code>[lang]</code>, exporta <code>getStaticPaths</code> retornando todos los locales soportados para que Astro pueda pre-renderizarlos."
     },
@@ -133,8 +140,12 @@
       "title": "Uso",
       "basicTitle": "Traducción Básica",
       "basicDescription": "Una vez configurado tu layout, simplemente usa <code>getTranslations(namespace)</code> en cualquier página para obtener una función de traducción tipada para un namespace específico.",
+      "interpolationTitle": "Interpolación",
+      "interpolationDescription": "Usa placeholders <code>{curlyOpen}varName{curlyClose}</code> en tus strings de traducción y pasa un objeto de valores como segundo argumento de <code>t()</code>. Tipos aceptados: <code>string</code>, <code>number</code>, <code>boolean</code>. Los valores faltantes o <code>null</code>/<code>undefined</code> mantienen el placeholder sin cambios.",
       "markupTitle": "Traducción con Markup",
       "markupDescription": "Usa <code>t.markup(key, tags)</code> para interpolar etiquetas HTML dentro de un string de traducción. El objeto tags mapea nombres de etiquetas a funciones que reciben el contenido interno.",
+      "markupInterpolationTitle": "Markup + Interpolación",
+      "markupInterpolationDescription": "Combina interpolación de variables con reemplazo de tags pasando <code>{curlyOpen} values, tags {curlyClose}</code> a <code>t.markup()</code>. La interpolación se ejecuta primero, luego se procesan los tags.",
       "reactTitle": "Componentes React",
       "reactDescription": "Usa <code>getTranslationsReact(namespace)</code> dentro de componentes React, luego llama a <code>t.rich(key, tags)</code> para interpolar nodos React."
     },
@@ -153,7 +164,7 @@
       "getTranslations": {
         "name": "getTranslations",
         "signature": "getTranslations<T>(namespace?: string)",
-        "description": "Retorna una función <code>t(key)</code> tipada con scope al namespace dado. También expone <code>t.markup(key, tags)</code> para interpolación HTML."
+        "description": "Retorna una función <code>t(key, values?)</code> tipada con scope al namespace dado. El objeto <code>values</code> opcional reemplaza placeholders <code>{curlyOpen}varName{curlyClose}</code>. También expone <code>t.markup(key, tags | {curlyOpen} values?, tags {curlyClose})</code> para interpolación HTML con sustitución de variables opcional."
       },
       "getTranslationsReact": {
         "name": "getTranslationsReact",
@@ -164,6 +175,19 @@
         "name": "RequestConfig",
         "description": "Tipo retornado por tu función <code>getRequestConfig</code>. Contiene <code>locale: string</code> y <code>messages: Record<string, unknown></code>."
       },
+      "primitive": {
+        "name": "Primitive",
+        "description": "Tipo unión para valores de interpolación: <code>string | number | boolean | null | undefined</code>. Se usa como tipo de valor en el objeto <code>values</code> pasado a <code>t()</code> y <code>t.markup()</code>."
+      },
+      "runWithLocale": {
+        "name": "runWithLocale",
+        "signature": "runWithLocale<R>(url: URL, fn: () => R | Promise<R>, getConfig?: GetRequestConfigFn): Promise<R>",
+        "description": "Ejecuta una función dentro de un contexto aislado por request. Usa <code>AsyncLocalStorage</code> en Node.js para SSR concurrency-safe. Cae en fallback a variable global en runtimes sin soporte (Cloudflare Workers, Deno)."
+      },
+      "intlConfig": {
+        "name": "IntlConfig",
+        "description": "Tipo de configuración para las opciones de la integración. Contiene <code>defaultLocale: string</code> — el locale usado cuando la URL no tiene prefijo de idioma."
+      },
       "dotPaths": {
         "name": "DotPaths<T>",
         "description": "Tipo utilitario que genera todos los paths válidos en notación de puntos para un objeto de mensajes dado. Se usa internamente para proveer autocompletado en las claves de traducción."
@@ -173,10 +197,101 @@
       "title": "Ejemplos",
       "namespaceTitle": "Usando Namespaces",
       "namespaceDescription": "Los namespaces te permiten dividir archivos de traducción grandes en secciones lógicas. Pasa el nombre del namespace a <code>getTranslations</code>.",
+      "interpolationTitle": "Interpolación",
+      "interpolationDescription": "Reemplaza placeholders <code>{curlyOpen}varName{curlyClose}</code> en tus traducciones con valores dinámicos en tiempo de ejecución.",
       "typeTitle": "Claves Type-Safe",
       "typeDescription": "Pasa el tipo de tus mensajes como genérico a <code>getTranslations</code> para obtener autocompletado completo y verificación de tipos en las claves de traducción.",
       "localeTitle": "Leyendo el Locale Actual",
       "localeDescription": "Usa <code>getLocale()</code> en cualquier lugar después de que <code>setRequestLocale</code> haya sido llamado — por ejemplo para construir URLs con locale."
+    }
+  },
+  "changelog": {
+    "pageTitle": "Changelog",
+    "pageSubtitle": "Todos los cambios notables de astro-intl",
+    "hero": {
+      "badge": "Historial",
+      "title": "Qué hay de nuevo en",
+      "titleAccent": "astro-intl",
+      "description": "Un registro detallado de cada feature, fix y cambio importante en todas las versiones."
+    },
+    "labels": {
+      "added": "Agregado",
+      "changed": "Cambiado",
+      "fixed": "Corregido"
+    },
+    "unreleased": {
+      "title": "No publicado",
+      "items": [
+        {
+          "type": "added",
+          "text": "Opción <code>defaultLocale</code> — locale de fallback configurable en lugar de <code>\"en\"</code> hardcodeado."
+        },
+        {
+          "type": "added",
+          "text": "<code>runWithLocale()</code> — contexto de request concurrency-safe via <code>AsyncLocalStorage</code>."
+        },
+        {
+          "type": "added",
+          "text": "Soporte multi-runtime — detecta <code>AsyncLocalStorage</code> (Node.js) con fallback a variable global (Cloudflare Workers, Deno)."
+        },
+        {
+          "type": "added",
+          "text": "Tipo <code>IntlConfig</code> exportado para configuración de la integración."
+        },
+        {
+          "type": "changed",
+          "text": "Arquitectura modular — <code>core.ts</code> dividido en módulos <code>sanitize</code>, <code>interpolation</code>, <code>store</code>, <code>translations</code>."
+        },
+        {
+          "type": "changed",
+          "text": "<code>react.ts</code> ahora importa <code>escapeRegExp</code> compartido desde <code>sanitize.ts</code> (eliminado duplicado)."
+        },
+        {
+          "type": "fixed",
+          "text": "Race condition en SSR — los requests concurrentes ya no comparten estado."
+        },
+        {
+          "type": "fixed",
+          "text": "Locale <code>\"en\"</code> hardcodeado ahora respeta la configuración <code>defaultLocale</code>."
+        }
+      ]
+    },
+    "v101": {
+      "title": "1.0.1",
+      "items": [
+        {
+          "type": "added",
+          "text": "Interpolación de variables con <code>t(\"key\", { name: \"value\" })</code>."
+        },
+        {
+          "type": "added",
+          "text": "<code>t.markup()</code> para HTML en traducciones con sanitización de seguridad."
+        },
+        { "type": "added", "text": "<code>t.rich()</code> para React con soporte de tags anidados." },
+        {
+          "type": "added",
+          "text": "<code>defineRequestConfig()</code> para registro global de config (estilo next-intl)."
+        },
+        { "type": "added", "text": "Mensajes via opciones de integración (config <code>messages</code>)." },
+        { "type": "added", "text": "Validación de locales BCP-47." },
+        { "type": "added", "text": "Protección contra prototype-pollution en traversal de dot-paths." },
+        { "type": "added", "text": "Sanitización HTML (defensa en profundidad) en <code>t.markup()</code>." }
+      ]
+    },
+    "v100": {
+      "title": "1.0.0",
+      "items": [
+        { "type": "added", "text": "Release inicial." },
+        {
+          "type": "added",
+          "text": "<code>setRequestLocale()</code> para detección de locale basada en URL."
+        },
+        { "type": "added", "text": "<code>getLocale()</code> para leer el locale actual." },
+        { "type": "added", "text": "<code>getTranslations()</code> con soporte de namespaces." },
+        { "type": "added", "text": "<code>getTranslationsReact()</code> para componentes React." },
+        { "type": "added", "text": "Type-safety con <code>DotPaths&lt;T&gt;</code>." },
+        { "type": "added", "text": "Integración nativa con Astro." }
+      ]
     }
   }
 }

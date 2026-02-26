@@ -1,9 +1,6 @@
 import type { ReactNode } from "react";
-import { getNestedValue, type DotPaths } from "./core.js";
-
-function escapeRegExp(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
+import { getNestedValue, type DotPaths } from "./interpolation.js";
+import { escapeRegExp } from "./sanitize.js";
 
 export function createGetTranslationsReact<
   UI extends Record<string, Record<string, unknown>>,

@@ -33,6 +33,51 @@ const t = getTranslations("docs");
     />
   </div>
 
+  <!-- Interpolation -->
+  <div class="mb-10">
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("usage.interpolationTitle")}
+    </h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("usage.interpolationDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+    <div class="mb-3">
+      <CodeBlock
+        title="en.json — message with variables"
+        lang="json"
+        code={`{
+  "hero": {
+    "greeting": "Hello, {name}!",
+    "info": "You have {count} new messages"
+  }
+}`}
+      />
+    </div>
+    <CodeBlock
+      title="Component.astro — t() with values"
+      lang="astro"
+      code={`---
+const tHero = getTranslations("hero");
+---
+
+<p>{tHero("greeting", { name: "John" })}</p>
+<!-- "Hello, John!" -->
+
+<p>{tHero("info", { count: 5 })}</p>
+<!-- "You have 5 new messages" -->
+
+<p>{tHero("greeting")}</p>
+<!-- "Hello, {name}!" — placeholder kept when no values -->`}
+    />
+  </div>
+
   <!-- Markup Translation -->
   <div class="mb-10">
     <h3
@@ -63,6 +108,39 @@ const t = getTranslations("docs");
       title="Component.astro — t.markup()"
       lang="astro"
       code={'---\nconst tHero = getTranslations("hero");\n---\n\n<p set:html={tHero.markup("description", {\n  bold: (chunks) => `<strong>${chunks}</strong>`,\n  link: (chunks) => `<a href="https://astro.build">${chunks}</a>`,\n})} />'}
+    />
+  </div>
+
+  <!-- Markup + Interpolation -->
+  <div class="mb-10">
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("usage.markupInterpolationTitle")}
+    </h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("usage.markupInterpolationDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+    <div class="mb-3">
+      <CodeBlock
+        title="en.json — variables + tags"
+        lang="json"
+        code={`{
+  "hero": {
+    "welcome": "Hello {name}, read our <link>docs</link> to get started"
+  }
+}`}
+      />
+    </div>
+    <CodeBlock
+      title="Component.astro — t.markup() with values"
+      lang="astro"
+      code={'---\nconst tHero = getTranslations("hero");\n---\n\n<p set:html={tHero.markup("welcome", {\n  values: { name: "John" },\n  tags: {\n    link: (chunks) => `<a href="/docs">${chunks}</a>`,\n  }\n})} />\n<!-- "Hello John, read our <a href="/docs">docs</a> to get started" -->'}
     />
   </div>
 

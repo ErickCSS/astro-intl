@@ -3,7 +3,8 @@
     "home": "Home",
     "features": "Features",
     "examples": "Examples",
-    "docs": "Documentation"
+    "docs": "Documentation",
+    "changelog": "Changelog"
   },
   "hero": {
     "badge": "Open Source · MIT License",
@@ -120,12 +121,18 @@
     },
     "configuration": {
       "title": "Configuration",
-      "requestTitle": "1. Create request.ts",
-      "requestDescription": "This file is the bridge between the URL locale and your JSON messages. It receives the locale extracted from the URL and returns a <code>RequestConfig</code> object.",
-      "messagesTitle": "2. Create message files",
+      "messagesTitle": "1. Create message files",
       "messagesDescription": "Create one JSON file per locale inside <code>src/i18n/messages/</code>. You can organize keys into namespaces (nested objects).",
+      "approachTitle": "2. Choose your approach",
+      "approachDescription": "astro-intl offers two ways to load messages. Pick the one that fits your project best.",
+      "simpleTitle": "Option A — Messages in config (recommended)",
+      "simpleDescription": "Pass your message imports directly in <code>astro.config.mjs</code>. No extra files needed.",
+      "advancedTitle": "Option B — Custom request.ts (advanced)",
+      "advancedDescription": "For full control, use <code>defineRequestConfig</code> to create a request file — similar to <code>next-intl</code>. This lets you add custom logic like fetching messages from a CMS.",
       "layoutTitle": "3. Set up your Layout",
       "layoutDescription": "<strong>Best practice:</strong> Call <code>setRequestLocale</code> once in a shared layout (e.g., <code>src/layouts/Layout.astro</code>) instead of repeating it on every page. This initializes the global i18n context before any component reads translations.",
+      "layoutSimpleLabel": "With Option A (messages in config):",
+      "layoutAdvancedLabel": "With Option B (defineRequestConfig):",
       "staticPathsTitle": "4. Export getStaticPaths",
       "staticPathsDescription": "In every <code>[lang]</code> page, export <code>getStaticPaths</code> returning all supported locales so Astro can pre-render them."
     },
@@ -133,8 +140,12 @@
       "title": "Usage",
       "basicTitle": "Basic Translation",
       "basicDescription": "Once your layout is configured, simply use <code>getTranslations(namespace)</code> in any page to get a typed translation function for a specific namespace.",
+      "interpolationTitle": "Interpolation",
+      "interpolationDescription": "Use <code>{curlyOpen}varName{curlyClose}</code> placeholders in your translation strings and pass a values object as the second argument to <code>t()</code>. Accepted types: <code>string</code>, <code>number</code>, <code>boolean</code>. Missing or <code>null</code>/<code>undefined</code> values keep the placeholder unchanged.",
       "markupTitle": "Markup Translation",
       "markupDescription": "Use <code>t.markup(key, tags)</code> to interpolate HTML tags inside a translation string. The tags object maps tag names to functions that receive the inner content.",
+      "markupInterpolationTitle": "Markup + Interpolation",
+      "markupInterpolationDescription": "Combine variable interpolation with tag replacement by passing <code>{curlyOpen} values, tags {curlyClose}</code> to <code>t.markup()</code>. Interpolation runs first, then tags are processed.",
       "reactTitle": "React Components",
       "reactDescription": "Use <code>getTranslationsReact(namespace)</code> inside React components, then call <code>t.rich(key, tags)</code> to interpolate React nodes."
     },
@@ -153,7 +164,7 @@
       "getTranslations": {
         "name": "getTranslations",
         "signature": "getTranslations<T>(namespace?: string)",
-        "description": "Returns a typed <code>t(key)</code> function scoped to the given namespace. Also exposes <code>t.markup(key, tags)</code> for HTML interpolation."
+        "description": "Returns a typed <code>t(key, values?)</code> function scoped to the given namespace. The optional <code>values</code> object replaces <code>{curlyOpen}varName{curlyClose}</code> placeholders. Also exposes <code>t.markup(key, tags | {curlyOpen} values?, tags {curlyClose})</code> for HTML interpolation with optional variable substitution."
       },
       "getTranslationsReact": {
         "name": "getTranslationsReact",
@@ -164,6 +175,19 @@
         "name": "RequestConfig",
         "description": "Type returned by your <code>getRequestConfig</code> function. Contains <code>locale: string</code> and <code>messages: Record<string, unknown></code>."
       },
+      "primitive": {
+        "name": "Primitive",
+        "description": "Union type for interpolation values: <code>string | number | boolean | null | undefined</code>. Used as the value type in the <code>values</code> object passed to <code>t()</code> and <code>t.markup()</code>."
+      },
+      "runWithLocale": {
+        "name": "runWithLocale",
+        "signature": "runWithLocale<R>(url: URL, fn: () => R | Promise<R>, getConfig?: GetRequestConfigFn): Promise<R>",
+        "description": "Runs a function inside an isolated per-request context. Uses <code>AsyncLocalStorage</code> on Node.js for concurrency-safe SSR. Falls back to a global variable on runtimes without it (Cloudflare Workers, Deno)."
+      },
+      "intlConfig": {
+        "name": "IntlConfig",
+        "description": "Configuration type for the integration options. Contains <code>defaultLocale: string</code> — the locale used when the URL has no language prefix."
+      },
       "dotPaths": {
         "name": "DotPaths<T>",
         "description": "Utility type that generates all valid dot-notation paths for a given messages object. Used internally to provide autocomplete for translation keys."
@@ -173,10 +197,27 @@
       "title": "Examples",
       "namespaceTitle": "Using Namespaces",
       "namespaceDescription": "Namespaces let you split large translation files into logical sections. Pass the namespace name to <code>getTranslations</code>.",
+      "interpolationTitle": "Interpolation",
+      "interpolationDescription": "Replace <code>{curlyOpen}varName{curlyClose}</code> placeholders in your translations with dynamic values at runtime.",
       "typeTitle": "Type-Safe Keys",
       "typeDescription": "Pass your messages type as a generic to <code>getTranslations</code> to get full autocomplete and type checking on translation keys.",
       "localeTitle": "Reading the Current Locale",
       "localeDescription": "Use <code>getLocale()</code> anywhere after <code>setRequestLocale</code> has been called — for example to build locale-aware URLs."
+    }
+  },
+  "changelog": {
+    "pageTitle": "Changelog",
+    "pageSubtitle": "All notable changes to astro-intl",
+    "hero": {
+      "badge": "History",
+      "title": "What's new in",
+      "titleAccent": "astro-intl",
+      "description": "A detailed log of every feature, fix, and breaking change across all versions."
+    },
+    "labels": {
+      "added": "Added",
+      "changed": "Changed",
+      "fixed": "Fixed"
     }
   }
 }
