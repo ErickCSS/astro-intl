@@ -5,7 +5,7 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.0.2] - 2026
 
 ### Added
 
@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Race condition in SSR — concurrent requests no longer share state.
 - Hardcoded `"en"` fallback locale now respects `defaultLocale` config.
 
-## [1.0.1] - 2025
+## [1.0.1] - 2026
 
 ### Added
 
@@ -37,7 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Prototype-pollution protection in dot-path traversal.
 - HTML sanitisation (defence-in-depth) in `t.markup()`.
 
-## [1.0.0] - 2025
+## [1.0.0] - 2026
 
 ### Added
 
