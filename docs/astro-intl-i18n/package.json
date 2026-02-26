@@ -16,7 +16,7 @@
     "@tailwindcss/vite": "^4.2.1",
     "@vercel/analytics": "^1.6.1",
     "astro": "^5.17.1",
-    "astro-intl": "workspace:*",
+    "astro-intl": "^1.0.3",
     "flag-icons": "^7.2.3",
     "shiki": "^3.22.0",
     "tailwindcss": "^4.2.1"
