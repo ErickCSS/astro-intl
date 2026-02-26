@@ -11,29 +11,7 @@ const t = getTranslations("docs");
     <h2 class="text-xl font-bold" style="color: var(--color-text);">{t("configuration.title")}</h2>
   </div>
 
-  <!-- Step 1: request.ts -->
-  <div class="mb-10">
-    <h3
-      class="text-sm font-semibold mb-1"
-      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
-    >
-      {t("configuration.requestTitle")}
-    </h3>
-    <p
-      class="text-sm mb-4"
-      style="color: var(--color-text-tertiary);"
-      set:html={t.markup("configuration.requestDescription", {
-        code: (c: string) => `<code>${c}</code>`,
-      })}
-    />
-    <CodeBlock
-      title="src/i18n/request.ts"
-      lang="typescript"
-      code={'import type { RequestConfig } from "astro-intl";\n\nexport default async function getRequestConfig(\n  locale: string,\n): Promise<RequestConfig> {\n  return {\n    locale,\n    messages: (await import(`./messages/${locale}.json`)).default,\n  };\n}'}
-    />
-  </div>
-
-  <!-- Step 2: messages -->
+  <!-- Step 1: messages -->
   <div class="mb-10">
     <h3
       class="text-sm font-semibold mb-1"
@@ -64,6 +42,67 @@ const t = getTranslations("docs");
     />
   </div>
 
+  <!-- Step 2: Choose approach -->
+  <div class="mb-10">
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("configuration.approachTitle")}
+    </h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("configuration.approachDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+
+    <!-- Simple approach -->
+    <div
+      class="mb-6 p-4 rounded-lg"
+      style="background: var(--color-bg-secondary); border: 1px solid var(--color-border);"
+    >
+      <h4 class="text-sm font-semibold mb-2" style="color: var(--color-text);">
+        {t("configuration.simpleTitle")}
+      </h4>
+      <p
+        class="text-sm mb-3"
+        style="color: var(--color-text-tertiary);"
+        set:html={t.markup("configuration.simpleDescription", {
+          code: (c: string) => `<code>${c}</code>`,
+        })}
+      />
+      <CodeBlock
+        title="astro.config.mjs"
+        lang="javascript"
+        code={'import { defineConfig } from "astro/config";\nimport astroIntl from "astro-intl";\n\nexport default defineConfig({\n  integrations: [\n    astroIntl({\n      messages: {\n        en: () => import("./src/i18n/messages/en.json"),\n        es: () => import("./src/i18n/messages/es.json"),\n      },\n    }),\n  ],\n});'}
+      />
+    </div>
+
+    <!-- Advanced approach -->
+    <div
+      class="mb-2 p-4 rounded-lg"
+      style="background: var(--color-bg-secondary); border: 1px solid var(--color-border);"
+    >
+      <h4 class="text-sm font-semibold mb-2" style="color: var(--color-text);">
+        {t("configuration.advancedTitle")}
+      </h4>
+      <p
+        class="text-sm mb-3"
+        style="color: var(--color-text-tertiary);"
+        set:html={t.markup("configuration.advancedDescription", {
+          code: (c: string) => `<code>${c}</code>`,
+        })}
+      />
+      <CodeBlock
+        title="src/i18n/request.ts"
+        lang="typescript"
+        code={'import { defineRequestConfig } from "astro-intl";\n\nexport default defineRequestConfig(async (locale) => {\n  return {\n    locale,\n    messages: (await import(`./messages/${locale}.json`)).default,\n  };\n});'}
+      />
+    </div>
+  </div>
+
   <!-- Step 3: Layout -->
   <div class="mb-10">
     <h3
@@ -79,11 +118,26 @@ const t = getTranslations("docs");
         code: (c: string) => `<code>${c}</code>`,
       })}
     />
-    <CodeBlock
-      title="src/layouts/Layout.astro"
-      lang="astro"
-      code={'---\nimport { setRequestLocale } from "astro-intl";\nimport getRequestConfig from "../i18n/request";\n\n// Initialize i18n context once for all pages using this layout\nawait setRequestLocale(Astro.url, getRequestConfig);\n---\n\n<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Site</title>\n  </head>\n  <body>\n    <slot />\n  </body>\n</html>'}
-    />
+    <div class="mb-4">
+      <p class="text-xs font-medium mb-2" style="color: var(--color-text-secondary);">
+        {t("configuration.layoutSimpleLabel")}
+      </p>
+      <CodeBlock
+        title="src/layouts/Layout.astro"
+        lang="astro"
+        code={'---\nimport { setRequestLocale } from "astro-intl";\n\n// No need to import anything — messages come from astro.config\nawait setRequestLocale(Astro.url);\n---\n\n<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Site</title>\n  </head>\n  <body>\n    <slot />\n  </body>\n</html>'}
+      />
+    </div>
+    <div>
+      <p class="text-xs font-medium mb-2" style="color: var(--color-text-secondary);">
+        {t("configuration.layoutAdvancedLabel")}
+      </p>
+      <CodeBlock
+        title="src/layouts/Layout.astro"
+        lang="astro"
+        code={'---\nimport { setRequestLocale } from "astro-intl";\nimport "../i18n/request"; // registers defineRequestConfig\n\nawait setRequestLocale(Astro.url);\n---\n\n<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Site</title>\n  </head>\n  <body>\n    <slot />\n  </body>\n</html>'}
+      />
+    </div>
   </div>
 
   <!-- Step 4: getStaticPaths -->

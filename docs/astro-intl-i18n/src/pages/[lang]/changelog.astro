@@ -1,0 +1,180 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Navigation from "@/components/Navigation.astro";
+import { setRequestLocale, getTranslations, getLocale } from "astro-intl";
+import getRequestConfig from "@/i18n/request";
+import { parseChangelog } from "@/utils/parse-changelog";
+import type { ChangelogVersion } from "@/utils/parse-changelog";
+import "@/styles/global.css";
+
+await setRequestLocale(Astro.url, getRequestConfig);
+
+const t = getTranslations("changelog");
+const tFooter = getTranslations("footer");
+const locale = getLocale();
+
+// Parse CHANGELOG.md (English canonical source)
+const mdVersions = parseChangelog();
+
+// For non-EN locales, override items from JSON translations
+function getVersions(): ChangelogVersion[] {
+  if (locale === "en") return mdVersions;
+
+  return mdVersions.map((v) => {
+    const key = v.id === "unreleased" ? "unreleased" : `v${v.id}`;
+    let overrideItems: { type: string; text: string }[] | undefined;
+    try {
+      overrideItems = (t as any)(`${key}.items`);
+    } catch {
+      // no override — use English from CHANGELOG.md
+    }
+
+    let overrideTitle: string | undefined;
+    try {
+      overrideTitle = (t as any)(`${key}.title`);
+    } catch {
+      // no override
+    }
+
+    return {
+      ...v,
+      title: overrideTitle && overrideTitle !== `${key}.title` ? overrideTitle : v.title,
+      items: Array.isArray(overrideItems) ? (overrideItems as ChangelogVersion["items"]) : v.items,
+    };
+  });
+}
+
+const versions = getVersions();
+
+const badgeColors: Record<string, { bg: string; text: string }> = {
+  next: { bg: "rgba(111,207,151,0.15)", text: "var(--color-accent)" },
+  latest: { bg: "rgba(59,130,246,0.15)", text: "#60a5fa" },
+  initial: { bg: "rgba(156,163,175,0.12)", text: "var(--color-text-tertiary)" },
+};
+
+const typeColors: Record<string, { bg: string; text: string; label: string }> = {
+  added: { bg: "rgba(111,207,151,0.12)", text: "var(--color-accent)", label: t("labels.added" as any) },
+  changed: { bg: "rgba(251,191,36,0.12)", text: "#fbbf24", label: t("labels.changed" as any) },
+  fixed: { bg: "rgba(248,113,113,0.12)", text: "#f87171", label: t("labels.fixed" as any) },
+};
+
+export function getStaticPaths() {
+  return [{ params: { lang: "en" } }, { params: { lang: "es" } }];
+}
+---
+
+<Layout
+  title={`${t("pageTitle")} — astro-intl`}
+  description={t("pageSubtitle")}
+  type="article"
+  keywords={["astro-intl changelog", "astro i18n updates", "astro-intl releases"]}
+>
+  <Navigation activePage="changelog" />
+
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-20">
+    <!-- Hero -->
+    <div class="mb-16 text-center">
+      <div
+        class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium mb-6"
+        style="background: var(--color-accent-dim); border: 1px solid var(--color-border-hover); color: var(--color-accent);"
+      >
+        <span class="w-1.5 h-1.5 rounded-full inline-block" style="background: var(--color-accent);"></span>
+        {t("hero.badge" as any)}
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold mb-4 tracking-tight" style="color: var(--color-text);">
+        {t("hero.title" as any)}
+        <span style="color: var(--color-accent);"> {t("hero.titleAccent" as any)}</span>
+      </h1>
+      <p class="text-base max-w-lg mx-auto" style="color: var(--color-text-tertiary);">
+        {t("hero.description" as any)}
+      </p>
+    </div>
+
+    <!-- Timeline -->
+    <div class="relative">
+      <div
+        class="absolute left-6 top-0 bottom-0 w-px hidden md:block"
+        style="background: var(--color-border);"
+      >
+      </div>
+
+      {
+        versions.map((v) => {
+          const badgeStyle = badgeColors[v.badge] || badgeColors.initial;
+
+          return (
+            <div class="relative mb-12 last:mb-0 md:pl-16">
+              <div
+                class="absolute left-4 top-2 w-5 h-5 rounded-full border-2 hidden md:flex items-center justify-center"
+                style={`border-color: ${badgeStyle.text}; background: var(--color-bg);`}
+              >
+                <div class="w-2 h-2 rounded-full" style={`background: ${badgeStyle.text};`} />
+              </div>
+
+              <div class="rounded-xl overflow-hidden" style="border: 1px solid var(--color-border);">
+                <div
+                  class="flex items-center gap-3 px-5 py-4"
+                  style="background: var(--color-bg-card); border-bottom: 1px solid var(--color-border);"
+                >
+                  <h2 class="text-lg font-bold" style="color: var(--color-text);">
+                    {v.title}
+                  </h2>
+                  <span
+                    class="text-xs font-semibold px-2.5 py-0.5 rounded-full"
+                    style={`background: ${badgeStyle.bg}; color: ${badgeStyle.text};`}
+                  >
+                    {v.badge}
+                  </span>
+                </div>
+
+                <div class="px-5 py-4 space-y-2.5" style="background: var(--color-bg-secondary);">
+                  {v.items.map((item) => {
+                    const style = typeColors[item.type] || typeColors.added;
+                    return (
+                      <div class="flex items-start gap-3">
+                        <span
+                          class="text-xs font-semibold px-2 py-0.5 rounded-full mt-0.5 shrink-0 min-w-[60px] text-center"
+                          style={`background: ${style.bg}; color: ${style.text};`}
+                        >
+                          {style.label}
+                        </span>
+                        <p
+                          class="text-sm leading-relaxed"
+                          style="color: var(--color-text-secondary);"
+                          set:html={item.text}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          );
+        })
+      }
+    </div>
+  </div>
+
+  <footer class="py-10 mt-8" style="border-top: 1px solid var(--color-border);">
+    <div
+      class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4"
+    >
+      <div class="flex items-center gap-2">
+        <span class="text-sm font-semibold" style="color: var(--color-text);"
+          >astro<span style="color: var(--color-accent);">-intl</span></span
+        >
+        <span class="text-xs" style="color: var(--color-text-tertiary);">—</span>
+        <span class="text-xs" style="color: var(--color-text-tertiary);">{tFooter("description")}</span>
+      </div>
+      <p
+        class="text-xs"
+        style="color: var(--color-text-tertiary);"
+        set:html={tFooter.markup("madeWith", {
+          heart: (chunks: string) => `<span style="color: #e05c5c;">${chunks}</span>`,
+          link: (chunks: string) =>
+            `<a href="https://erickcs.com" target="_blank" rel="noopener noreferrer" style="color: var(--color-accent); text-decoration: none; font-weight: 500;">${chunks}</a>`,
+        })}
+      />
+    </div>
+  </footer>
+</Layout>

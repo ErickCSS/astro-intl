@@ -19,6 +19,8 @@ Para documentación completa, ejemplos y guías, visita:
 - 🌍 **Flexible** - Soporta múltiples idiomas y estructuras de traducción
 - ⚡ **Rendimiento** - Carga solo las traducciones necesarias
 - 🛠️ **TypeScript first** - Escrito completamente en TypeScript
+- 🛡️ **Concurrency-safe** - `AsyncLocalStorage` en SSR para aislar requests concurrentes
+- 🌐 **Multi-runtime** - Compatible con Node.js, Cloudflare Workers y Deno
 
 ## 📦 Instalación
 
@@ -54,7 +56,7 @@ export default defineConfig({
 
 ### 2. Crea tus archivos de traducción
 
-```
+```text
 src/
 └── i18n/
     ├── en.json

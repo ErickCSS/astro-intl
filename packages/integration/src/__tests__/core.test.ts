@@ -167,6 +167,54 @@ describe("core.ts", () => {
       expect(t("nonexistent" as any)).toBe("nonexistent");
     });
 
+    describe("t() interpolation", () => {
+      beforeEach(async () => {
+        const url = new URL("https://example.com/en/home");
+        await setRequestLocale(url, () => ({
+          locale: "en",
+          messages: {
+            greeting: "Hello, {name}!",
+            intro: "I am {name}, age {age}, active: {active}",
+            missing: "Hello, {name}! You are from {city}.",
+            plain: "No variables here",
+          },
+        }));
+      });
+
+      it("should interpolate a single variable", () => {
+        const t = getTranslations();
+        expect(t("greeting" as any, { name: "Erick" })).toBe("Hello, Erick!");
+      });
+
+      it("should interpolate multiple variables", () => {
+        const t = getTranslations();
+        expect(t("intro" as any, { name: "Erick", age: 30, active: true })).toBe(
+          "I am Erick, age 30, active: true"
+        );
+      });
+
+      it("should keep placeholder when variable is missing", () => {
+        const t = getTranslations();
+        expect(t("missing" as any, { name: "Erick" })).toBe("Hello, Erick! You are from {city}.");
+      });
+
+      it("should keep placeholder when value is null or undefined", () => {
+        const t = getTranslations();
+        expect(t("greeting" as any, { name: null as any })).toBe("Hello, {name}!");
+        expect(t("greeting" as any, { name: undefined })).toBe("Hello, {name}!");
+      });
+
+      it("should return plain string when no values provided (backward compat)", () => {
+        const t = getTranslations();
+        expect(t("plain" as any)).toBe("No variables here");
+      });
+
+      it("should return plain string with placeholders when no values provided", () => {
+        const t = getTranslations();
+        expect(t("greeting" as any)).toBe("Hello, {name}!");
+      });
+    });
+
     describe("t.markup", () => {
       it("should interpolate HTML tags", async () => {
         const url = new URL("https://example.com/en/home");
@@ -247,6 +295,43 @@ describe("core.ts", () => {
         const result = t.markup("text" as any, {});
 
         expect(result).not.toContain("javascript:");
+      });
+
+      it("should support interpolation combined with tags", async () => {
+        const url = new URL("https://example.com/en/home");
+        await setRequestLocale(url, () => ({
+          locale: "en",
+          messages: {
+            welcome: "Hello {name}, click <link>here</link> to continue",
+          },
+        }));
+
+        const t = getTranslations();
+        const result = t.markup("welcome" as any, {
+          values: { name: "Erick" },
+          tags: {
+            link: (chunks) => `<a href="/home">${chunks}</a>`,
+          },
+        });
+
+        expect(result).toBe('Hello Erick, click <a href="/home">here</a> to continue');
+      });
+
+      it("should support markup with tags-only (backward compat)", async () => {
+        const url = new URL("https://example.com/en/home");
+        await setRequestLocale(url, () => ({
+          locale: "en",
+          messages: {
+            text: "Click <link>here</link>",
+          },
+        }));
+
+        const t = getTranslations();
+        const result = t.markup("text" as any, {
+          link: (chunks) => `<a href="/go">${chunks}</a>`,
+        });
+
+        expect(result).toBe('Click <a href="/go">here</a>');
       });
     });
   });
