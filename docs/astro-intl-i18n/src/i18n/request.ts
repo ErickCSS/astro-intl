@@ -1,10 +1,8 @@
-import type { RequestConfig } from "astro-intl";
+import { defineRequestConfig } from "astro-intl";
 
-export default async function getRequestConfig(
-  locale: string,
-): Promise<RequestConfig> {
+export default defineRequestConfig(async (locale) => {
   return {
     locale,
     messages: (await import(`./messages/${locale}.json`)).default,
   };
-}
+});

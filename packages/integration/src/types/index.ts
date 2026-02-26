@@ -15,4 +15,5 @@ export type MessagesConfig = Record<
 
 export type IntlConfig = {
   defaultLocale: string;
+  locales: string[];
 };

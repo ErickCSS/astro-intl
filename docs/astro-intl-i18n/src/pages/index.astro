@@ -1,6 +1,7 @@
 ---
-import { LANGUAGES, DEFAULT_LOCALE } from "../i18n/ui";
-const locales = Object.keys(LANGUAGES);
+import { routing } from "../i18n/routing";
+const locales = [...routing.locales];
+const DEFAULT_LOCALE = routing.defaultLocale;
 ---
 
 <!doctype html>

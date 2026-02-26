@@ -1,5 +1,6 @@
 ---
 import { getLocale } from "astro-intl";
+import { routing } from "@/i18n/routing";
 
 const currentLocale = getLocale();
 
@@ -8,7 +9,7 @@ const FLAG_MAP: Record<string, string> = {
   en: "fi fi-us",
 };
 
-const locales = ["en", "es"];
+const locales = [...routing.locales];
 ---
 
 <div class="relative" id="lang-dropdown" data-locales={locales.join(",")}>

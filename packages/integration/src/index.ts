@@ -4,6 +4,8 @@ import {
   setRequestLocale as _setRequestLocale,
   runWithLocale as _runWithLocale,
   getLocale as _getLocale,
+  getLocales as _getLocales,
+  isValidLocale as _isValidLocale,
   getMessages as _getMessages,
   getTranslations as _getTranslations,
   getTranslationsReact as _getTranslationsReact,
@@ -16,14 +18,18 @@ import {
 export type AstroIntlOptions = {
   enabled?: boolean;
   defaultLocale?: string;
+  locales?: string[];
   messages?: MessagesConfig;
 };
 
 export default function astroIntl(options: AstroIntlOptions = {}): AstroIntegration {
-  const { enabled = true, defaultLocale, messages } = options;
+  const { enabled = true, defaultLocale, locales, messages } = options;
 
-  if (defaultLocale) {
-    __setIntlConfig({ defaultLocale });
+  if (defaultLocale || locales) {
+    __setIntlConfig({
+      ...(defaultLocale && { defaultLocale }),
+      ...(locales && { locales }),
+    });
   }
 
   if (messages) {
@@ -54,6 +60,8 @@ export default function astroIntl(options: AstroIntlOptions = {}): AstroIntegrat
 export const setRequestLocale = _setRequestLocale;
 export const runWithLocale = _runWithLocale;
 export const getLocale = _getLocale;
+export const getLocales = _getLocales;
+export const isValidLocale = _isValidLocale;
 export const getMessages = _getMessages;
 export const getTranslations = _getTranslations;
 export const getTranslationsReact = _getTranslationsReact;

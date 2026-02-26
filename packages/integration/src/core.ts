@@ -3,6 +3,8 @@ export {
   setRequestLocale,
   runWithLocale,
   getLocale,
+  getLocales,
+  isValidLocale,
   getMessages,
   getDefaultLocale,
   defineRequestConfig,
