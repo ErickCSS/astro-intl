@@ -2,11 +2,9 @@
 import Layout from "@/layouts/Layout.astro";
 import Navigation from "@/components/Navigation.astro";
 import CodeTabs from "@/components/CodeTabs.astro";
-import { setRequestLocale, getTranslations, getLocale } from "astro-intl";
-import getRequestConfig from "@/i18n/request";
-import "@/styles/global.css";
+import { getTranslations, getLocale } from "astro-intl";
 
-await setRequestLocale(Astro.url, getRequestConfig);
+import "@/styles/global.css";
 
 const tHero = getTranslations("hero");
 const tFeatures = getTranslations("features");

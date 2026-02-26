@@ -9,11 +9,8 @@ import DocsConfiguration from "@/components/docs/DocsConfiguration.astro";
 import DocsUsage from "@/components/docs/DocsUsage.astro";
 import DocsAPI from "@/components/docs/DocsAPI.astro";
 import DocsExamples from "@/components/docs/DocsExamples.astro";
-import { setRequestLocale, getTranslations } from "astro-intl";
-import getRequestConfig from "@/i18n/request";
+import { getTranslations } from "astro-intl";
 import "@/styles/global.css";
-
-await setRequestLocale(Astro.url, getRequestConfig);
 
 const tDocs = getTranslations("docs");
 const tFooter = getTranslations("footer");

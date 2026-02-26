@@ -17,7 +17,7 @@ type RequestState = {
 
 let registeredGetRequestConfig: GetRequestConfigFn | null = null;
 let configMessages: MessagesConfig | null = null;
-let intlConfig: IntlConfig = { defaultLocale: "en" };
+let intlConfig: IntlConfig = { defaultLocale: "en", locales: [] };
 
 // ─── AsyncLocalStorage detection ────────────────────────────────────
 
@@ -63,10 +63,22 @@ export function __setIntlConfig(config: Partial<IntlConfig>) {
   if (config.defaultLocale) {
     intlConfig = { ...intlConfig, defaultLocale: config.defaultLocale };
   }
+  if (config.locales) {
+    intlConfig = { ...intlConfig, locales: config.locales };
+  }
 }
 
 export function getDefaultLocale(): string {
   return intlConfig.defaultLocale;
+}
+
+export function getLocales(): string[] {
+  return intlConfig.locales;
+}
+
+export function isValidLocale(locale: string): boolean {
+  if (intlConfig.locales.length === 0) return true;
+  return intlConfig.locales.includes(locale);
 }
 
 export function defineRequestConfig(
@@ -84,7 +96,7 @@ export function __resetRequestConfig() {
   registeredGetRequestConfig = null;
   configMessages = null;
   fallbackState = null;
-  intlConfig = { defaultLocale: "en" };
+  intlConfig = { defaultLocale: "en", locales: [] };
 }
 
 // ─── Resolve messages from MessagesConfig ───────────────────────────
@@ -111,8 +123,14 @@ async function resolveMessages(
 
 // ─── setRequestLocale ───────────────────────────────────────────────
 
-export async function setRequestLocale(url: URL, getConfig?: GetRequestConfigFn) {
+export async function setRequestLocale(url: URL, getConfig?: GetRequestConfigFn): Promise<boolean> {
   const [, lang] = url.pathname.split("/");
+  if (!lang) return false;
+
+  if (intlConfig.locales.length > 0 && !intlConfig.locales.includes(lang)) {
+    return false;
+  }
+
   const locale = sanitizeLocale(lang || intlConfig.defaultLocale);
 
   const resolvedGetConfig = getConfig ?? registeredGetRequestConfig;
@@ -136,6 +154,7 @@ export async function setRequestLocale(url: URL, getConfig?: GetRequestConfigFn)
   }
 
   fallbackState = state;
+  return true;
 }
 
 // ─── runWithLocale (concurrency-safe via AsyncLocalStorage) ─────────

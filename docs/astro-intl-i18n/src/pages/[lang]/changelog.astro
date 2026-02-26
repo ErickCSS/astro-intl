@@ -1,13 +1,10 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import Navigation from "@/components/Navigation.astro";
-import { setRequestLocale, getTranslations, getLocale } from "astro-intl";
-import getRequestConfig from "@/i18n/request";
+import { getTranslations, getLocale } from "astro-intl";
 import { parseChangelog } from "@/utils/parse-changelog";
 import type { ChangelogVersion } from "@/utils/parse-changelog";
 import "@/styles/global.css";
-
-await setRequestLocale(Astro.url, getRequestConfig);
 
 const t = getTranslations("changelog");
 const tFooter = getTranslations("footer");

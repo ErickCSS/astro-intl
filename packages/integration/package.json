@@ -1,6 +1,6 @@
 {
   "name": "astro-intl",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "type": "module",
   "description": "Sistema de internacionalización simple y type-safe para Astro, inspirado en next-intl",
   "keywords": [
@@ -37,6 +37,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./middleware": {
+      "types": "./dist/middleware.d.ts",
+      "import": "./dist/middleware.js"
     }
   },
   "peerDependencies": {

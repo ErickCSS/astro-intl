@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 import intl from "astro-intl";
 import sitemap from "@astrojs/sitemap";
+import { routing } from "./src/i18n/routing.ts";
 
 import tailwindcss from "@tailwindcss/vite";
 
@@ -14,11 +15,8 @@ export default defineConfig({
     intl(),
     sitemap({
       i18n: {
-        defaultLocale: 'en',
-        locales: {
-          en: 'en-US',
-          es: 'es-ES',
-        },
+        defaultLocale: routing.defaultLocale,
+        locales: { ...routing.hreflang },
       },
       filter: (page) => !page.includes('/index'),
     }),
