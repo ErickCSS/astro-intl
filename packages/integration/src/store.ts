@@ -125,9 +125,8 @@ async function resolveMessages(
 
 export async function setRequestLocale(url: URL, getConfig?: GetRequestConfigFn): Promise<boolean> {
   const [, lang] = url.pathname.split("/");
-  if (!lang) return false;
 
-  if (intlConfig.locales.length > 0 && !intlConfig.locales.includes(lang)) {
+  if (lang && intlConfig.locales.length > 0 && !intlConfig.locales.includes(lang)) {
     return false;
   }
 
