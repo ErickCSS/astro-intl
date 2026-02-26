@@ -82,9 +82,7 @@ describe("Config-based messages (simple approach)", () => {
     });
 
     const url = new URL("https://example.com/fr/page");
-    await expect(setRequestLocale(url)).rejects.toThrow(
-      /No messages found for locale "fr"/
-    );
+    await expect(setRequestLocale(url)).rejects.toThrow(/No messages found for locale "fr"/);
   });
 
   it("should switch locales correctly", async () => {
@@ -106,9 +104,7 @@ describe("Config-based messages (simple approach)", () => {
 
   it("should throw when no config or messages are provided", async () => {
     const url = new URL("https://example.com/en/page");
-    await expect(setRequestLocale(url)).rejects.toThrow(
-      /No getRequestConfig or messages provided/
-    );
+    await expect(setRequestLocale(url)).rejects.toThrow(/No getRequestConfig or messages provided/);
   });
 });
 

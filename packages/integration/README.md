@@ -296,10 +296,14 @@ Ejecuta una función dentro de un contexto aislado por request. Usa `AsyncLocalS
 import { runWithLocale } from "astro-intl";
 
 export const onRequest = async (context, next) => {
-  return runWithLocale(context.url, () => next(), (locale) => ({
-    locale,
-    messages: ui[locale],
-  }));
+  return runWithLocale(
+    context.url,
+    () => next(),
+    (locale) => ({
+      locale,
+      messages: ui[locale],
+    })
+  );
 };
 ```
 
