@@ -44,6 +44,11 @@ const defaultKeywords = [
   "astro integration",
   "type-safe",
   "typescript",
+  "internationalization library",
+  "i18n library",
+  "astro i18n",
+  "astro translation",
+  "astro intl",
 ];
 
 const allKeywords = [...new Set([...defaultKeywords, ...keywords])];
@@ -90,11 +95,7 @@ const jsonLd = {
 
 <link rel="canonical" href={canonicalUrl} />
 
-{
-  alternateLanguages.map(({ lang, url }) => (
-    <link rel="alternate" hreflang={lang} href={url} />
-  ))
-}
+{alternateLanguages.map(({ lang, url }) => <link rel="alternate" hreflang={lang} href={url} />)}
 <link rel="alternate" hreflang="x-default" href={currentUrl.replace(`/${locale}`, "/en")} />
 
 <meta property="og:type" content={type} />
