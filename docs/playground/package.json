@@ -1,0 +1,24 @@
+{
+  "name": "astro-intl-i18n",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "build:deploy": "node ../../scripts/prepare-docs-deploy.mjs && astro build",
+    "restore": "node ../../scripts/prepare-docs-deploy.mjs --restore",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.0",
+    "@astrojs/vercel": "^9.0.4",
+    "@tailwindcss/vite": "^4.2.1",
+    "@vercel/analytics": "^1.6.1",
+    "astro": "^5.17.1",
+    "astro-intl": "workspace:*",
+    "flag-icons": "^7.2.3",
+    "shiki": "^3.22.0",
+    "tailwindcss": "^4.2.1"
+  }
+}

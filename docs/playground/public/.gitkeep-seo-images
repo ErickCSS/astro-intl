@@ -1,0 +1,18 @@
+# SEO Image Assets
+
+Please add the following images to the /public directory for optimal SEO:
+
+1. **og-image.png** (1200x630px)
+   - Open Graph image for social media sharing
+   - Should feature the astro-intl logo and tagline
+   - Recommended: Use Figma, Canva, or similar tools
+
+2. **apple-touch-icon.png** (180x180px)
+   - iOS home screen icon
+   - Should be a simplified version of the logo
+
+3. **favicon.ico** (optional)
+   - Traditional favicon format
+   - 32x32px or 16x16px
+
+Note: The current implementation uses /logo-astro-intl.svg as a fallback.

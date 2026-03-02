@@ -13,6 +13,9 @@ Sistema de internacionalización simple y type-safe para Astro, inspirado en nex
 - 🛡️ **Concurrency-safe**: Usa `AsyncLocalStorage` en SSR para aislar requests concurrentes
 - 🌍 **Multi-runtime**: Compatible con Node.js, Cloudflare Workers y Deno
 - ⚙️ **Default locale configurable**: Define tu locale por defecto desde las opciones
+- 🗺️ **Routing localizado**: Define URLs traducidas por locale (`/es/sobre-nosotros` en vez de `/es/about`)
+- 🔄 **Rewrites automáticos**: El middleware reescribe URLs traducidas a rutas canónicas del filesystem
+- 🔗 **Generación de URLs**: `path()` y `switchLocalePath()` para construir y transformar URLs localizadas
 
 ## 📦 Instalación
 
@@ -249,7 +252,104 @@ const t = getTranslations<Messages>('nav');
 </nav>
 ```
 
-## 📚 API Reference
+## �️ Routing Localizado
+
+### Definir rutas traducidas
+
+Crea un mapa de rutas con URLs traducidas por locale:
+
+```ts
+// src/i18n/routing.ts
+export const routing = {
+  locales: ["en", "es"],
+  defaultLocale: "en",
+  routes: {
+    home: { en: "/", es: "/" },
+    about: { en: "/about", es: "/sobre-nosotros" },
+    blog: { en: "/blog/[slug]", es: "/blog/[slug]" },
+    shop: { en: "/shop/[category]/[id]", es: "/tienda/[category]/[id]" },
+  },
+} as const;
+```
+
+### Con Middleware (recomendado)
+
+Pasa las rutas al middleware. Este reescribe automáticamente URLs traducidas a las rutas canónicas del filesystem:
+
+```ts
+// src/middleware.ts
+import "@/i18n/request";
+import { createIntlMiddleware } from "astro-intl/middleware";
+import { routing } from "@/i18n/routing";
+
+export const onRequest = createIntlMiddleware(routing);
+```
+
+Cuando un usuario visita `/es/sobre-nosotros`, el middleware lo reescribe a `/es/about` — que mapea a tu archivo `[lang]/about.astro`. Sin páginas duplicadas.
+
+### Sin Middleware
+
+Configura las rutas via las opciones de la integración:
+
+```js
+// astro.config.mjs
+import { defineConfig } from "astro/config";
+import astroIntl from "astro-intl";
+
+export default defineConfig({
+  integrations: [
+    astroIntl({
+      defaultLocale: "en",
+      locales: ["en", "es"],
+      routes: {
+        about: { en: "/about", es: "/sobre-nosotros" },
+      },
+    }),
+  ],
+});
+```
+
+Sin middleware no hay rewrites automáticos. Crea wrappers ligeros para cada ruta traducida:
+
+```astro
+---
+// src/pages/[lang]/sobre-nosotros.astro
+export { default } from "./about.astro";
+export { getStaticPaths } from "./about.astro";
+---
+```
+
+### Generar URLs con `path()`
+
+```astro
+---
+import { path } from "astro-intl/routing";
+---
+
+<a href={path("about")}>About</a>
+<!-- locale "en" → /en/about -->
+<!-- locale "es" → /es/sobre-nosotros -->
+
+<a href={path("shop", { locale: "es", params: { category: "ropa", id: "42" } })}>
+  Ver producto
+</a>
+<!-- → /es/tienda/ropa/42 -->
+```
+
+### Cambiar locale con `switchLocalePath()`
+
+```astro
+---
+import { switchLocalePath } from "astro-intl/routing";
+---
+
+<a href={switchLocalePath(Astro.url.pathname, "en")}>English</a>
+<a href={switchLocalePath(Astro.url.pathname, "es")}>Español</a>
+<!-- En /en/about → /es/sobre-nosotros -->
+<!-- En /es/tienda/ropa/42 → /en/shop/ropa/42 -->
+```
+
+## � API Reference
 
 ### `astroIntl(options?)`
 
@@ -260,6 +360,8 @@ Configura la integración en `astro.config.mjs`.
 - `defaultLocale?: string` - Locale por defecto cuando la URL no tiene prefijo de idioma (default: `"en"`)
 - `enabled?: boolean` - Habilitar/deshabilitar la integración (default: `true`)
 - `messages?: MessagesConfig` - Mensajes de traducción estáticos o dinámicos
+- `locales?: string[]` - Lista de locales soportados
+- `routes?: RoutesMap` - Mapa de rutas traducidas por locale
 
 ### `setRequestLocale(url, getConfig?)`
 
@@ -345,6 +447,40 @@ Obtiene el locale actual configurado.
 
 **Retorna:** `string` - El código del locale (ej: `'es'`, `'en'`)
 
+### `createIntlMiddleware(options)`
+
+Crea un middleware de Astro que llama automáticamente a `setRequestLocale` en cada request. Importar desde `astro-intl/middleware`.
+
+**Opciones:**
+
+- `locales: string[]` - Lista de locales soportados
+- `defaultLocale?: string` - Locale por defecto (default: `"en"`)
+- `routes?: RoutesMap` - Mapa de rutas traducidas. Cuando se proporciona, el middleware reescribe URLs traducidas a sus rutas canónicas del filesystem
+
+### `path(routeKey, options?)`
+
+Genera una URL localizada para una ruta nombrada. Importar desde `astro-intl/routing`.
+
+**Parámetros:**
+
+- `routeKey: string` - Nombre de la ruta (clave del mapa de `routes`)
+- `options?.locale` - Locale destino (default: locale actual)
+- `options?.params` - `Record<string, string>` para sustituir `[param]` en el template
+- `options?.encode` - Codificar params con `encodeURIComponent` (default: `true`)
+
+**Retorna:** `string` - URL localizada (ej: `"/es/sobre-nosotros"`)
+
+### `switchLocalePath(currentPath, nextLocale)`
+
+Convierte la URL actual a su equivalente en otro locale. Importar desde `astro-intl/routing`.
+
+**Parámetros:**
+
+- `currentPath: string | URL` - Ruta actual (pathname, URL string o URL object)
+- `nextLocale: string` - Locale destino
+
+**Retorna:** `string` - URL equivalente en el nuevo locale. Preserva query strings y hashes. Si no matchea ningún template, hace fallback a intercambiar el prefijo del locale.
+
 ---
 
 ## 🚀 Desarrollo (para contribuidores)
@@ -388,9 +524,11 @@ packages/integration/
 │   ├── store.ts           # Estado por request (AsyncLocalStorage + fallback)
 │   ├── translations.ts    # getTranslations y getTranslationsReact
 │   ├── react.ts           # Factory de t.rich() para React
+│   ├── routing.ts         # path(), switchLocalePath() — generación de URLs localizadas
+│   ├── middleware.ts       # createIntlMiddleware() con rewrites de rutas traducidas
 │   ├── index.ts           # Entry point público + integración de Astro
 │   └── types/
-│       └── index.ts       # Tipos TypeScript
+│       └── index.ts       # Tipos TypeScript (incluye RoutesMap)
 ├── dist/                  # Archivos compilados (generados)
 │   ├── *.js               # JavaScript compilado
 │   └── *.d.ts             # Declaraciones de tipos

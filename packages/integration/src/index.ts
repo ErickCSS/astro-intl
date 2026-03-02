@@ -1,5 +1,5 @@
 import type { AstroIntegration } from "astro";
-import type { MessagesConfig } from "./types/index.js";
+import type { MessagesConfig, RoutesMap } from "./types/index.js";
 import {
   setRequestLocale as _setRequestLocale,
   runWithLocale as _runWithLocale,
@@ -13,6 +13,8 @@ import {
   __resetRequestConfig as _resetRequestConfig,
   __setConfigMessages,
   __setIntlConfig,
+  path as _path,
+  switchLocalePath as _switchLocalePath,
 } from "./core.js";
 
 export type AstroIntlOptions = {
@@ -20,15 +22,17 @@ export type AstroIntlOptions = {
   defaultLocale?: string;
   locales?: string[];
   messages?: MessagesConfig;
+  routes?: RoutesMap;
 };
 
 export default function astroIntl(options: AstroIntlOptions = {}): AstroIntegration {
-  const { enabled = true, defaultLocale, locales, messages } = options;
+  const { enabled = true, defaultLocale, locales, messages, routes } = options;
 
-  if (defaultLocale || locales) {
+  if (defaultLocale || locales || routes) {
     __setIntlConfig({
       ...(defaultLocale && { defaultLocale }),
       ...(locales && { locales }),
+      ...(routes && { routes }),
     });
   }
 
@@ -67,6 +71,8 @@ export const getTranslations = _getTranslations;
 export const getTranslationsReact = _getTranslationsReact;
 export const defineRequestConfig = _defineRequestConfig;
 export const __resetRequestConfig = _resetRequestConfig;
+export const path = _path;
+export const switchLocalePath = _switchLocalePath;
 
 // Exportar tipos
 export type {
@@ -75,5 +81,8 @@ export type {
   GetRequestConfigFn,
   MessagesConfig,
   IntlConfig,
+  RoutesMap,
+  ExtractParams,
+  ParamsForRoute,
 } from "./types/index.js";
 export type { DotPaths } from "./core.js";

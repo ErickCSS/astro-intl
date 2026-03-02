@@ -1,0 +1,126 @@
+---
+import { getTranslations } from "astro-intl";
+import CodeBlock from "../CodeBlock.astro";
+
+const t = getTranslations("docs");
+---
+
+<section id="examples" class="mb-14 scroll-mt-24">
+  <div class="flex items-center gap-3 mb-8">
+    <span class="w-1 h-5 rounded-full" style="background: var(--color-accent);"></span>
+    <h2 class="text-xl font-bold" style="color: var(--color-text);">{t("examples.title")}</h2>
+  </div>
+
+  <!-- Namespaces -->
+  <div class="mb-10">
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("examples.namespaceTitle")}
+    </h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("examples.namespaceDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+    <CodeBlock
+      title="Multiple namespaces in one page"
+      lang="astro"
+      code={`---
+import { setRequestLocale, getTranslations } from "astro-intl";
+import getRequestConfig from "../../i18n/request";
+
+await setRequestLocale(Astro.url, getRequestConfig);
+
+// Each call is scoped to its namespace
+const tNav    = getTranslations("nav");
+const tHero   = getTranslations("hero");
+const tFooter = getTranslations("footer");
+---
+
+<nav>{tNav("home")}</nav>
+<h1>{tHero("title")}</h1>
+<footer>{tFooter("description")}</footer>`}
+    />
+  </div>
+
+  <!-- Interpolation -->
+  <div class="mb-10">
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("examples.interpolationTitle")}
+    </h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("examples.interpolationDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+    <CodeBlock
+      title="Interpolation with variables"
+      lang="astro"
+      code={'---\nimport { setRequestLocale, getTranslations } from "astro-intl";\nimport getRequestConfig from "../../i18n/request";\n\nawait setRequestLocale(Astro.url, getRequestConfig);\n\nconst tHero = getTranslations("hero");\n// en.json: { "hero": { "greeting": "Hello, {name}! You have {count} items." } }\n---\n\n<!-- Simple interpolation -->\n<p>{tHero("greeting", { name: "John", count: 3 })}</p>\n<!-- "Hello, John! You have 3 items." -->\n\n<!-- Markup + interpolation combined -->\n<p set:html={tHero.markup("welcome", {\n  values: { name: "John" },\n  tags: {\n    link: (chunks) => `<a href="/docs">${chunks}</a>`,\n  }\n})} />\n<!-- en.json: "welcome": "Hi {name}, check our <link>docs</link>" -->\n<!-- Result: "Hi John, check our <a href="/docs">docs</a>" -->'}
+    />
+  </div>
+
+  <!-- Type-safe keys -->
+  <div class="mb-10">
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("examples.typeTitle")}
+    </h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("examples.typeDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+    <CodeBlock
+      title="Type-safe with generics"
+      lang="typescript"
+      code={`import type en from "../i18n/messages/en.json";
+
+// Pass the type of your messages JSON
+type HeroMessages = typeof en["hero"];
+
+const tHero = getTranslations<HeroMessages>("hero");
+
+// ✅ Autocomplete works — "title", "description", etc.
+tHero("title");
+
+// ❌ TypeScript error — key doesn't exist
+tHero("nonExistentKey");`}
+    />
+  </div>
+
+  <!-- Reading locale -->
+  <div class="mb-2">
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("examples.localeTitle")}
+    </h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("examples.localeDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+    <CodeBlock
+      title="Locale-aware links"
+      lang="astro"
+      code={'---\nimport { getLocale } from "astro-intl";\n\nconst locale = getLocale(); // "en" | "es"\n---\n\n<!-- Build locale-prefixed URLs -->\n<a href={`/${locale}/docs`}>Documentation</a>\n<a href={`/${locale}/about`}>About</a>'}
+    />
+  </div>
+</section>

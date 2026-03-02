@@ -5,6 +5,24 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.1.0] - 2026
+
+### Added
+
+- **Localized routing system** — define translated URL paths per locale (e.g. `/es/sobre-nosotros` instead of `/es/about`).
+- `path(routeKey, options?)` — generate localized URLs for named routes with dynamic `[param]` substitution. Import from `astro-intl/routing`.
+- `switchLocalePath(currentPath, nextLocale)` — convert the current URL to its equivalent in another locale, preserving params, query strings and hashes. Import from `astro-intl/routing`.
+- `routes` option in `createIntlMiddleware` — the middleware automatically rewrites translated URLs to their canonical filesystem paths (no duplicate page files needed).
+- `routes` option in integration config (`astro.config.mjs`) — for projects that don't use middleware.
+- `RoutesMap` type exported from `astro-intl/types`.
+- Route template validation — detects unbalanced brackets and invalid param names at build time.
+- Route conflict detection — throws on duplicate templates and warns on structurally equivalent ones.
+
+### Changed
+
+- `createIntlMiddleware` signature now accepts `routes?: RoutesMap` in options.
+- New `./routing` export path in package.json for `astro-intl/routing`.
+
 ## [1.0.3] - 2026
 
 ### Changed

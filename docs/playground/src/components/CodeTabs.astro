@@ -1,0 +1,138 @@
+---
+import { codeToHtml } from 'shiki';
+
+interface Tab {
+  label: string;
+  code: string;
+  lang: string;
+}
+
+interface Props {
+  tabs: Tab[];
+}
+
+const { tabs } = Astro.props;
+
+const htmlTabs = await Promise.all(
+  tabs.map(async (tab) => ({
+    label: tab.label,
+    html: await codeToHtml(tab.code.trim(), {
+      lang: tab.lang,
+      theme: 'github-dark',
+    }),
+  }))
+);
+---
+
+<div class="code-tabs rounded-xl overflow-hidden" style="border: 1px solid var(--color-border); background: var(--color-bg-card);">
+  <!-- Tabs Header -->
+  <div class="flex items-center gap-1 px-3 py-2" style="background: var(--color-bg-tertiary); border-bottom: 1px solid var(--color-border);">
+    <!-- Window Dots -->
+    <div class="flex items-center gap-1.5 mr-3">
+      <div class="w-3 h-3 rounded-full" style="background: #ff5f56;"></div>
+      <div class="w-3 h-3 rounded-full" style="background: #ffbd2e;"></div>
+      <div class="w-3 h-3 rounded-full" style="background: #27c93f;"></div>
+    </div>
+    
+    <!-- Tab Buttons -->
+    {htmlTabs.map((tab, index) => (
+      <button
+        class="tab-button px-4 py-1.5 text-xs font-medium rounded-md transition-all"
+        data-tab={index}
+        data-active={index === 0 ? 'true' : 'false'}
+      >
+        {tab.label}
+      </button>
+    ))}
+  </div>
+
+  <!-- Tab Content -->
+  <div class="tab-content-wrapper">
+    {htmlTabs.map((tab, index) => (
+      <div
+        class="tab-content shiki-wrapper"
+        data-tab-content={index}
+        data-active={index === 0 ? 'true' : 'false'}
+        set:html={tab.html}
+      />
+    ))}
+  </div>
+</div>
+
+<style>
+  .tab-button {
+    color: var(--color-text-tertiary);
+    cursor: pointer;
+    border: 1px solid transparent;
+  }
+
+  .tab-button:hover {
+    color: var(--color-text-secondary);
+    background: var(--color-bg-hover);
+  }
+
+  .tab-button[data-active="true"] {
+    color: var(--color-text);
+    background: var(--color-bg-card);
+    border-color: var(--color-border);
+  }
+
+  .tab-content {
+    display: none;
+  }
+
+  .tab-content[data-active="true"] {
+    display: block;
+  }
+
+  .shiki-wrapper :global(pre) {
+    margin: 0 !important;
+    padding: 1.25rem !important;
+    border-radius: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    overflow-x: auto;
+  }
+
+  .shiki-wrapper :global(code) {
+    display: block;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  }
+
+  .shiki-wrapper :global(.line) {
+    display: inline-block;
+    width: 100%;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    
+    tabButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const tabIndex = button.getAttribute('data-tab');
+        const container = button.closest('.code-tabs');
+        
+        if (!container || !tabIndex) return;
+        
+        // Update buttons
+        container.querySelectorAll('.tab-button').forEach((btn) => {
+          btn.setAttribute('data-active', 'false');
+        });
+        button.setAttribute('data-active', 'true');
+        
+        // Update content
+        container.querySelectorAll('.tab-content').forEach((content) => {
+          content.setAttribute('data-active', 'false');
+        });
+        const activeContent = container.querySelector(`[data-tab-content="${tabIndex}"]`);
+        if (activeContent) {
+          activeContent.setAttribute('data-active', 'true');
+        }
+      });
+    });
+  });
+</script>

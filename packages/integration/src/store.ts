@@ -3,6 +3,7 @@ import type {
   MessagesConfig,
   IntlConfig,
   RequestConfig,
+  RoutesMap,
 } from "./types/index.js";
 import { sanitizeLocale } from "./sanitize.js";
 
@@ -66,10 +67,18 @@ export function __setIntlConfig(config: Partial<IntlConfig>) {
   if (config.locales) {
     intlConfig = { ...intlConfig, locales: config.locales };
   }
+  if (config.routes) {
+    intlConfig = { ...intlConfig, routes: config.routes };
+    detectRouteConflicts(config.routes);
+  }
 }
 
 export function getDefaultLocale(): string {
   return intlConfig.defaultLocale;
+}
+
+export function getRoutes(): RoutesMap | undefined {
+  return intlConfig.routes;
 }
 
 export function getLocales(): string[] {
@@ -96,7 +105,41 @@ export function __resetRequestConfig() {
   registeredGetRequestConfig = null;
   configMessages = null;
   fallbackState = null;
-  intlConfig = { defaultLocale: "en", locales: [] };
+  intlConfig = { defaultLocale: "en", locales: [], routes: undefined };
+}
+
+// ─── Route conflict detection ────────────────────────────────────────
+
+function normalizeTemplate(template: string): string {
+  return template.replace(/\[\w+\]/g, "[*]");
+}
+
+function detectRouteConflicts(routes: RoutesMap): void {
+  const keys = Object.keys(routes);
+  for (let i = 0; i < keys.length; i++) {
+    for (let j = i + 1; j < keys.length; j++) {
+      const a = routes[keys[i]];
+      const b = routes[keys[j]];
+      for (const locale of Object.keys(a)) {
+        if (!b[locale]) continue;
+        if (a[locale] === b[locale]) {
+          throw new Error(
+            `[astro-intl] Duplicate route template for locale "${locale}": ` +
+              `"${keys[i]}" and "${keys[j]}" both use "${a[locale]}". ` +
+              `Each routeKey must have a unique template per locale.`
+          );
+        }
+        if (normalizeTemplate(a[locale]) === normalizeTemplate(b[locale])) {
+          console.warn(
+            `[astro-intl] ⚠️  Route conflict detected for locale "${locale}":\n` +
+              `  "${keys[i]}" (${a[locale]})\n` +
+              `  "${keys[j]}" (${b[locale]})\n` +
+              `  Both templates match the same pattern. "${keys[i]}" will take priority.`
+          );
+        }
+      }
+    }
+  }
 }
 
 // ─── Resolve messages from MessagesConfig ───────────────────────────

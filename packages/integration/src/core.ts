@@ -21,3 +21,6 @@ export { getNestedValue, type DotPaths } from "./interpolation.js";
 
 // ─── Sanitisation utilities ─────────────────────────────────────────
 export { sanitizeLocale, sanitizeHtml, escapeRegExp } from "./sanitize.js";
+
+// ─── Routing utilities ──────────────────────────────────────────────
+export { path, switchLocalePath, templateToRegex } from "./routing.js";

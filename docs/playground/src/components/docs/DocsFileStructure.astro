@@ -1,0 +1,74 @@
+---
+import { getTranslations } from "astro-intl";
+
+const t = getTranslations("docs");
+---
+
+<section id="file-structure" class="mb-14 scroll-mt-24">
+  <div class="flex items-center gap-3 mb-2">
+    <span class="w-1 h-5 rounded-full" style="background: var(--color-accent);"></span>
+    <h2 class="text-xl font-bold" style="color: var(--color-text);">{t("fileStructure.title")}</h2>
+  </div>
+  <p class="text-sm mb-6 ml-4" style="color: var(--color-text-tertiary);">{t("fileStructure.description")}</p>
+
+  <div class="rounded-xl overflow-hidden mb-6" style="border: 1px solid var(--color-border);">
+    <div class="flex items-center px-4 py-2.5" style="background: var(--color-bg-tertiary); border-bottom: 1px solid var(--color-border);">
+      <span class="text-xs font-medium" style="color: var(--color-text-tertiary);">Project structure</span>
+    </div>
+    <pre class="rounded-none! border-0! m-0!"><code>{`src/
+├── i18n/
+│   ├── messages/
+│   │   ├── en.json       ← English translations
+│   │   └── es.json       ← Spanish translations
+│   └── request.ts        ← Locale resolver
+├── layouts/
+│   └── Layout.astro      ← Shared layout
+├── pages/
+│   └── [lang]/           ← Dynamic locale segment
+│       ├── index.astro
+│       └── docs.astro
+└── components/
+    └── MyComponent.astro`}</code></pre>
+  </div>
+
+  <div class="space-y-3">
+    <div
+      class="flex items-start gap-3 px-4 py-3 rounded-lg text-sm"
+      style="background: var(--color-bg-card); border: 1px solid var(--color-border);"
+    >
+      <span class="font-mono text-xs px-2 py-0.5 rounded shrink-0 mt-0.5" style="background: var(--color-accent-dim); color: var(--color-accent);">pages/[lang]/</span>
+      <span
+        style="color: var(--color-text-secondary);"
+        set:html={t.markup("fileStructure.pagesNote", {
+          code: (c: string) => `<code>${c}</code>`,
+        })}
+      />
+    </div>
+
+    <div
+      class="flex items-start gap-3 px-4 py-3 rounded-lg text-sm"
+      style="background: var(--color-bg-card); border: 1px solid var(--color-border);"
+    >
+      <span class="font-mono text-xs px-2 py-0.5 rounded shrink-0 mt-0.5" style="background: var(--color-accent-dim); color: var(--color-accent);">messages/</span>
+      <span
+        style="color: var(--color-text-secondary);"
+        set:html={t.markup("fileStructure.messagesNote", {
+          code: (c: string) => `<code>${c}</code>`,
+        })}
+      />
+    </div>
+
+    <div
+      class="flex items-start gap-3 px-4 py-3 rounded-lg text-sm"
+      style="background: var(--color-bg-card); border: 1px solid var(--color-border);"
+    >
+      <span class="font-mono text-xs px-2 py-0.5 rounded shrink-0 mt-0.5" style="background: var(--color-accent-dim); color: var(--color-accent);">request.ts</span>
+      <span
+        style="color: var(--color-text-secondary);"
+        set:html={t.markup("fileStructure.requestNote", {
+          code: (c: string) => `<code>${c}</code>`,
+        })}
+      />
+    </div>
+  </div>
+</section>

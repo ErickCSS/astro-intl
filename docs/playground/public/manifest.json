@@ -1,0 +1,26 @@
+{
+  "name": "astro-intl",
+  "short_name": "astro-intl",
+  "description": "Type-safe internationalization library for Astro. No props drilling, dynamic loading, namespaces support, and rich text formatting.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#3d8b5e",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/logo-astro-intl.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["development", "productivity", "utilities"],
+  "lang": "en",
+  "dir": "ltr"
+}
