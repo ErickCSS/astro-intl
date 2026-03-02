@@ -1,5 +1,6 @@
 ---
 import { getTranslations } from "astro-intl";
+import InstallTabs from "@/components/InstallTabs.astro";
 
 const t = getTranslations("docs");
 ---
@@ -11,36 +12,21 @@ const t = getTranslations("docs");
   </div>
   <p class="text-sm mb-6 ml-4" style="color: var(--color-text-tertiary);">{t("installation.description")}</p>
 
-  <div class="space-y-3 mb-8">
-    <div class="rounded-xl overflow-hidden" style="border: 1px solid var(--color-border);">
-      <div class="flex items-center justify-between px-4 py-2.5" style="background: var(--color-bg-tertiary); border-bottom: 1px solid var(--color-border);">
-        <span class="text-xs font-medium" style="color: var(--color-text-tertiary);">npm</span>
-      </div>
-      <pre class="rounded-none! border-0! m-0!"><code>npm install astro-intl</code></pre>
-    </div>
-
-    <div class="rounded-xl overflow-hidden" style="border: 1px solid var(--color-border);">
-      <div class="flex items-center justify-between px-4 py-2.5" style="background: var(--color-bg-tertiary); border-bottom: 1px solid var(--color-border);">
-        <span class="text-xs font-medium" style="color: var(--color-text-tertiary);">pnpm</span>
-      </div>
-      <pre class="rounded-none! border-0! m-0!"><code>pnpm add astro-intl</code></pre>
-    </div>
-
-    <div class="rounded-xl overflow-hidden" style="border: 1px solid var(--color-border);">
-      <div class="flex items-center justify-between px-4 py-2.5" style="background: var(--color-bg-tertiary); border-bottom: 1px solid var(--color-border);">
-        <span class="text-xs font-medium" style="color: var(--color-text-tertiary);">yarn</span>
-      </div>
-      <pre class="rounded-none! border-0! m-0!"><code>yarn add astro-intl</code></pre>
-    </div>
+  <div class="mb-8">
+    <InstallTabs pkg="astro-intl" />
   </div>
 
   <p class="text-sm mb-4" style="color: var(--color-text-secondary);">{t("installation.addIntegration")}</p>
 
   <div class="rounded-xl overflow-hidden mb-4" style="border: 1px solid var(--color-border);">
-    <div class="flex items-center px-4 py-2.5" style="background: var(--color-bg-tertiary); border-bottom: 1px solid var(--color-border);">
+    <div
+      class="flex items-center px-4 py-2.5"
+      style="background: var(--color-bg-tertiary); border-bottom: 1px solid var(--color-border);"
+    >
       <span class="text-xs font-medium" style="color: var(--color-text-tertiary);">astro.config.mjs</span>
     </div>
-    <pre class="rounded-none! border-0! m-0!"><code>{`import { defineConfig } from 'astro/config';
+    <pre
+      class="rounded-none! border-0! m-0!"><code>{`import { defineConfig } from 'astro/config';
 import astroIntl from 'astro-intl';
 
 export default defineConfig({
@@ -53,7 +39,11 @@ export default defineConfig({
     style="background: var(--color-accent-dim); border: 1px solid var(--color-border-hover); color: var(--color-accent);"
   >
     <svg class="w-4 h-4 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
     </svg>
     <span style="color: var(--color-text-secondary);">{t("installation.integrationNote")}</span>
   </div>

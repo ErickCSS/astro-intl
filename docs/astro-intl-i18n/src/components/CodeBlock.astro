@@ -1,5 +1,5 @@
 ---
-import { codeToHtml } from 'shiki';
+import { codeToHtml } from "shiki";
 
 interface Props {
   code: string;
@@ -7,21 +7,47 @@ interface Props {
   title?: string;
 }
 
-const { code, lang = 'typescript', title } = Astro.props;
+const { code, lang = "typescript", title } = Astro.props;
 
 const html = await codeToHtml(code.trim(), {
   lang,
-  theme: 'github-dark',
+  theme: "github-dark",
 });
 ---
 
-<div class="rounded-xl overflow-hidden" style="border: 1px solid var(--color-border);">
-  {title && (
-    <div class="flex items-center px-4 py-2.5" style="background: var(--color-bg-tertiary); border-bottom: 1px solid var(--color-border);">
-      <span class="text-xs font-medium" style="color: var(--color-text-tertiary);">{title}</span>
-    </div>
-  )}
-  <div class="shiki-wrapper" set:html={html} />
+<div class="code-block rounded-xl overflow-hidden" style="border: 1px solid var(--color-border);">
+  <div
+    class="flex items-center px-4 py-2.5"
+    style="background: var(--color-bg-tertiary); border-bottom: 1px solid var(--color-border);"
+  >
+    {
+      title ? (
+        <span class="text-xs font-medium" style="color: var(--color-text-tertiary);">
+          {title}
+        </span>
+      ) : (
+        <span />
+      )
+    }
+    <button
+      class="copy-btn ml-auto flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs transition-all"
+      aria-label="Copy code"
+    >
+      <svg class="copy-icon w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+        ></path>
+      </svg>
+      <svg class="check-icon w-3.5 h-3.5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+      </svg>
+      <span class="copy-label">Copy</span>
+    </button>
+  </div>
+  <div class="shiki-wrapper" data-code={code.trim()} set:html={html} />
 </div>
 
 <style>
@@ -43,4 +69,54 @@ const html = await codeToHtml(code.trim(), {
     display: inline-block;
     width: 100%;
   }
+
+  .copy-btn {
+    color: var(--color-text-tertiary);
+    border: 1px solid transparent;
+  }
+
+  .copy-btn:hover {
+    color: var(--color-text-secondary);
+    background: var(--color-bg-hover);
+    border-color: var(--color-border);
+  }
+
+  .copy-btn.copied {
+    color: var(--color-accent);
+  }
+
+  .hidden {
+    display: none;
+  }
 </style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".code-block").forEach((block) => {
+      const copyBtn = block.querySelector(".copy-btn");
+      const shikiWrapper = block.querySelector(".shiki-wrapper");
+      if (!copyBtn || !shikiWrapper) return;
+
+      copyBtn.addEventListener("click", () => {
+        const code = shikiWrapper.getAttribute("data-code") ?? "";
+        navigator.clipboard.writeText(code).then(() => {
+          const copyIcon = copyBtn.querySelector(".copy-icon");
+          const checkIcon = copyBtn.querySelector(".check-icon");
+          const label = copyBtn.querySelector(".copy-label");
+
+          copyBtn.classList.add("copied");
+          copyIcon?.classList.add("hidden");
+          checkIcon?.classList.remove("hidden");
+          if (label) label.textContent = "Copied!";
+
+          setTimeout(() => {
+            copyBtn.classList.remove("copied");
+            copyIcon?.classList.remove("hidden");
+            checkIcon?.classList.add("hidden");
+            if (label) label.textContent = "Copy";
+          }, 2000);
+        });
+      });
+    });
+  });
+</script>

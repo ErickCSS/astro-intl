@@ -9,7 +9,7 @@
   "hero": {
     "badge": "Open Source · MIT License",
     "title": "i18n for Astro,",
-    "titleAccent": "done right.",
+    "titleAccent": "zero friction.",
     "subtitle": "Simple and powerful internationalization for Astro",
     "description": "A <bold>type-safe</bold> i18n solution inspired by next-intl, designed specifically for Astro projects.",
     "getStarted": "Get Started",
