@@ -1,0 +1,164 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Navigation from "@/components/Navigation.astro";
+import { getTranslations, getLocale, path, switchLocalePath } from "astro-intl";
+import "@/styles/global.css";
+
+const t = getTranslations("playground");
+const tNav = getTranslations("playground.nav");
+const tRoute = getTranslations("playground.routeInfo");
+const locale = getLocale();
+const otherLocale = locale === "en" ? "es" : "en";
+
+const { slug } = Astro.params;
+const currentPath = Astro.url.pathname;
+const switchedPath = switchLocalePath(currentPath, otherLocale);
+
+const aboutPath = path("about", { locale });
+const shopPath = path("shop", { locale, params: { category: "electronics", id: "42" } });
+
+const SAMPLE_SLUGS = ["hello-world", "astro-intl-guide", "route-mapping"];
+
+export function getStaticPaths() {
+  const slugs = ["hello-world", "astro-intl-guide", "route-mapping"];
+  const locales = ["en", "es"];
+  return locales.flatMap((lang) =>
+    slugs.map((slug) => ({ params: { lang, slug } }))
+  );
+}
+---
+
+<Layout title={`${t("blog.title")}: ${slug} — Route Mapping Playground`}>
+  <Navigation activePage="home" />
+
+  <section class="py-16">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Header -->
+      <div class="mb-10">
+        <div
+          class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium mb-6"
+          style="background: var(--color-accent-dim); border: 1px solid var(--color-border-hover); color: var(--color-accent);"
+        >
+          <span class="w-1.5 h-1.5 rounded-full inline-block" style="background: var(--color-accent);"></span>
+          Route Mapping — [slug]
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4" style="color: var(--color-text);">
+          {t("blog.title")}
+        </h1>
+        <p class="text-lg" style="color: var(--color-text-secondary);">
+          {t("blog.description")}
+        </p>
+      </div>
+
+      <!-- Current post info -->
+      <div
+        class="p-6 rounded-xl mb-8"
+        style="background: var(--color-bg-card); border: 1px solid var(--color-border);"
+      >
+        <p class="text-xl font-semibold mb-2" style="color: var(--color-text);">
+          {t("blog.reading", { slug })}
+        </p>
+        <p class="text-sm" style="color: var(--color-text-tertiary);">
+          slug = <code>{slug}</code>
+        </p>
+      </div>
+
+      <!-- Route Info Panel -->
+      <div
+        class="p-6 rounded-xl mb-8"
+        style="background: var(--color-bg-secondary); border: 1px solid var(--color-border);"
+      >
+        <h2 class="text-xl font-semibold mb-4" style="color: var(--color-accent);">
+          {tRoute("title")}
+        </h2>
+        <div class="space-y-3">
+          <div class="flex items-start gap-3">
+            <span class="text-sm font-medium min-w-[200px]" style="color: var(--color-text-tertiary);">
+              {tRoute("currentPath")}
+            </span>
+            <code class="text-sm">{currentPath}</code>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-sm font-medium min-w-[200px]" style="color: var(--color-text-tertiary);">
+              {tRoute("currentLocale")}
+            </span>
+            <code class="text-sm">{locale}</code>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-sm font-medium min-w-[200px]" style="color: var(--color-text-tertiary);">
+              {tRoute("switchedPath", { locale: otherLocale })}
+            </span>
+            <code class="text-sm">{switchedPath}</code>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-sm font-medium min-w-[200px]" style="color: var(--color-text-tertiary);">
+              {tRoute("pathHelper")}
+            </span>
+            <code class="text-sm">{path("blog", { locale, params: { slug: slug! } })}</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- Other posts -->
+      <div
+        class="p-6 rounded-xl mb-8"
+        style="background: var(--color-bg-secondary); border: 1px solid var(--color-border);"
+      >
+        <h2 class="text-xl font-semibold mb-4" style="color: var(--color-accent);">
+          {t("blog.otherPosts")}
+        </h2>
+        <div class="flex flex-wrap gap-3">
+          {SAMPLE_SLUGS.filter((s) => s !== slug).map((s) => (
+            <a
+              href={path("blog", { locale, params: { slug: s } })}
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+              style="color: var(--color-text-secondary); border: 1px solid var(--color-border);"
+            >
+              {s}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <!-- Navigation to other playground pages -->
+      <div
+        class="p-6 rounded-xl"
+        style="background: var(--color-bg-secondary); border: 1px solid var(--color-border);"
+      >
+        <h2 class="text-xl font-semibold mb-4" style="color: var(--color-accent);">
+          Playground Links
+        </h2>
+        <div class="flex flex-wrap gap-3">
+          <a
+            href={path("home", { locale })}
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+            style="color: var(--color-text-secondary); border: 1px solid var(--color-border);"
+          >
+            {tNav("backHome")}
+          </a>
+          <a
+            href={aboutPath}
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+            style="color: var(--color-text-secondary); border: 1px solid var(--color-border);"
+          >
+            {tNav("about")}
+          </a>
+          <a
+            href={shopPath}
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+            style="color: var(--color-text-secondary); border: 1px solid var(--color-border);"
+          >
+            {tNav("shop")} → electronics/42
+          </a>
+          <a
+            href={switchedPath}
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+            style="background: var(--color-accent-dim); color: var(--color-accent); border: 1px solid var(--color-border-hover);"
+          >
+            Switch to {otherLocale.toUpperCase()} →
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

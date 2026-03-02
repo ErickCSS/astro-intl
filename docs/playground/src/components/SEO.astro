@@ -1,0 +1,133 @@
+---
+import { getLocale } from "astro-intl";
+import { routing } from "@/i18n/routing";
+
+interface Props {
+  title: string;
+  description: string;
+  type?: "website" | "article";
+  image?: string;
+  canonical?: string;
+  noindex?: boolean;
+  keywords?: string[];
+  author?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
+}
+
+const locale = getLocale();
+const {
+  title,
+  description,
+  type = "website",
+  image = "/og-image.png",
+  canonical,
+  noindex = false,
+  keywords = [],
+  author = "Erick Cruz",
+  publishedTime,
+  modifiedTime,
+} = Astro.props;
+
+const siteUrl = Astro.site?.toString() || "https://astro-intl.vercel.app";
+const currentUrl = new URL(Astro.url.pathname, siteUrl).toString();
+const canonicalUrl = canonical || currentUrl;
+const ogImage = new URL(image, siteUrl).toString();
+
+const defaultKeywords = [
+  "astro",
+  "astro-intl",
+  "i18n",
+  "internationalization",
+  "localization",
+  "translation",
+  "multilingual",
+  "astro integration",
+  "type-safe",
+  "typescript",
+  "internationalization library",
+  "i18n library",
+  "astro i18n",
+  "astro translation",
+  "astro intl",
+];
+
+const allKeywords = [...new Set([...defaultKeywords, ...keywords])];
+
+const alternateLanguages = routing.locales.map((lang) => ({
+  lang,
+  url: currentUrl.replace(`/${locale}`, `/${lang}`),
+}));
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": type === "article" ? "TechArticle" : "WebSite",
+  name: title,
+  description: description,
+  url: canonicalUrl,
+  image: ogImage,
+  inLanguage: locale,
+  author: {
+    "@type": "Person",
+    name: author,
+  },
+  publisher: {
+    "@type": "Organization",
+    name: "astro-intl",
+    logo: {
+      "@type": "ImageObject",
+      url: new URL("/logo-astro-intl.svg", siteUrl).toString(),
+    },
+  },
+  ...(publishedTime && { datePublished: publishedTime }),
+  ...(modifiedTime && { dateModified: modifiedTime }),
+};
+---
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="generator" content={Astro.generator} />
+
+<title>{title}</title>
+<meta name="description" content={description} />
+{keywords.length > 0 && <meta name="keywords" content={allKeywords.join(", ")} />}
+<meta name="author" content={author} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+<link rel="canonical" href={canonicalUrl} />
+
+{alternateLanguages.map(({ lang, url }) => <link rel="alternate" hreflang={lang} href={url} />)}
+<link
+  rel="alternate"
+  hreflang="x-default"
+  href={currentUrl.replace(`/${locale}`, `/${routing.defaultLocale}`)}
+/>
+
+<meta property="og:type" content={type} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:alt" content={title} />
+<meta
+  property="og:locale"
+  content={routing.hreflang[locale as keyof typeof routing.hreflang]?.replace("-", "_") || locale}
+/>
+<meta property="og:site_name" content="astro-intl" />
+{publishedTime && <meta property="article:published_time" content={publishedTime} />}
+{modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+<meta name="twitter:image:alt" content={title} />
+<meta name="twitter:creator" content="@ErickCSS" />
+<meta name="twitter:site" content="@ErickCSS" />
+
+<link rel="icon" type="image/svg+xml" href="/logo-astro-intl.svg" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/manifest.json" />
+<meta name="theme-color" content="#3d8b5e" />
+
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

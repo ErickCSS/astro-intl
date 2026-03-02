@@ -1,0 +1,130 @@
+---
+import { getLocale, switchLocalePath } from "astro-intl";
+import { routing } from "@/i18n/routing";
+
+const currentLocale = getLocale();
+const currentPath = Astro.url.pathname;
+
+const FLAG_MAP: Record<string, string> = {
+  es: "fi fi-do",
+  en: "fi fi-us",
+};
+
+const locales = [...routing.locales];
+const switchedPaths: Record<string, string> = {};
+for (const code of locales) {
+  switchedPaths[code] = switchLocalePath(currentPath, code);
+}
+---
+
+<div class="relative" id="lang-dropdown" data-locales={locales.join(",")}>
+  <button
+    id="lang-trigger"
+    class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors cursor-pointer"
+    style="color: var(--color-text-secondary); border: 1px solid var(--color-border);"
+    aria-haspopup="listbox"
+    aria-expanded="false"
+  >
+    <span class={`${FLAG_MAP[currentLocale] ?? "fi fi-us"} fis rounded-sm`}></span>
+    <span>{currentLocale.toUpperCase()}</span>
+    <svg
+      class="size-3.5 transition-transform duration-200"
+      id="lang-chevron"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      style="opacity: 0.5;"
+    >
+      <path d="m6 9 6 6 6-6"></path>
+    </svg>
+  </button>
+
+  <ul
+    id="lang-menu"
+    role="listbox"
+    class="absolute right-0 mt-2 w-32 rounded-lg overflow-hidden hidden z-50"
+    style="background: var(--color-bg-secondary); border: 1px solid var(--color-border); box-shadow: 0 8px 24px rgba(0,0,0,0.4);"
+  >
+    {
+      locales.map((code) => (
+        <li
+          role="option"
+          aria-selected={code === currentLocale}
+          data-locale={code}
+          data-href={switchedPaths[code]}
+          class="flex items-center gap-2.5 px-3 py-2.5 text-sm cursor-pointer transition-colors"
+          style={
+            code === currentLocale
+              ? "color: var(--color-accent); background: var(--color-accent-dim);"
+              : "color: var(--color-text-tertiary);"
+          }
+        >
+          <span class={`${FLAG_MAP[code] ?? "fi fi-us"} fis rounded-sm`} />
+          {code.toUpperCase()}
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<script>
+  let langSelectorController: AbortController | null = null;
+
+  const initLanguageSelector = () => {
+    const dropdown = document.getElementById("lang-dropdown");
+    const trigger = document.getElementById("lang-trigger");
+    const menu = document.getElementById("lang-menu");
+    const chevron = document.getElementById("lang-chevron");
+
+    if (!dropdown || !trigger || !menu || !chevron) return;
+
+    if (langSelectorController) langSelectorController.abort();
+    langSelectorController = new AbortController();
+    const { signal } = langSelectorController;
+
+    const locales = dropdown.dataset.locales!.split(",");
+
+    function toggleMenu(open: boolean) {
+      menu!.classList.toggle("hidden", !open);
+      chevron!.style.transform = open ? "rotate(180deg)" : "";
+      trigger!.setAttribute("aria-expanded", String(open));
+    }
+
+    trigger.addEventListener(
+      "click",
+      () => {
+        const isOpen = !menu.classList.contains("hidden");
+        toggleMenu(!isOpen);
+      },
+      { signal },
+    );
+
+    document.addEventListener(
+      "click",
+      (e) => {
+        if (!dropdown.contains(e.target as Node)) toggleMenu(false);
+      },
+      { signal },
+    );
+
+    menu.querySelectorAll("li").forEach((item) => {
+      item.addEventListener(
+        "click",
+        () => {
+          const href = (item as HTMLElement).dataset.href;
+          if (href) {
+            window.location.href = href;
+          }
+        },
+        { signal },
+      );
+    });
+  };
+
+  initLanguageSelector();
+  document.addEventListener("astro:page-load", initLanguageSelector);
+</script>

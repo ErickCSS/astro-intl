@@ -1,0 +1,9 @@
+{
+  "name": "astro-intl-monorepo",
+  "private": true,
+  "pnpm": {
+    "overrides": {
+      "path-to-regexp@>=4.0.0 <6.3.0": "6.3.0"
+    }
+  }
+}

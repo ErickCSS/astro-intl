@@ -1,0 +1,337 @@
+---
+import { getTranslations } from "astro-intl";
+import CodeBlock from "../CodeBlock.astro";
+
+const t = getTranslations("docs");
+---
+
+<section id="routing" class="mb-14 scroll-mt-24">
+  <div class="flex items-center gap-3 mb-8">
+    <span class="w-1 h-5 rounded-full" style="background: var(--color-accent);"></span>
+    <h2 class="text-xl font-bold" style="color: var(--color-text);">{t("routing.title")}</h2>
+  </div>
+
+  <p
+    class="text-sm mb-8"
+    style="color: var(--color-text-secondary);"
+    set:html={t.markup("routing.intro", {
+      code: (c: string) => `<code>${c}</code>`,
+    })}
+  />
+
+  <!-- Step 1: Define routes -->
+  <div class="mb-10">
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("routing.defineRoutesTitle")}
+    </h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("routing.defineRoutesDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+    <CodeBlock
+      title="src/i18n/routing.ts"
+      lang="typescript"
+      code={`export const routing = {
+  locales: ["en", "es"],
+  defaultLocale: "en",
+  routes: {
+    home:  { en: "/",                      es: "/" },
+    about: { en: "/about",                 es: "/sobre-nosotros" },
+    blog:  { en: "/blog/[slug]",           es: "/blog/[slug]" },
+    shop:  { en: "/shop/[category]/[id]",  es: "/tienda/[category]/[id]" },
+  },
+} as const;`}
+    />
+  </div>
+
+  <!-- Step 2a: With Middleware -->
+  <div class="mb-10">
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("routing.withMiddlewareTitle")}
+    </h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("routing.withMiddlewareDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+
+    <div class="mb-4">
+      <p class="text-xs font-medium mb-2" style="color: var(--color-text-secondary);">
+        {t("routing.withMiddlewareStep1")}
+      </p>
+      <CodeBlock
+        title="src/middleware.ts"
+        lang="typescript"
+        code={'import "@/i18n/request";\nimport { createIntlMiddleware } from "astro-intl/middleware";\nimport { routing } from "@/i18n/routing";\n\nexport const onRequest = createIntlMiddleware(routing);'}
+      />
+    </div>
+
+    <div class="mb-4">
+      <p class="text-xs font-medium mb-2" style="color: var(--color-text-secondary);">
+        {t("routing.withMiddlewareStep2")}
+      </p>
+      <CodeBlock
+        title="File structure"
+        lang="text"
+        code={`src/pages/
+└── [lang]/
+    ├── index.astro        ← /en/  and  /es/
+    ├── about.astro        ← /en/about  and  /es/sobre-nosotros
+    ├── blog/
+    │   └── [slug].astro   ← /en/blog/my-post  and  /es/blog/mi-post
+    └── shop/
+        └── [category]/
+            └── [id].astro ← /en/shop/clothing/42  and  /es/tienda/clothing/42`}
+      />
+    </div>
+
+    <!-- How it works callout -->
+    <div
+      class="flex items-start gap-3 px-4 py-3 rounded-lg text-sm"
+      style="background: var(--color-accent-dim); border: 1px solid var(--color-border-hover); color: var(--color-accent);"
+    >
+      <svg class="w-4 h-4 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <div>
+        <span class="font-semibold text-xs block mb-1" style="color: var(--color-accent);"
+          >{t("routing.withMiddlewareHow")}</span
+        >
+        <span
+          style="color: var(--color-text-secondary);"
+          set:html={t.markup("routing.withMiddlewareHowDescription", {
+            code: (c: string) => `<code>${c}</code>`,
+          })}
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2b: Without Middleware -->
+  <div class="mb-10">
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("routing.withoutMiddlewareTitle")}
+    </h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("routing.withoutMiddlewareDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+    <CodeBlock
+      title="astro.config.mjs"
+      lang="javascript"
+      code={'import { defineConfig } from "astro/config";\nimport astroIntl from "astro-intl";\n\nexport default defineConfig({\n  integrations: [\n    astroIntl({\n      defaultLocale: "en",\n      locales: ["en", "es"],\n      routes: {\n        about: { en: "/about", es: "/sobre-nosotros" },\n        blog:  { en: "/blog/[slug]", es: "/blog/[slug]" },\n      },\n    }),\n  ],\n});'}
+    />
+
+    <!-- Warning callout -->
+    <div
+      class="flex items-start gap-3 px-4 py-3 rounded-lg text-sm mt-4"
+      style="background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.25); color: #fbbf24;"
+    >
+      <svg class="w-4 h-4 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <span
+        style="color: var(--color-text-secondary);"
+        set:html={t.markup("routing.withoutMiddlewareNote", {
+          code: (c: string) => `<code>${c}</code>`,
+        })}
+      />
+    </div>
+
+    <!-- Astro native routing example -->
+    <div
+      class="mt-6 p-4 rounded-lg"
+      style="background: var(--color-bg-secondary); border: 1px solid var(--color-border);"
+    >
+      <h4 class="text-sm font-semibold mb-2" style="color: var(--color-text);">
+        {t("routing.withoutMiddlewareExampleTitle")}
+      </h4>
+      <p
+        class="text-sm mb-4"
+        style="color: var(--color-text-tertiary);"
+        set:html={t.markup("routing.withoutMiddlewareExampleDescription", {
+          code: (c: string) => `<code>${c}</code>`,
+        })}
+      />
+
+      <div class="mb-4">
+        <p class="text-xs font-medium mb-2" style="color: var(--color-text-secondary);">
+          {t("routing.withoutMiddlewareExampleStep1")}
+        </p>
+        <CodeBlock
+          title="src/pages/[lang]/about.astro"
+          lang="astro"
+          code={'---\nimport Layout from "@/layouts/Layout.astro";\nimport { getTranslations } from "astro-intl";\n\nconst t = getTranslations("about");\n\nexport function getStaticPaths() {\n  return [\n    { params: { lang: "en" } },\n    { params: { lang: "es" } },\n  ];\n}\n---\n\n<Layout title={t("title")}>\n  <h1>{t("heading")}</h1>\n  <p>{t("description")}</p>\n</Layout>'}
+        />
+      </div>
+
+      <div class="mb-4">
+        <p class="text-xs font-medium mb-2" style="color: var(--color-text-secondary);">
+          {t("routing.withoutMiddlewareExampleStep2")}
+        </p>
+        <CodeBlock
+          title="src/pages/[lang]/sobre-nosotros.astro"
+          lang="astro"
+          code={'---\n// Re-export everything from the canonical page\nexport { default } from "./about.astro";\nexport { getStaticPaths } from "./about.astro";\n---'}
+        />
+      </div>
+
+      <div class="mb-4">
+        <p class="text-xs font-medium mb-2" style="color: var(--color-text-secondary);">
+          {t("routing.withoutMiddlewareExampleStep3")}
+        </p>
+        <CodeBlock
+          title="File structure"
+          lang="text"
+          code={`src/pages/[lang]/
+├── about.astro              ← Canonical page (all the logic)
+├── sobre-nosotros.astro     ← Wrapper (2 lines, re-exports about.astro)
+├── blog/
+│   └── [slug].astro         ← Same URL structure, no wrapper needed
+└── shop/
+    └── [category]/
+        └── [id].astro       ← Canonical for /shop/:category/:id
+
+src/pages/[lang]/tienda/
+└── [category]/
+    └── [id].astro           ← Wrapper (re-exports ../shop/[category]/[id].astro)`}
+        />
+      </div>
+
+      <!-- Success callout -->
+      <div
+        class="flex items-start gap-3 px-4 py-3 rounded-lg text-sm"
+        style="background: var(--color-accent-dim); border: 1px solid var(--color-border-hover); color: var(--color-accent);"
+      >
+        <svg class="w-4 h-4 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+        <span
+          style="color: var(--color-text-secondary);"
+          set:html={t.markup("routing.withoutMiddlewareExampleNote", {
+            code: (c: string) => `<code>${c}</code>`,
+          })}
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3: path() -->
+  <div class="mb-10">
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("routing.pathTitle")}
+    </h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("routing.pathDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+    <CodeBlock
+      title="src/pages/[lang]/index.astro"
+      lang="astro"
+      code={'---\nimport { path } from "astro-intl/routing";\n---\n\n<!-- Simple route -->\n<a href={path("about")}>About</a>\n<!-- Current locale "en" → /en/about -->\n<!-- Current locale "es" → /es/sobre-nosotros -->\n\n<!-- Explicit locale -->\n<a href={path("about", { locale: "es" })}>Sobre nosotros</a>\n<!-- → /es/sobre-nosotros -->\n\n<!-- With params -->\n<a href={path("blog", { params: { slug: "hello-world" } })}>Read post</a>\n<!-- → /en/blog/hello-world -->\n\n<!-- Multiple params -->\n<a href={path("shop", { locale: "es", params: { category: "ropa", id: "42" } })}>\n  Ver producto\n</a>\n<!-- → /es/tienda/ropa/42 -->'}
+    />
+  </div>
+
+  <!-- Step 4: switchLocalePath() -->
+  <div class="mb-10">
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("routing.switchTitle")}
+    </h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("routing.switchDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+    <CodeBlock
+      title="src/components/LanguageSelector.astro"
+      lang="astro"
+      code={'---\nimport { switchLocalePath } from "astro-intl/routing";\n\nconst currentPath = Astro.url.pathname;\n---\n\n<nav>\n  <a href={switchLocalePath(currentPath, "en")}>English</a>\n  <a href={switchLocalePath(currentPath, "es")}>Español</a>\n</nav>\n\n<!-- On /en/about         → switches to /es/sobre-nosotros -->\n<!-- On /es/tienda/ropa/42 → switches to /en/shop/ropa/42 -->\n<!-- On /en/unknown/page   → falls back to /es/unknown/page -->'}
+    />
+
+    <div
+      class="flex items-start gap-3 px-4 py-3 rounded-lg text-sm mt-4"
+      style="background: var(--color-bg-card); border: 1px solid var(--color-border);"
+    >
+      <svg class="w-4 h-4 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <span
+        style="color: var(--color-text-secondary);"
+        set:html={t.markup("routing.switchNote", {
+          code: (c: string) => `<code>${c}</code>`,
+        })}
+      />
+    </div>
+  </div>
+
+  <!-- Dynamic parameters -->
+  <div class="mb-2">
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("routing.paramsTitle")}
+    </h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("routing.paramsDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+    <CodeBlock
+      title="Route with multiple params"
+      lang="typescript"
+      code={`import { path } from "astro-intl/routing";
+
+// Route defined as:
+// shop: { en: "/shop/[category]/[id]", es: "/tienda/[category]/[id]" }
+
+const url = path("shop", {
+  locale: "es",
+  params: { category: "electronics", id: "123" },
+});
+// → /es/tienda/electronics/123`}
+    />
+  </div>
+</section>

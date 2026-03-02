@@ -13,7 +13,24 @@ export type MessagesConfig = Record<
   | (() => Promise<{ default: Record<string, unknown> } | Record<string, unknown>>)
 >;
 
+export type RoutesMap = {
+  [routeKey: string]: {
+    [locale: string]: string;
+  };
+};
+
+// ─── Type-level param extraction from route templates ────────────────
+
+export type ExtractParams<T extends string> = T extends `${string}[${infer P}]${infer Rest}`
+  ? P | ExtractParams<Rest>
+  : never;
+
+export type ParamsForRoute<Template extends string> = [ExtractParams<Template>] extends [never]
+  ? Record<string, never>
+  : Record<ExtractParams<Template>, string>;
+
 export type IntlConfig = {
   defaultLocale: string;
   locales: string[];
+  routes?: RoutesMap;
 };

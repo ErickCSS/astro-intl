@@ -1,0 +1,44 @@
+---
+import { getLocale } from "astro-intl";
+import SEO from "@/components/SEO.astro";
+import "flag-icons/css/flag-icons.min.css";
+import Analytics from "@vercel/analytics/astro";
+
+const locale = getLocale();
+
+interface Props {
+  title?: string;
+  description?: string;
+  type?: "website" | "article";
+  image?: string;
+  keywords?: string[];
+  noindex?: boolean;
+}
+
+const {
+  title = "Astro-intl — Simple and powerful i18n for Astro",
+  description = "Type-safe internationalization library for Astro. No props drilling, dynamic loading, namespaces support, and rich text formatting.",
+  type = "website",
+  image,
+  keywords = [],
+  noindex = false,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <SEO
+      title={title}
+      description={description}
+      type={type}
+      image={image}
+      keywords={keywords}
+      noindex={noindex}
+    />
+  </head>
+  <body>
+    <slot />
+    <Analytics />
+  </body>
+</html>

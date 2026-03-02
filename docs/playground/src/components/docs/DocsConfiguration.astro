@@ -1,0 +1,249 @@
+---
+import { getTranslations } from "astro-intl";
+import CodeBlock from "../CodeBlock.astro";
+
+const t = getTranslations("docs");
+---
+
+<section id="configuration" class="mb-14 scroll-mt-24">
+  <div class="flex items-center gap-3 mb-8">
+    <span class="w-1 h-5 rounded-full" style="background: var(--color-accent);"></span>
+    <h2 class="text-xl font-bold" style="color: var(--color-text);">{t("configuration.title")}</h2>
+  </div>
+
+  <!-- Step 1: messages -->
+  <div class="mb-10">
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("configuration.messagesTitle")}
+    </h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("configuration.messagesDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+    <CodeBlock
+      title="src/i18n/messages/en.json"
+      lang="json"
+      code={`{
+  "nav": {
+    "home": "Home",
+    "docs": "Documentation"
+  },
+  "hero": {
+    "title": "Hello, World!",
+    "description": "Welcome to <bold>astro-intl</bold>"
+  }
+}`}
+    />
+  </div>
+
+  <!-- Step 2: Choose approach -->
+  <div class="mb-10">
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("configuration.approachTitle")}
+    </h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("configuration.approachDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+
+    <!-- No-middleware note -->
+    <div
+      class="flex items-start gap-3 px-4 py-3 rounded-lg text-sm mb-6"
+      style="background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.25); color: #fbbf24;"
+    >
+      <svg class="w-4 h-4 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <span
+        style="color: var(--color-text-secondary);"
+        set:html={t.markup("configuration.noMiddlewareNote", {
+          code: (c: string) => `<code>${c}</code>`,
+        })}
+      />
+    </div>
+
+    <!-- Simple approach -->
+    <div
+      class="mb-6 p-4 rounded-lg"
+      style="background: var(--color-bg-secondary); border: 1px solid var(--color-border);"
+    >
+      <h4 class="text-sm font-semibold mb-2" style="color: var(--color-text);">
+        {t("configuration.simpleTitle")}
+      </h4>
+      <p
+        class="text-sm mb-3"
+        style="color: var(--color-text-tertiary);"
+        set:html={t.markup("configuration.simpleDescription", {
+          code: (c: string) => `<code>${c}</code>`,
+        })}
+      />
+      <CodeBlock
+        title="astro.config.mjs"
+        lang="javascript"
+        code={'import { defineConfig } from "astro/config";\nimport astroIntl from "astro-intl";\n\nexport default defineConfig({\n  integrations: [\n    astroIntl({\n      defaultLocale: "en",\n      locales: ["en", "es"],\n      messages: {\n        en: () => import("./src/i18n/messages/en.json"),\n        es: () => import("./src/i18n/messages/es.json"),\n      },\n    }),\n  ],\n});'}
+      />
+    </div>
+
+    <!-- Advanced approach -->
+    <div
+      class="mb-2 p-4 rounded-lg"
+      style="background: var(--color-bg-secondary); border: 1px solid var(--color-border);"
+    >
+      <h4 class="text-sm font-semibold mb-2" style="color: var(--color-text);">
+        {t("configuration.advancedTitle")}
+      </h4>
+      <p
+        class="text-sm mb-3"
+        style="color: var(--color-text-tertiary);"
+        set:html={t.markup("configuration.advancedDescription", {
+          code: (c: string) => `<code>${c}</code>`,
+        })}
+      />
+      <CodeBlock
+        title="src/i18n/request.ts"
+        lang="typescript"
+        code={'import { defineRequestConfig } from "astro-intl";\n\nexport default defineRequestConfig(async (locale) => {\n  return {\n    locale,\n    messages: (await import(`./messages/${locale}.json`)).default,\n  };\n});'}
+      />
+      <div class="mt-3">
+        <p class="text-xs font-medium mb-2" style="color: var(--color-text-secondary);">
+          {t("configuration.advancedConfigLabel")}
+        </p>
+        <CodeBlock
+          title="astro.config.mjs"
+          lang="javascript"
+          code={'import { defineConfig } from "astro/config";\nimport astroIntl from "astro-intl";\n\nexport default defineConfig({\n  integrations: [\n    astroIntl({\n      defaultLocale: "en",\n      locales: ["en", "es"],\n    }),\n  ],\n});'}
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3: Layout -->
+  <div class="mb-10">
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("configuration.layoutTitle")}
+    </h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("configuration.layoutDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+    <div class="mb-4">
+      <p class="text-xs font-medium mb-2" style="color: var(--color-text-secondary);">
+        {t("configuration.layoutSimpleLabel")}
+      </p>
+      <CodeBlock
+        title="src/layouts/Layout.astro"
+        lang="astro"
+        code={'---\nimport { setRequestLocale } from "astro-intl";\n\n// No need to import anything — messages come from astro.config\nawait setRequestLocale(Astro.url);\n---\n\n<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Site</title>\n  </head>\n  <body>\n    <slot />\n  </body>\n</html>'}
+      />
+    </div>
+    <div>
+      <p class="text-xs font-medium mb-2" style="color: var(--color-text-secondary);">
+        {t("configuration.layoutAdvancedLabel")}
+      </p>
+      <CodeBlock
+        title="src/layouts/Layout.astro"
+        lang="astro"
+        code={'---\nimport { setRequestLocale } from "astro-intl";\nimport "../i18n/request"; // registers defineRequestConfig\n\nawait setRequestLocale(Astro.url);\n---\n\n<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Site</title>\n  </head>\n  <body>\n    <slot />\n  </body>\n</html>'}
+      />
+    </div>
+  </div>
+
+  <!-- Step 3b: Middleware approach -->
+  <div class="mb-10">
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("configuration.middlewareTitle")}
+    </h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("configuration.middlewareDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+    <div class="mb-4">
+      <p class="text-xs font-medium mb-2" style="color: var(--color-text-secondary);">
+        {t("configuration.middlewareRoutingLabel")}
+      </p>
+      <CodeBlock
+        title="src/i18n/routing.ts"
+        lang="typescript"
+        code={`export const routing = {
+  locales: ["en", "es"],
+  defaultLocale: "en",
+} as const;`}
+      />
+    </div>
+    <div class="mb-4">
+      <p class="text-xs font-medium mb-2" style="color: var(--color-text-secondary);">
+        {t("configuration.middlewareFileLabel")}
+      </p>
+      <CodeBlock
+        title="src/middleware.ts"
+        lang="typescript"
+        code={'import "@/i18n/request";\nimport { createIntlMiddleware } from "astro-intl/middleware";\nimport { routing } from "@/i18n/routing";\n\nexport const onRequest = createIntlMiddleware(routing);'}
+      />
+    </div>
+    <div>
+      <p class="text-xs font-medium mb-2" style="color: var(--color-text-secondary);">
+        {t("configuration.middlewareConfigLabel")}
+      </p>
+      <CodeBlock
+        title="astro.config.mjs"
+        lang="javascript"
+        code={'import { defineConfig } from "astro/config";\nimport astroIntl from "astro-intl";\n\nexport default defineConfig({\n  integrations: [astroIntl()],\n});'}
+      />
+    </div>
+  </div>
+
+  <!-- Step 4: getStaticPaths -->
+  <div class="mb-2">
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("configuration.staticPathsTitle")}
+    </h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("configuration.staticPathsDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+    <CodeBlock
+      title="src/pages/[lang]/index.astro"
+      lang="typescript"
+      code={`export function getStaticPaths() {
+  return [
+    { params: { lang: "en" } },
+    { params: { lang: "es" } },
+  ];
+}`}
+    />
+  </div>
+</section>

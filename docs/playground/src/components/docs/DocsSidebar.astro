@@ -8,7 +8,6 @@ const sections = [
   { id: "file-structure", label: t("sidebar.fileStructure") },
   { id: "configuration", label: t("sidebar.configuration") },
   { id: "usage", label: t("sidebar.usage") },
-  { id: "routing", label: t("sidebar.routing") },
   { id: "api", label: t("sidebar.api") },
   { id: "examples", label: t("sidebar.examples") },
 ];
@@ -22,27 +21,27 @@ const sections = [
     {t("sidebar.gettingStarted")}
   </p>
   <ul class="space-y-0.5">
-    {
-      sections.map((s) => (
-        <li>
-          <a
-            href={`#${s.id}`}
-            class="sidebar-link block py-2 px-3 text-sm transition-all duration-150 relative"
-            data-section={s.id}
-            style="color: var(--color-text-tertiary); border-left: 2px solid transparent; margin-left: -1px;"
-          >
-            {s.label}
-          </a>
-        </li>
-      ))
-    }
+    {sections.map((s) => (
+      <li>
+        <a
+          href={`#${s.id}`}
+          class="sidebar-link block py-2 px-3 text-sm transition-all duration-150 relative"
+          data-section={s.id}
+          style="color: var(--color-text-tertiary); border-left: 2px solid transparent; margin-left: -1px;"
+        >
+          {s.label}
+        </a>
+      </li>
+    ))}
   </ul>
 </div>
 
 <script>
   function initSidebar() {
     const links = document.querySelectorAll<HTMLAnchorElement>(".sidebar-link");
-    const sectionEls = Array.from(links).map((l) => document.getElementById(l.dataset.section!));
+    const sectionEls = Array.from(links).map((l) =>
+      document.getElementById(l.dataset.section!)
+    );
 
     function setActive(id: string) {
       links.forEach((l) => {
@@ -62,7 +61,7 @@ const sections = [
           }
         }
       },
-      { rootMargin: "-10% 0px -75% 0px" },
+      { rootMargin: "-10% 0px -75% 0px" }
     );
 
     sectionEls.forEach((s) => s && observer.observe(s));

@@ -21,6 +21,8 @@ Para documentación completa, ejemplos y guías, visita:
 - 🛠️ **TypeScript first** - Escrito completamente en TypeScript
 - 🛡️ **Concurrency-safe** - `AsyncLocalStorage` en SSR para aislar requests concurrentes
 - 🌐 **Multi-runtime** - Compatible con Node.js, Cloudflare Workers y Deno
+- 🗺️ **Routing localizado** - URLs traducidas por locale con rewrites automáticos via middleware
+- 🔗 **Generación de URLs** - `path()` y `switchLocalePath()` para construir URLs localizadas
 
 ## 📦 Instalación
 
@@ -89,6 +91,7 @@ const t = useTranslations();
 
 - **[Documentación completa](https://astro-intl.dev)** - Guías, API y ejemplos
 - **[Configuración](https://astro-intl.dev/docs#configuration)** - Opciones de configuración
+- **[Routing](https://astro-intl.dev/docs#routing)** - URLs traducidas por locale
 - **[Ejemplos](https://astro-intl.dev/docs#examples)** - Casos de uso comunes
 
 ## 🤝 Contribuir

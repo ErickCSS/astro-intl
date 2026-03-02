@@ -98,8 +98,7 @@
       "configuration": "Configuración",
       "usage": "Uso",
       "api": "Referencia de API",
-      "examples": "Ejemplos",
-      "routing": "Routing"
+      "examples": "Ejemplos"
     },
     "hero": {
       "badge": "Documentación",
@@ -218,55 +217,13 @@
       },
       "createIntlMiddleware": {
         "name": "createIntlMiddleware",
-        "signature": "createIntlMiddleware(options: { locales: string[]; defaultLocale?: string; routes?: RoutesMap })",
-        "description": "Crea un middleware de Astro que llama automáticamente a <code>setRequestLocale</code> en cada request. También establece <code>locales</code>, <code>defaultLocale</code> y <code>routes</code> en el store de intl. Cuando se proporcionan <code>routes</code>, el middleware reescribe las URLs traducidas a sus rutas canónicas del filesystem. Importar desde <code>astro-intl/middleware</code>."
-      },
-      "path": {
-        "name": "path",
-        "signature": "path(routeKey: string, options?: { locale?: string; params?: Record<string, string>; encode?: boolean }): string",
-        "description": "Genera una URL localizada para una ruta nombrada. Usa el locale actual si no se especifica uno. Sustituye los placeholders <code>[param]</code> con los params proporcionados. Importar desde <code>astro-intl/routing</code>."
-      },
-      "switchLocalePath": {
-        "name": "switchLocalePath",
-        "signature": "switchLocalePath(currentPath: string | URL, nextLocale: string): string",
-        "description": "Convierte la URL actual a su equivalente en otro locale. Matchea la ruta contra los templates de rutas, extrae los params dinámicos y reconstruye la URL usando el template del locale destino. Preserva query strings y hashes. Importar desde <code>astro-intl/routing</code>."
+        "signature": "createIntlMiddleware(options: { locales: string[]; defaultLocale?: string })",
+        "description": "Crea un middleware de Astro que llama automáticamente a <code>setRequestLocale</code> en cada request. También establece <code>locales</code> y <code>defaultLocale</code> en el store de intl, por lo que no necesitas pasarlos en <code>astro.config.mjs</code>. Importar desde <code>astro-intl/middleware</code>."
       },
       "dotPaths": {
         "name": "DotPaths<T>",
         "description": "Tipo utilitario que genera todos los paths válidos en notación de puntos para un objeto de mensajes dado. Se usa internamente para proveer autocompletado en las claves de traducción."
-      },
-      "routesMap": {
-        "name": "RoutesMap",
-        "description": "Tipo para el objeto de configuración de rutas. Mapea claves de ruta a un objeto de locale → template de URL. Ejemplo: <code>{ about: { en: \"/about\", es: \"/sobre-nosotros\" } }</code>."
       }
-    },
-    "routing": {
-      "title": "Routing",
-      "intro": "astro-intl provee un sistema de routing que te permite definir <code>rutas URL traducidas</code> para cada locale. Esto permite URLs localizadas como <code>/es/sobre-nosotros</code> en lugar de <code>/es/about</code>.",
-      "defineRoutesTitle": "1. Define tus rutas",
-      "defineRoutesDescription": "Agrega un mapa de <code>routes</code> a tu configuración de routing. Cada clave es un nombre de ruta, y cada valor mapea locales a sus templates de URL. Usa <code>[param]</code> para segmentos dinámicos.",
-      "withMiddlewareTitle": "2a. Con Middleware (recomendado)",
-      "withMiddlewareDescription": "Cuando usas <code>createIntlMiddleware</code>, pasa tus rutas en la config. El middleware automáticamente <code>reescribirá</code> las URLs traducidas a sus rutas canónicas del filesystem — sin archivos de página extra.",
-      "withMiddlewareStep1": "Pasa las rutas al middleware:",
-      "withMiddlewareStep2": "Tu filesystem solo necesita las rutas del locale por defecto:",
-      "withMiddlewareHow": "Cómo funciona",
-      "withMiddlewareHowDescription": "Cuando un usuario visita <code>/es/sobre-nosotros</code>, el middleware lo matchea contra el mapa de <code>routes</code>, encuentra el template canónico (<code>/about</code>) y reescribe la petición a <code>/es/about</code> — que mapea a tu archivo <code>[lang]/about.astro</code>. Sin páginas duplicadas.",
-      "withoutMiddlewareTitle": "2b. Sin Middleware",
-      "withoutMiddlewareDescription": "Si prefieres no usar middleware, aún puedes usar <code>path()</code> y <code>switchLocalePath()</code> para generación de URLs. Configura las rutas via las opciones de la integración.",
-      "withoutMiddlewareNote": "Sin middleware, <strong>no hay rewrites automáticos</strong>. Necesitas crear archivos de página para cada ruta traducida. Lo más simple es crear páginas wrapper que re-exporten la canónica.",
-      "withoutMiddlewareExampleTitle": "Ejemplo: Routing nativo de Astro para rutas traducidas",
-      "withoutMiddlewareExampleDescription": "Crea un archivo de página para cada URL traducida. Estas páginas \"wrapper\" simplemente re-exportan todo desde la página canónica (locale por defecto) — cero duplicación.",
-      "withoutMiddlewareExampleStep1": "Tu página canónica (rutas del locale por defecto):",
-      "withoutMiddlewareExampleStep2": "Crea la ruta traducida como un wrapper ligero:",
-      "withoutMiddlewareExampleStep3": "Estructura de archivos resultante:",
-      "withoutMiddlewareExampleNote": "Cada archivo wrapper son solo <strong>2 líneas</strong>. La página canónica contiene toda la lógica. Cuando Astro construye <code>/es/sobre-nosotros</code>, renderiza el mismo componente que <code>/es/about</code> — la URL traducida funciona sin middleware.",
-      "pathTitle": "3. Generando URLs con path()",
-      "pathDescription": "Usa <code>path(routeKey, options?)</code> para generar URLs localizadas. Escoge el template correcto para el locale destino y sustituye cualquier param.",
-      "switchTitle": "4. Cambiando locale con switchLocalePath()",
-      "switchDescription": "Usa <code>switchLocalePath(currentPath, nextLocale)</code> para convertir la URL actual a su equivalente en otro locale. Matchea la ruta contra los templates, extrae los params y reconstruye la URL con el template del locale destino.",
-      "switchNote": "Si la ruta actual no matchea ningún template de ruta, <code>switchLocalePath</code> hace fallback a simplemente intercambiar el prefijo del locale.",
-      "paramsTitle": "Parámetros Dinámicos",
-      "paramsDescription": "Los templates de rutas soportan segmentos dinámicos con sintaxis <code>[param]</code>. Puedes tener múltiples params por ruta — se extraen y sustituyen automáticamente."
     },
     "examples": {
       "title": "Ejemplos",
@@ -278,6 +235,39 @@
       "typeDescription": "Pasa el tipo de tus mensajes como genérico a <code>getTranslations</code> para obtener autocompletado completo y verificación de tipos en las claves de traducción.",
       "localeTitle": "Leyendo el Locale Actual",
       "localeDescription": "Usa <code>getLocale()</code> en cualquier lugar después de que <code>setRequestLocale</code> haya sido llamado — por ejemplo para construir URLs con locale."
+    }
+  },
+  "playground": {
+    "title": "Playground de Route Mapping",
+    "subtitle": "Probando path() y switchLocalePath() en un proyecto Astro real",
+    "about": {
+      "title": "Sobre Nosotros",
+      "description": "Esta es la página about, renderizada en una ruta traducida.",
+      "content": "Esta página demuestra cómo funciona el route mapping. En inglés esta página vive en /en/about, pero en español se convierte en /es/sobre-nosotros."
+    },
+    "blog": {
+      "title": "Artículo del Blog",
+      "description": "Ruta dinámica con parámetro [slug].",
+      "reading": "Estás leyendo: {slug}",
+      "otherPosts": "Otros artículos"
+    },
+    "shop": {
+      "title": "Artículo de Tienda",
+      "description": "Ruta dinámica con parámetros [category] e [id].",
+      "viewing": "Categoría: {category} — Artículo: {id}"
+    },
+    "nav": {
+      "backHome": "Volver al Inicio",
+      "about": "Sobre Nosotros",
+      "blog": "Blog",
+      "shop": "Tienda"
+    },
+    "routeInfo": {
+      "title": "Información de Ruta",
+      "currentPath": "Pathname actual",
+      "currentLocale": "Locale actual",
+      "switchedPath": "switchLocalePath() a {locale}",
+      "pathHelper": "Salida de path()"
     }
   },
   "changelog": {
@@ -293,51 +283,6 @@
       "added": "Agregado",
       "changed": "Cambiado",
       "fixed": "Corregido"
-    },
-    "v110": {
-      "title": "1.1.0",
-      "items": [
-        {
-          "type": "added",
-          "text": "<strong>Sistema de routing localizado</strong> — define rutas URL traducidas por locale (ej. <code>/es/sobre-nosotros</code> en lugar de <code>/es/about</code>)."
-        },
-        {
-          "type": "added",
-          "text": "<code>path(routeKey, options?)</code> — genera URLs localizadas para rutas nombradas con sustitución dinámica de <code>[param]</code>. Importar desde <code>astro-intl/routing</code>."
-        },
-        {
-          "type": "added",
-          "text": "<code>switchLocalePath(currentPath, nextLocale)</code> — convierte la URL actual a su equivalente en otro locale, preservando params, query strings y hashes. Importar desde <code>astro-intl/routing</code>."
-        },
-        {
-          "type": "added",
-          "text": "Opción <code>routes</code> en <code>createIntlMiddleware</code> — el middleware reescribe automáticamente URLs traducidas a sus rutas canónicas del filesystem (sin archivos de página duplicados)."
-        },
-        {
-          "type": "added",
-          "text": "Opción <code>routes</code> en la configuración de la integración (<code>astro.config.mjs</code>) — para proyectos que no usan middleware."
-        },
-        {
-          "type": "added",
-          "text": "Tipo <code>RoutesMap</code> exportado desde <code>astro-intl/types</code>."
-        },
-        {
-          "type": "added",
-          "text": "Validación de templates de rutas — detecta brackets desbalanceados y nombres de params inválidos en tiempo de build."
-        },
-        {
-          "type": "added",
-          "text": "Detección de conflictos de rutas — lanza error en templates duplicados y advierte sobre templates estructuralmente equivalentes."
-        },
-        {
-          "type": "changed",
-          "text": "La firma de <code>createIntlMiddleware</code> ahora acepta <code>routes?: RoutesMap</code> en las opciones."
-        },
-        {
-          "type": "changed",
-          "text": "Nuevo export path <code>./routing</code> en package.json para <code>astro-intl/routing</code>."
-        }
-      ]
     },
     "v103": {
       "title": "1.0.3",
