@@ -264,10 +264,10 @@ export const routing = {
   locales: ["en", "es"],
   defaultLocale: "en",
   routes: {
-    home:  { en: "/",                      es: "/" },
-    about: { en: "/about",                 es: "/sobre-nosotros" },
-    blog:  { en: "/blog/[slug]",           es: "/blog/[slug]" },
-    shop:  { en: "/shop/[category]/[id]",  es: "/tienda/[category]/[id]" },
+    home: { en: "/", es: "/" },
+    about: { en: "/about", es: "/sobre-nosotros" },
+    blog: { en: "/blog/[slug]", es: "/blog/[slug]" },
+    shop: { en: "/shop/[category]/[id]", es: "/tienda/[category]/[id]" },
   },
 } as const;
 ```
