@@ -45,6 +45,17 @@
       "description": "API intuitiva inspirada en next-intl, fácil de aprender y usar"
     }
   },
+  "community": {
+    "title": "¿Usas astro-intl en producción?",
+    "subtitle": "Cuéntanos sobre tu proyecto y comparte tu experiencia con la librería. Tu feedback nos ayuda a mejorar y da confianza a otros desarrolladores.",
+    "shareButton": "Compartir testimonio",
+    "githubButton": "Ver en GitHub",
+    "points": [
+      "¿Qué tipo de proyecto estás construyendo con astro-intl?",
+      "¿Qué fue lo que más te gustó de la integración y la API?",
+      "¿Qué feature o mejora te gustaría ver próximamente?"
+    ]
+  },
   "examples": {
     "title": "Míralo en Acción",
     "subtitle": "Ejemplos reales de lo que puedes hacer",
