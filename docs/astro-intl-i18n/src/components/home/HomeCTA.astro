@@ -1,0 +1,44 @@
+---
+import { getLocale, getTranslations } from "astro-intl";
+
+const tHero = getTranslations("hero");
+const locale = getLocale();
+---
+
+<!-- CTA -->
+<section class="py-24">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div
+      class="rounded-2xl p-10 md:p-14 text-center relative overflow-hidden"
+      style="background: var(--color-bg-secondary); border: 1px solid var(--color-border-hover);"
+    >
+      <div
+        class="absolute inset-0 pointer-events-none"
+        style="background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(61,139,94,0.12) 0%, transparent 70%);"
+      >
+      </div>
+      <div class="relative">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4" style="color: var(--color-text);">
+          {tHero("ctaTitle")}
+        </h2>
+        <p class="text-base mb-8 max-w-lg mx-auto" style="color: var(--color-text-tertiary);">
+          {tHero("ctaSubtitle")}
+        </p>
+        <a
+          href={`/${locale}/docs`}
+          class="inline-flex items-center gap-2 px-7 py-3 rounded-lg font-semibold text-sm transition-all"
+          style="background: var(--color-primary); color: var(--color-text);"
+        >
+          {tHero("getStarted")}
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            ><path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg
+          >
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
