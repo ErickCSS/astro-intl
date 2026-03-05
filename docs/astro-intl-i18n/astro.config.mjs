@@ -10,7 +10,7 @@ import vercel from "@astrojs/vercel";
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://astro-intl.vercel.app',
+  site: 'https://astro-intl.dev',
   integrations: [
     intl(),
     sitemap({

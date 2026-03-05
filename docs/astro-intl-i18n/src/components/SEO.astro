@@ -29,7 +29,7 @@ const {
   modifiedTime,
 } = Astro.props;
 
-const siteUrl = Astro.site?.toString() || "https://astro-intl.vercel.app";
+const siteUrl = Astro.site?.toString() || "https://astro-intl.dev";
 const currentUrl = new URL(Astro.url.pathname, siteUrl).toString();
 const canonicalUrl = canonical || currentUrl;
 const ogImage = new URL(image, siteUrl).toString();
@@ -86,7 +86,6 @@ const jsonLd = {
 
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="generator" content={Astro.generator} />
 
 <title>{title}</title>
 <meta name="description" content={description} />
