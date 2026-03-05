@@ -20,7 +20,7 @@ const {
   title,
   description,
   type = "website",
-  image = "https://www.astro-intl.dev/og-image.png",
+  image = "https://www.astro-intl.dev/og-image-astro-intl.png",
   canonical,
   noindex = false,
   keywords = [],
@@ -76,7 +76,7 @@ const jsonLd = {
     name: "astro-intl",
     logo: {
       "@type": "ImageObject",
-      url: new URL("https://www.astro-intl.dev/og-image.png", siteUrl).toString(),
+      url: new URL("https://www.astro-intl.dev/og-image-astro-intl.png", siteUrl).toString(),
     },
   },
   ...(publishedTime && { datePublished: publishedTime }),
