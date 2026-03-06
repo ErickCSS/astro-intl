@@ -1,29 +1,24 @@
 ---
-import Layout from "@/layouts/Layout.astro";
+import Layout from "./Layout.astro";
 import Navigation from "@/components/Navigation.astro";
 import DocsSidebar from "@/components/docs/DocsSidebar.astro";
-import DocsHero from "@/components/docs/DocsHero.astro";
-import DocsInstallation from "@/components/docs/DocsInstallation.astro";
-import DocsFileStructure from "@/components/docs/DocsFileStructure.astro";
-import DocsConfiguration from "@/components/docs/DocsConfiguration.astro";
-import DocsUsage from "@/components/docs/DocsUsage.astro";
-import DocsAPI from "@/components/docs/DocsAPI.astro";
-import DocsRouting from "@/components/docs/DocsRouting.astro";
-import DocsExamples from "@/components/docs/DocsExamples.astro";
 import { getTranslations } from "astro-intl";
 import "@/styles/global.css";
 
 const tDocs = getTranslations("docs");
 const tFooter = getTranslations("footer");
 
-export function getStaticPaths() {
-  return [{ params: { lang: "en" } }, { params: { lang: "es" } }];
+interface Props {
+  title?: string;
+  description?: string;
 }
+
+const { title, description } = Astro.props;
 ---
 
 <Layout
-  title={`${tDocs("pageTitle")} — astro-intl`}
-  description={tDocs("pageSubtitle")}
+  title={`${title || tDocs("pageTitle")} — astro-intl`}
+  description={description || tDocs("pageSubtitle")}
   type="article"
   keywords={[
     "astro-intl documentation",
@@ -97,14 +92,7 @@ export function getStaticPaths() {
 
       <!-- Main content -->
       <main class="docs-main">
-        <DocsHero />
-        <DocsInstallation />
-        <DocsFileStructure />
-        <DocsConfiguration />
-        <DocsUsage />
-        <DocsRouting />
-        <DocsAPI />
-        <DocsExamples />
+        <slot />
       </main>
     </div>
   </div>
@@ -166,30 +154,15 @@ export function getStaticPaths() {
     max-width: 100%;
   }
 
-  .docs-main > section:not(:last-child) {
-    border-bottom: 1px solid var(--color-border);
-    padding-bottom: 3rem;
-    margin-bottom: 3rem !important;
-  }
-  .docs-main > section:last-child {
-    margin-bottom: 0 !important;
-  }
-
-  /* Ensure code blocks don't overflow on mobile */
   .docs-main pre {
     max-width: 100%;
     overflow-x: auto;
   }
 
-  /* Responsive: stack on small screens */
   @media (max-width: 767px) {
     .docs-layout {
       flex-direction: column;
       gap: 0;
-    }
-    .docs-main > section:not(:last-child) {
-      padding-bottom: 2rem;
-      margin-bottom: 2rem !important;
     }
   }
 </style>
@@ -216,7 +189,6 @@ export function getStaticPaths() {
   closeBtn?.addEventListener("click", closeSidebar);
   overlay?.addEventListener("click", closeSidebar);
 
-  // Close drawer when a sidebar link is clicked on mobile
   drawer.querySelectorAll("a").forEach((a) => {
     a.addEventListener("click", closeSidebar);
   });

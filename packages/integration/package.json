@@ -1,8 +1,8 @@
 {
   "name": "astro-intl",
-  "version": "1.1.1",
+  "version": "2.0.0",
   "type": "module",
-  "description": "Sistema de internacionalización simple y type-safe para Astro, inspirado en next-intl",
+  "description": "Sistema de internacionalización simple y type-safe para Astro.",
   "keywords": [
     "astro",
     "astro-integration",
@@ -43,6 +43,14 @@
       "types": "./dist/middleware.d.ts",
       "import": "./dist/middleware.js"
     },
+    "./react": {
+      "types": "./dist/adapters/react.d.ts",
+      "import": "./dist/adapters/react.js"
+    },
+    "./svelte": {
+      "types": "./dist/adapters/svelte.d.ts",
+      "import": "./dist/adapters/svelte.js"
+    },
     "./routing": {
       "types": "./dist/routing.d.ts",
       "import": "./dist/routing.js"
@@ -53,6 +61,9 @@
   },
   "peerDependenciesMeta": {
     "react": {
+      "optional": true
+    },
+    "svelte": {
       "optional": true
     }
   },
@@ -81,6 +92,7 @@
     "react-dom": "^19.2.4",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.19.1",
+    "svelte": "^5.0.0",
     "vitest": "^4.0.18"
   }
 }

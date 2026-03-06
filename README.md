@@ -17,6 +17,8 @@ Para documentación completa, ejemplos y guías, visita:
 - 🔒 **Type-safe** - Autocompletado y validación de tipos para tus traducciones
 - 🚀 **Simple** - API intuitiva inspirada en next-intl
 - 🎯 **Integración nativa** - Diseñado específicamente para Astro
+- ⚛️ **Soporte React** - Adapter dedicado con `t.rich()` para rich text. Importa desde `astro-intl/react`
+- 🧡 **Soporte Svelte** - Adapter dedicado con `t.rich()` y `renderRichText()`. Importa desde `astro-intl/svelte`
 - 🌍 **Flexible** - Soporta múltiples idiomas y estructuras de traducción
 - ⚡ **Rendimiento** - Carga solo las traducciones necesarias
 - 🛠️ **TypeScript first** - Escrito completamente en TypeScript
@@ -24,6 +26,7 @@ Para documentación completa, ejemplos y guías, visita:
 - 🌐 **Multi-runtime** - Compatible con Node.js, Cloudflare Workers y Deno
 - 🗺️ **Routing localizado** - URLs traducidas por locale con rewrites automáticos via middleware
 - 🔗 **Generación de URLs** - `path()` y `switchLocalePath()` para construir URLs localizadas
+- 📦 **Sub-path imports** - `astro-intl/react`, `astro-intl/svelte`, `astro-intl/routing`, `astro-intl/middleware`
 
 ## 📦 Instalación
 
@@ -79,13 +82,35 @@ src/
 
 ```astro
 ---
-import { useTranslations } from 'astro-intl';
+import { getTranslations } from 'astro-intl';
 
-const t = useTranslations();
+const t = getTranslations();
 ---
 
 <h1>{t('welcome')}</h1>
 <p>{t('greeting', { name: 'World' })}</p>
+```
+
+### 4. Usa en React o Svelte
+
+```tsx
+// React — importa desde astro-intl/react
+import { getTranslations } from "astro-intl/react";
+
+export function Greeting() {
+  const t = getTranslations();
+  return <h1>{t("welcome")}</h1>;
+}
+```
+
+```svelte
+<!-- Svelte — importa desde astro-intl/svelte -->
+<script>
+  import { getTranslations } from 'astro-intl/svelte';
+  const t = getTranslations();
+</script>
+
+<h1>{t('welcome')}</h1>
 ```
 
 ## 📖 Aprende más

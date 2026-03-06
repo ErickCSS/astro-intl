@@ -6,7 +6,8 @@ Sistema de internacionalización simple y type-safe para Astro, inspirado en nex
 
 - 🔒 **Type-safe**: Autocompletado y validación de claves de traducción con TypeScript
 - 🎯 **API simple**: Inspirada en next-intl, fácil de usar
-- ⚛️ **Soporte React**: Funciones específicas para componentes React con `t.rich()`
+- ⚛️ **Soporte React**: Adapter dedicado con `t.rich()` para rich text con componentes React. Importa desde `astro-intl/react`
+- 🧡 **Soporte Svelte**: Adapter dedicado con `t.rich()` que retorna segmentos y componente `RichText`. Importa desde `astro-intl/svelte`
 - 🎨 **Markup en traducciones**: Inserta HTML en strings con `t.markup()`
 - 📁 **Namespaces**: Organiza traducciones por secciones
 - 🌐 **Detección automática de locale**: Extrae el idioma desde la URL
@@ -16,8 +17,35 @@ Sistema de internacionalización simple y type-safe para Astro, inspirado en nex
 - 🗺️ **Routing localizado**: Define URLs traducidas por locale (`/es/sobre-nosotros` en vez de `/es/about`)
 - 🔄 **Rewrites automáticos**: El middleware reescribe URLs traducidas a rutas canónicas del filesystem
 - 🔗 **Generación de URLs**: `path()` y `switchLocalePath()` para construir y transformar URLs localizadas
+- 📦 **Sub-path imports**: `astro-intl/react`, `astro-intl/svelte`, `astro-intl/routing`, `astro-intl/middleware`
 
-## 📦 Instalación
+## � Migración desde v1 a v2
+
+### Breaking changes
+
+1. **`getTranslationsReact` ya no se exporta desde `astro-intl`**. Usa `getTranslations` desde `astro-intl/react`:
+
+```diff
+- import { getTranslationsReact } from "astro-intl";
++ import { getTranslations } from "astro-intl/react";
+
+- const t = getTranslationsReact();
++ const t = getTranslations();
+```
+
+2. **Sub-path imports obligatorios para adapters de framework**:
+   - React: `astro-intl/react`
+   - Svelte: `astro-intl/svelte`
+
+3. Las funciones base de Astro (`getTranslations`, `setRequestLocale`, `getLocale`, etc.) siguen exportándose desde `astro-intl` sin cambios.
+
+### Nuevas funcionalidades
+
+- **Adapter Svelte** con `t.rich()` y `renderRichText()`
+- **`createGetTranslations` factory** en ambos adapters (React y Svelte) para uso standalone sin store global
+- **`parseRichSegments()`** base agnóstica compartida
+
+## �📦 Instalación
 
 ### Instalación automática (Recomendado)
 
@@ -179,11 +207,13 @@ const t = getTranslations();
 
 ### En componentes React
 
+> **v2**: Importa desde `astro-intl/react` en lugar de `astro-intl`.
+
 ```tsx
-import { getTranslationsReact } from "astro-intl";
+import { getTranslations } from "astro-intl/react";
 
 export function MyComponent() {
-  const t = getTranslationsReact();
+  const t = getTranslations();
 
   return (
     <div>
@@ -196,13 +226,29 @@ export function MyComponent() {
 }
 ```
 
+#### Factory standalone (sin store)
+
+Si prefieres pasar los mensajes directamente sin depender del store global:
+
+```tsx
+import { createGetTranslations } from "astro-intl/react";
+import { ui } from "../i18n";
+
+const getT = createGetTranslations(ui, "en");
+
+export function MyComponent({ lang }: { lang: string }) {
+  const t = getT(lang, "nav");
+  return <a href="/">{t("home")}</a>;
+}
+```
+
 ### Traducciones con componentes React (rich text)
 
 ```tsx
-import { getTranslationsReact } from "astro-intl";
+import { getTranslations } from "astro-intl/react";
 
 export function MyComponent() {
-  const t = getTranslationsReact();
+  const t = getTranslations();
 
   // src/i18n/es.json
   // { "terms": "Acepto los <link>términos y condiciones</link>" }
@@ -215,6 +261,78 @@ export function MyComponent() {
     </p>
   );
 }
+```
+
+### En componentes Svelte
+
+> **v2**: Nuevo adapter. Importa desde `astro-intl/svelte`.
+
+```svelte
+<script>
+  import { getTranslations } from 'astro-intl/svelte';
+
+  const t = getTranslations();
+</script>
+
+<h1>{t('welcome')}</h1>
+<nav>
+  <a href="/">{t('nav.home')}</a>
+</nav>
+```
+
+#### Rich text en Svelte
+
+`t.rich()` retorna un array de `RichSegment[]` que puedes renderizar con `renderRichText()`:
+
+```svelte
+<script>
+  import { getTranslations, renderRichText } from 'astro-intl/svelte';
+
+  // { "terms": "Acepto los <link>términos y condiciones</link>" }
+  const t = getTranslations();
+  const segments = t.rich('terms', ['link']);
+
+  const html = renderRichText(segments, {
+    tags: { link: 'a' },       // renderiza como <a>...</a>
+  });
+</script>
+
+<p>{@html html}</p>
+```
+
+También puedes usar funciones personalizadas con `components`:
+
+```svelte
+<script>
+  import { getTranslations, renderRichText } from 'astro-intl/svelte';
+
+  const t = getTranslations();
+  const segments = t.rich('terms', ['link']);
+
+  const html = renderRichText(segments, {
+    components: {
+      link: (chunks) => `<a href="/terms" class="underline">${chunks}</a>`,
+    },
+  });
+</script>
+
+<p>{@html html}</p>
+```
+
+#### Factory standalone en Svelte (sin store)
+
+```svelte
+<script>
+  import { createGetTranslations } from 'astro-intl/svelte';
+  import { ui } from '../i18n';
+
+  const getT = createGetTranslations(ui, 'en');
+
+  export let lang;
+  const t = getT(lang, 'nav');
+</script>
+
+<a href="/">{t('home')}</a>
 ```
 
 ### Type-safety con TypeScript
@@ -431,15 +549,44 @@ Obtiene la función de traducción para componentes Astro.
   - `Record<string, (chunks: string) => string>` - Solo tags (backward compatible)
   - `{ values?: Record<string, Primitive>, tags: Record<string, (chunks: string) => string> }` - Tags con interpolación
 
-### `getTranslationsReact<T>(namespace?)`
+### `getTranslations()` — `astro-intl/react`
 
-Obtiene la función de traducción para componentes React.
+Obtiene la función de traducción para componentes React (usa el store global).
+
+**Retorna:** Función `t(key)` con método `t.rich(key, tags)` que retorna `ReactNode[]`
+
+### `createGetTranslations(ui, defaultLocale)` — `astro-intl/react`
+
+Factory standalone que no depende del store global. Útil para pasar mensajes directamente.
 
 **Parámetros:**
 
-- `namespace?: string` - Namespace opcional
+- `ui: Record<string, Record<string, unknown>>` - Objeto con todos los mensajes por locale
+- `defaultLocale: string` - Locale por defecto
 
-**Retorna:** Función `t(key)` con método `t.rich(key, tags)`
+**Retorna:** `(lang, namespace) => t` — función que retorna `t(key)` con `t.rich(key, tags)`
+
+### `getTranslations()` — `astro-intl/svelte`
+
+Obtiene la función de traducción para componentes Svelte (usa el store global).
+
+**Retorna:** Función `t(key)` con método `t.rich(key, tagNames?)` que retorna `RichSegment[]`
+
+### `createGetTranslations(ui, defaultLocale)` — `astro-intl/svelte`
+
+Factory standalone para Svelte. Misma firma que el de React pero `t.rich()` retorna `RichSegment[]`.
+
+### `renderRichText(segments, options?)` — `astro-intl/svelte`
+
+Resuelve un array de `RichSegment[]` en un string HTML.
+
+**Parámetros:**
+
+- `segments: RichSegment[]` - Segmentos retornados por `t.rich()`
+- `options.tags?: Record<string, string>` - Mapea nombre de tag a elemento HTML (ej: `{ link: 'a' }`)
+- `options.components?: Record<string, (chunks: string) => string>` - Funciones personalizadas por tag
+
+**Retorna:** `string` - HTML listo para renderizar con `{@html}`
 
 ### `getLocale()`
 
@@ -518,12 +665,15 @@ Esto actualizará los enlaces simbólicos y los tipos estarán disponibles en lo
 ```text
 packages/integration/
 ├── src/
+│   ├── adapters/
+│   │   ├── react.ts       # Adapter React — getTranslations, createGetTranslations, t.rich() → ReactNode[]
+│   │   └── svelte.ts      # Adapter Svelte — getTranslations, createGetTranslations, t.rich() → RichSegment[], renderRichText()
 │   ├── core.ts            # Barrel — re-exporta todo desde los módulos
+│   ├── framework-base.ts  # parseRichSegments() — base agnóstica compartida por React y Svelte
 │   ├── sanitize.ts        # Validación de locale, sanitización HTML, escape regex
 │   ├── interpolation.ts   # Interpolación {variables}, acceso a valores anidados
 │   ├── store.ts           # Estado por request (AsyncLocalStorage + fallback)
-│   ├── translations.ts    # getTranslations y getTranslationsReact
-│   ├── react.ts           # Factory de t.rich() para React
+│   ├── translations.ts    # getTranslations para componentes Astro
 │   ├── routing.ts         # path(), switchLocalePath() — generación de URLs localizadas
 │   ├── middleware.ts       # createIntlMiddleware() con rewrites de rutas traducidas
 │   ├── index.ts           # Entry point público + integración de Astro

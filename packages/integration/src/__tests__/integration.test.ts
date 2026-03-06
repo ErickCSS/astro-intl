@@ -1,11 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import {
-  setRequestLocale,
-  getLocale,
-  getTranslations,
-  getTranslationsReact,
-  __resetRequestConfig,
-} from "../index.js";
+import { setRequestLocale, getLocale, getTranslations, __resetRequestConfig } from "../index.js";
+import { getTranslations as getTranslationsReact } from "../adapters/react.js";
 import type { RequestConfig } from "../types/index.js";
 
 describe("Integration Tests", () => {
@@ -148,9 +143,12 @@ describe("Integration Tests", () => {
       }));
 
       const t = getTranslationsReact();
-      const result = t.rich("notification" as any, {
-        count: (chunks) => `<span class="badge">${chunks}</span>`,
-      });
+      const result = t.rich(
+        "notification" as any,
+        {
+          count: (chunks: string) => `<span class="badge">${chunks}</span>`,
+        } as any
+      );
 
       expect(result).toEqual(["You have ", '<span class="badge">5</span>', " new messages"]);
     });
@@ -163,10 +161,6 @@ describe("Integration Tests", () => {
       );
 
       expect(() => getTranslations()).toThrow(
-        "[astro-intl] No request config found. Did you call setRequestLocale()?"
-      );
-
-      expect(() => getTranslationsReact()).toThrow(
         "[astro-intl] No request config found. Did you call setRequestLocale()?"
       );
     });

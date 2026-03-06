@@ -1,8 +1,7 @@
 import type { Primitive } from "./types/index.js";
-import { getMessages, getLocale } from "./store.js";
+import { getMessages } from "./store.js";
 import { getNestedValue, interpolateValues, type DotPaths } from "./interpolation.js";
 import { escapeRegExp, sanitizeHtml } from "./sanitize.js";
-import { createGetTranslationsReact } from "./react.js";
 
 // ─── getTranslations (Astro / plain HTML) ───────────────────────────
 
@@ -55,18 +54,4 @@ export function getTranslations<T extends Record<string, unknown> = Record<strin
   return t as typeof t & {
     markup: typeof markup;
   };
-}
-
-// ─── getTranslationsReact (React islands) ───────────────────────────
-
-export function getTranslationsReact<T extends Record<string, unknown> = Record<string, unknown>>(
-  namespace?: string
-) {
-  const messages = getMessages<T>(namespace);
-  const locale = getLocale();
-
-  type UI = Record<string, Record<string, T>>;
-  const ui: UI = { [locale]: { default: messages } };
-
-  return createGetTranslationsReact(ui, locale)(locale, "default");
 }

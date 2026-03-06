@@ -5,6 +5,30 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.0.0] - 2026
+
+### Breaking Changes
+
+- **`getTranslationsReact` removed from root export** — React support is now imported from `astro-intl/react` instead of `astro-intl`.
+- **Sub-path imports required for framework adapters** — use `astro-intl/react` and `astro-intl/svelte` instead of importing from the root.
+- **Old `src/react.ts` deleted** — logic migrated to `src/adapters/react.ts`.
+
+### Added
+
+- **Svelte adapter** — `getTranslations` and `createGetTranslations` with `t.rich()` returning `RichSegment[]`. Import from `astro-intl/svelte`.
+- **`renderRichText()` helper** — resolves `RichSegment[]` into an HTML string using `tags` (native HTML elements) and `components` (custom functions). Import from `astro-intl/svelte`.
+- **`RichSegment` type** — framework-agnostic segment type (`text` | `tag`) exported from `astro-intl/svelte`.
+- **`createGetTranslations` factory** — standalone translation factory (no store dependency) available in both React and Svelte adapters.
+- **Framework-agnostic base** — `parseRichSegments()` in `src/framework-base.ts` powers both React and Svelte rich text parsing.
+- **New sub-path exports** — `astro-intl/react` and `astro-intl/svelte` in `package.json` exports.
+- `svelte@^5` added as optional peer dependency.
+
+### Changed
+
+- React adapter moved from `src/react.ts` to `src/adapters/react.ts`.
+- React `t.rich()` now uses the shared `parseRichSegments()` base with recursive nested tag support.
+- Package structure reorganized with `src/adapters/` directory for framework-specific code.
+
 ## [1.1.0] - 2026
 
 ### Added

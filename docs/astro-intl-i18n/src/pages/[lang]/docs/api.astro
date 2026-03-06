@@ -1,0 +1,12 @@
+---
+import DocsLayout from "@/layouts/DocsLayout.astro";
+import DocsAPI from "@/components/docs/DocsAPI.astro";
+
+export function getStaticPaths() {
+  return [{ params: { lang: "en" } }, { params: { lang: "es" } }];
+}
+---
+
+<DocsLayout title="API Reference">
+  <DocsAPI />
+</DocsLayout>

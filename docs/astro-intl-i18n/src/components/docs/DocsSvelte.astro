@@ -1,0 +1,277 @@
+---
+import { getTranslations, getLocale } from "astro-intl";
+import CodeBlock from "../CodeBlock.astro";
+
+const t = getTranslations("docs");
+const locale = getLocale();
+---
+
+<section class="mb-14">
+  <div class="flex items-center gap-4 mb-8">
+    <img src="/Frameworks/svelte.svg" alt="Svelte" class="w-8 h-8" />
+    <div>
+      <div class="flex items-center gap-3">
+        <span class="w-1 h-5 rounded-full" style="background: var(--color-accent);"></span>
+        <h2 class="text-xl font-bold" style="color: var(--color-text);">{t("svelte.title")}</h2>
+      </div>
+    </div>
+  </div>
+
+  <p
+    class="text-sm mb-8"
+    style="color: var(--color-text-secondary);"
+    set:html={t.markup("svelte.intro", {
+      code: (c: string) => `<code>${c}</code>`,
+    })}
+  />
+
+  <!-- Import -->
+  <div class="mb-10">
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("svelte.importTitle")}
+    </h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("svelte.importDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+    <CodeBlock
+      title="Import"
+      lang="typescript"
+      code={`import { getTranslations, createGetTranslations, renderRichText } from "astro-intl/svelte";
+import RichText from "astro-intl/svelte/RichText.svelte";`}
+    />
+  </div>
+
+  <!-- Store-backed -->
+  <div class="mb-10">
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("svelte.storeTitle")}
+    </h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("svelte.storeDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+    <CodeBlock
+      title="MyComponent.svelte"
+      lang="svelte"
+      code={`<script>
+  import { getTranslations } from "astro-intl/svelte";
+
+  const t = getTranslations("hero");
+</script>
+
+<h1>{t("title")}</h1>
+<p>{t("subtitle")}</p>`}
+    />
+  </div>
+
+  <!-- Standalone -->
+  <div class="mb-10">
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("svelte.standaloneTitle")}
+    </h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("svelte.standaloneDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+    <CodeBlock
+      title="standalone.svelte"
+      lang="svelte"
+      code={`<script>
+  import { createGetTranslations } from "astro-intl/svelte";
+  import en from "./i18n/messages/en.json";
+  import es from "./i18n/messages/es.json";
+
+  const getTranslations = createGetTranslations(
+    { en, es },
+    "en"
+  );
+
+  export let lang = "en";
+  const t = getTranslations(lang, "hero");
+</script>
+
+<h1>{t("title")}</h1>`}
+    />
+  </div>
+
+  <!-- Rich Text -->
+  <div class="mb-10">
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("svelte.richTitle")}
+    </h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("svelte.richDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+  </div>
+
+  <!-- Option A: renderRichText -->
+  <div class="mb-10">
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("svelte.renderHtmlTitle")}
+    </h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("svelte.renderHtmlDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+    <CodeBlock
+      title="RenderRichText.svelte"
+      lang="svelte"
+      code={`<script>
+  import { getTranslations, renderRichText } from "astro-intl/svelte";
+
+  const t = getTranslations("hero");
+  const segments = t.rich("description");
+
+  const html = renderRichText(segments, {
+    tags: {
+      bold: "strong",
+      link: "a",
+    },
+  });
+</script>
+
+{@html html}`}
+    />
+  </div>
+
+  <!-- Option B: RichText component -->
+  <div class="mb-10">
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("svelte.richTextComponentTitle")}
+    </h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("svelte.richTextComponentDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+    <CodeBlock
+      title="UsingRichText.svelte"
+      lang="svelte"
+      code={`<script>
+  import { getTranslations } from "astro-intl/svelte";
+  import RichText from "astro-intl/svelte/RichText.svelte";
+
+  const t = getTranslations("hero");
+  const segments = t.rich("description");
+</script>
+
+<RichText
+  {segments}
+  tags={{ bold: "strong", link: "a" }}
+/>`}
+    />
+  </div>
+
+  <!-- Tips -->
+  <div class="space-y-4 mb-10">
+    <div
+      class="flex items-start gap-3 px-4 py-3 rounded-lg text-sm"
+      style="background: var(--color-accent-dim); border: 1px solid var(--color-border-hover); color: var(--color-accent);"
+    >
+      <svg class="w-4 h-4 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <div>
+        <span class="font-semibold text-xs block mb-1" style="color: var(--color-accent);"
+          >{t("svelte.tipHydrationTitle")}</span
+        >
+        <span
+          style="color: var(--color-text-secondary);"
+          set:html={t.markup("svelte.tipHydration", {
+            code: (c: string) => `<code>${c}</code>`,
+          })}
+        />
+      </div>
+    </div>
+
+    <div
+      class="flex items-start gap-3 px-4 py-3 rounded-lg text-sm"
+      style="background: var(--color-accent-dim); border: 1px solid var(--color-border-hover); color: var(--color-accent);"
+    >
+      <svg class="w-4 h-4 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <div>
+        <span class="font-semibold text-xs block mb-1" style="color: var(--color-accent);"
+          >{t("svelte.tipRichTextTitle")}</span
+        >
+        <span
+          style="color: var(--color-text-secondary);"
+          set:html={t.markup("svelte.tipRichText", {
+            code: (c: string) => `<code>${c}</code>`,
+          })}
+        />
+      </div>
+    </div>
+
+    <div
+      class="flex items-start gap-3 px-4 py-3 rounded-lg text-sm"
+      style="background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.25); color: #fbbf24;"
+    >
+      <svg class="w-4 h-4 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.832c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"
+        ></path>
+      </svg>
+      <div>
+        <span class="font-semibold text-xs block mb-1" style="color: #fbbf24;"
+          >{t("svelte.tipSvelte5Title")}</span
+        >
+        <span
+          style="color: var(--color-text-secondary);"
+          set:html={t.markup("svelte.tipSvelte5", {
+            code: (c: string) => `<code>${c}</code>`,
+          })}
+        />
+      </div>
+    </div>
+  </div>
+</section>
