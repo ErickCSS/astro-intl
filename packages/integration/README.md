@@ -1,6 +1,6 @@
 # astro-intl
 
-Sistema de internacionalización simple y type-safe para Astro, inspirado en next-intl.
+Sistema de internacionalización simple y type-safe para Astro.
 
 ## ✨ Características
 
