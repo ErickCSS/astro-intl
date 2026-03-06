@@ -12,7 +12,8 @@
     "internationalization",
     "intl",
     "translations",
-    "typescript"
+    "typescript",
+    "accessibility"
   ],
   "author": "Erick Cruz <erickj.cruzs@gmail.com>",
   "license": "MIT",
