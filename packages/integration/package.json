@@ -13,7 +13,8 @@
     "intl",
     "translations",
     "typescript",
-    "accessibility"
+    "accessibility",
+    "a11y"
   ],
   "author": "Erick Cruz <erickj.cruzs@gmail.com>",
   "license": "MIT",
