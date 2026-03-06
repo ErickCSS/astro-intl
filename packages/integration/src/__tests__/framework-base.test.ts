@@ -23,10 +23,10 @@ describe("framework-base.ts", () => {
     });
 
     it("should parse multiple tags", () => {
-      const result = parseRichSegments(
-        "Text with <bold>bold</bold> and <italic>italic</italic>",
-        ["bold", "italic"]
-      );
+      const result = parseRichSegments("Text with <bold>bold</bold> and <italic>italic</italic>", [
+        "bold",
+        "italic",
+      ]);
       expect(result).toEqual([
         { type: "text", value: "Text with " },
         { type: "tag", tag: "bold", chunks: "bold" },
@@ -36,10 +36,7 @@ describe("framework-base.ts", () => {
     });
 
     it("should handle adjacent tags", () => {
-      const result = parseRichSegments("<tag1>First</tag1><tag2>Second</tag2>", [
-        "tag1",
-        "tag2",
-      ]);
+      const result = parseRichSegments("<tag1>First</tag1><tag2>Second</tag2>", ["tag1", "tag2"]);
       expect(result).toEqual([
         { type: "tag", tag: "tag1", chunks: "First" },
         { type: "tag", tag: "tag2", chunks: "Second" },
@@ -57,9 +54,7 @@ describe("framework-base.ts", () => {
 
     it("should return text segment when no matching tags found", () => {
       const result = parseRichSegments("Hello <unknown>world</unknown>", ["link"]);
-      expect(result).toEqual([
-        { type: "text", value: "Hello <unknown>world</unknown>" },
-      ]);
+      expect(result).toEqual([{ type: "text", value: "Hello <unknown>world</unknown>" }]);
     });
 
     it("should handle tag names with special regex characters", () => {
