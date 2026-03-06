@@ -1,73 +1,73 @@
 ---
-import { getTranslations } from "astro-intl";
+import { getTranslations, getLocale } from "astro-intl";
 
 const t = getTranslations("docs");
+const locale = getLocale();
+const base = `/${locale}/docs`;
 
-const sections = [
-  { id: "installation", label: t("sidebar.installation") },
-  { id: "file-structure", label: t("sidebar.fileStructure") },
-  { id: "configuration", label: t("sidebar.configuration") },
-  { id: "usage", label: t("sidebar.usage") },
-  { id: "routing", label: t("sidebar.routing") },
-  { id: "api", label: t("sidebar.api") },
-  { id: "examples", label: t("sidebar.examples") },
+const currentPath = Astro.url.pathname.replace(/\/$/, "");
+
+const groups = [
+  {
+    label: t("sidebar.gettingStarted"),
+    items: [
+      { href: `${base}/installation`, label: t("sidebar.installation") },
+      { href: `${base}/file-structure`, label: t("sidebar.fileStructure") },
+      { href: `${base}/configuration`, label: t("sidebar.configuration") },
+    ],
+  },
+  {
+    label: t("sidebar.usageGroup"),
+    items: [
+      { href: `${base}/usage`, label: t("sidebar.usage") },
+      { href: `${base}/routing`, label: t("sidebar.routing") },
+      { href: `${base}/examples`, label: t("sidebar.examples") },
+    ],
+  },
+  {
+    label: t("sidebar.frameworks"),
+    items: [
+      { href: `${base}/react`, label: t("sidebar.react"), icon: "/Frameworks/react_dark.svg" },
+      { href: `${base}/svelte`, label: t("sidebar.svelte"), icon: "/Frameworks/svelte.svg" },
+    ],
+  },
+  {
+    label: t("sidebar.reference"),
+    items: [{ href: `${base}/api`, label: t("sidebar.api") }],
+  },
 ];
 ---
 
 <div style="border-left: 1px solid var(--color-border); padding-left: 0;">
-  <p
-    class="text-xs font-semibold uppercase tracking-widest mb-3 px-3"
-    style="color: var(--color-text-tertiary); letter-spacing: 0.1em;"
-  >
-    {t("sidebar.gettingStarted")}
-  </p>
-  <ul class="space-y-0.5">
-    {
-      sections.map((s) => (
-        <li>
-          <a
-            href={`#${s.id}`}
-            class="sidebar-link block py-2 px-3 text-sm transition-all duration-150 relative"
-            data-section={s.id}
-            style="color: var(--color-text-tertiary); border-left: 2px solid transparent; margin-left: -1px;"
-          >
-            {s.label}
-          </a>
-        </li>
-      ))
-    }
-  </ul>
-</div>
-
-<script>
-  function initSidebar() {
-    const links = document.querySelectorAll<HTMLAnchorElement>(".sidebar-link");
-    const sectionEls = Array.from(links).map((l) => document.getElementById(l.dataset.section!));
-
-    function setActive(id: string) {
-      links.forEach((l) => {
-        const active = l.dataset.section === id;
-        l.style.color = active ? "var(--color-accent)" : "var(--color-text-tertiary)";
-        l.style.borderLeftColor = active ? "var(--color-accent)" : "transparent";
-        l.style.fontWeight = active ? "500" : "400";
-      });
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setActive(entry.target.id);
-            break;
-          }
-        }
-      },
-      { rootMargin: "-10% 0px -75% 0px" },
-    );
-
-    sectionEls.forEach((s) => s && observer.observe(s));
+  {
+    groups.map((group) => (
+      <div class="mb-5">
+        <p
+          class="text-xs font-semibold uppercase tracking-widest mb-2 px-3"
+          style="color: var(--color-text-tertiary); letter-spacing: 0.1em;"
+        >
+          {group.label}
+        </p>
+        <ul class="space-y-0.5">
+          {group.items.map((item) => {
+            const isActive = currentPath === item.href.replace(/\/$/, "");
+            return (
+              <li>
+                <a
+                  href={item.href}
+                  class="sidebar-link flex items-center gap-2 py-2 px-3 text-sm transition-all duration-150 relative"
+                  style={`color: ${isActive ? "var(--color-accent)" : "var(--color-text-tertiary)"}; border-left: 2px solid ${isActive ? "var(--color-accent)" : "transparent"}; margin-left: -1px; font-weight: ${isActive ? "500" : "400"};`}
+                >
+                  {(item as any).icon && (
+                    <img src={(item as any).icon} alt="" class="w-4 h-4" style="opacity: 0.7;" />
+                  )}
+                  {item.label}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    ))
   }
-
-  initSidebar();
-  document.addEventListener("astro:page-load", initSidebar);
-</script>
+</div>

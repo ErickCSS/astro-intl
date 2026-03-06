@@ -107,10 +107,24 @@
       "installation": "Installation",
       "fileStructure": "File Structure",
       "configuration": "Configuration",
-      "usage": "Usage",
-      "api": "API Reference",
+      "usageGroup": "Usage",
+      "usage": "Basic Usage",
+      "routing": "Routing",
       "examples": "Examples",
-      "routing": "Routing"
+      "frameworks": "Frameworks",
+      "react": "React",
+      "svelte": "Svelte",
+      "reference": "Reference",
+      "api": "API Reference"
+    },
+    "cards": {
+      "installation": "Install the package and set up your project in minutes.",
+      "configuration": "Configure locales, messages, and middleware options.",
+      "usage": "Learn how to use translations, interpolation, and markup.",
+      "routing": "Set up localized URLs and route translations.",
+      "frameworks": "Use astro-intl with React, Svelte, and more.",
+      "api": "Complete API reference for all exported functions and types.",
+      "examples": "Real-world examples and common patterns."
     },
     "hero": {
       "badge": "Documentation",
@@ -166,7 +180,49 @@
       "markupInterpolationTitle": "Markup + Interpolation",
       "markupInterpolationDescription": "Combine variable interpolation with tag replacement by passing <code>{curlyOpen} values, tags {curlyClose}</code> to <code>t.markup()</code>. Interpolation runs first, then tags are processed.",
       "reactTitle": "React Components",
-      "reactDescription": "Use <code>getTranslationsReact(namespace)</code> inside React components, then call <code>t.rich(key, tags)</code> to interpolate React nodes."
+      "reactDescription": "Use <code>getTranslationsReact(namespace)</code> inside React components, then call <code>t.rich(key, tags)</code> to interpolate React nodes.",
+      "reactDeprecated": "<code>getTranslationsReact</code> is deprecated since v2.0.0. Use <code>astro-intl/react</code> instead.",
+      "reactDeprecatedLink": "See React docs"
+    },
+    "react": {
+      "title": "React Adapter",
+      "intro": "Use <code>astro-intl/react</code> to access translations inside React components with full rich text support.",
+      "importTitle": "Import",
+      "importDescription": "Import from the <code>astro-intl/react</code> subpath. This is available since v2.0.0.",
+      "storeTitle": "Store-backed (Astro Islands)",
+      "storeDescription": "Use <code>getTranslations(namespace)</code> inside React components rendered as Astro islands. The store is automatically populated by <code>setRequestLocale</code> or <code>createIntlMiddleware</code>.",
+      "standaloneTitle": "Standalone (No Store)",
+      "standaloneDescription": "Use <code>createGetTranslations(ui, defaultLocale)</code> when you need translations without the global store — for example in tests or outside Astro's request lifecycle.",
+      "richTitle": "Rich Text with t.rich()",
+      "richDescription": "Use <code>t.rich(key, tags)</code> to interpolate React components inside translation strings. Tags receive the inner text as children and return a <code>ReactNode</code>.",
+      "tipHydrationTitle": "Hydration Tip",
+      "tipHydration": "React islands must use <code>client:load</code> or <code>client:visible</code> to hydrate. Translations are resolved on the server, so the component receives the final strings — no client-side fetching needed.",
+      "tipStoreTitle": "When to use standalone vs store",
+      "tipStore": "Use the <strong>store-backed</strong> version (<code>getTranslations</code>) in Astro islands where the locale context is already set. Use <strong>standalone</strong> (<code>createGetTranslations</code>) in unit tests, Storybook, or any context outside Astro's request lifecycle.",
+      "breakingTitle": "Breaking Change (v2.0.0)",
+      "breakingDescription": "<code>getTranslationsReact</code> has been removed from the root <code>astro-intl</code> export. Import from <code>astro-intl/react</code> instead."
+    },
+    "svelte": {
+      "title": "Svelte Adapter",
+      "intro": "Use <code>astro-intl/svelte</code> to access translations inside Svelte components with rich text support via segments or HTML strings.",
+      "importTitle": "Import",
+      "importDescription": "Import from the <code>astro-intl/svelte</code> subpath. Requires <code>svelte@^5</code> as a peer dependency.",
+      "storeTitle": "Store-backed (Astro Islands)",
+      "storeDescription": "Use <code>getTranslations(namespace)</code> inside Svelte components rendered as Astro islands. Works the same way as the React adapter.",
+      "standaloneTitle": "Standalone (No Store)",
+      "standaloneDescription": "Use <code>createGetTranslations(ui, defaultLocale)</code> when you need translations without the global store.",
+      "richTitle": "Rich Text with t.rich()",
+      "richDescription": "<code>t.rich(key, tagNames?)</code> returns an array of <code>RichSegment[]</code> — each segment is either plain text or a tagged chunk. You can render them in two ways.",
+      "renderHtmlTitle": "Option A: renderRichText() → HTML string",
+      "renderHtmlDescription": "Use <code>renderRichText(segments, options)</code> to convert segments into an HTML string. Pass <code>tags</code> for native HTML elements or <code>components</code> for custom rendering.",
+      "richTextComponentTitle": "Option B: RichText.svelte component",
+      "richTextComponentDescription": "Import the <code>RichText</code> component for declarative rendering. Pass <code>tags</code> for native HTML elements and <code>components</code> for Svelte component rendering.",
+      "tipHydrationTitle": "Hydration Tip",
+      "tipHydration": "Svelte islands work with <code>client:load</code> or <code>client:visible</code>. Like React, translations are resolved on the server.",
+      "tipRichTextTitle": "RichText vs renderRichText",
+      "tipRichText": "Use <strong>RichText.svelte</strong> when you need Svelte component interpolation (e.g., custom tooltip or icon components). Use <strong>renderRichText()</strong> when simple HTML tags like <code>&lt;strong&gt;</code> or <code>&lt;a&gt;</code> are enough — it's lighter and works with <code>{@html}</code>.",
+      "tipSvelte5Title": "Svelte 5 Required",
+      "tipSvelte5": "The Svelte adapter requires <code>svelte@^5</code>. If you're using Svelte 4, you can still use <code>renderRichText()</code> with <code>{@html}</code>, but the <code>RichText</code> component is Svelte 5 only."
     },
     "api": {
       "title": "API Reference",
@@ -249,6 +305,21 @@
       "routesMap": {
         "name": "RoutesMap",
         "description": "Type for the routes configuration object. Maps route keys to an object of locale → URL template pairs. Example: <code>{ about: { en: \"/about\", es: \"/sobre-nosotros\" } }</code>."
+      },
+      "createGetTranslationsReact": {
+        "name": "createGetTranslations (React)",
+        "signature": "createGetTranslations<UI, DefaultLocale>(ui: UI, defaultLocale: DefaultLocale)",
+        "description": "Creates a standalone translation function for React without relying on the global store. Returns <code>getTranslations(lang, namespace)</code> with <code>t.rich()</code> support returning <code>ReactNode[]</code>. Import from <code>astro-intl/react</code>."
+      },
+      "createGetTranslationsSvelte": {
+        "name": "createGetTranslations (Svelte)",
+        "signature": "createGetTranslations<UI, DefaultLocale>(ui: UI, defaultLocale: DefaultLocale)",
+        "description": "Creates a standalone translation function for Svelte without relying on the global store. Returns <code>getTranslations(lang, namespace)</code> with <code>t.rich()</code> support returning <code>RichSegment[]</code>. Import from <code>astro-intl/svelte</code>."
+      },
+      "renderRichText": {
+        "name": "renderRichText",
+        "signature": "renderRichText(segments: RichSegment[], options?: { tags?: Record<string, string>; components?: Record<string, (chunks: string) => string> }): string",
+        "description": "Converts an array of <code>RichSegment[]</code> into an HTML string. Use <code>tags</code> for native HTML elements (e.g. <code>{ bold: \"strong\" }</code>) or <code>components</code> for custom rendering functions. Import from <code>astro-intl/svelte</code>."
       }
     },
     "routing": {
@@ -290,6 +361,18 @@
       "localeTitle": "Reading the Current Locale",
       "localeDescription": "Use <code>getLocale()</code> anywhere after <code>setRequestLocale</code> has been called — for example to build locale-aware URLs."
     }
+  },
+  "frameworks": {
+    "title": "Framework Support",
+    "subtitle": "Use astro-intl with your favorite UI framework",
+    "available": "Available",
+    "comingSoon": "Coming Soon",
+    "astro": "Astro",
+    "react": "React",
+    "svelte": "Svelte",
+    "preact": "Preact",
+    "vue": "Vue",
+    "solidjs": "SolidJS"
   },
   "changelog": {
     "pageTitle": "Changelog",

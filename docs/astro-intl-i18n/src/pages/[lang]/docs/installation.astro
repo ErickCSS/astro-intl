@@ -1,0 +1,12 @@
+---
+import DocsLayout from "@/layouts/DocsLayout.astro";
+import DocsInstallation from "@/components/docs/DocsInstallation.astro";
+
+export function getStaticPaths() {
+  return [{ params: { lang: "en" } }, { params: { lang: "es" } }];
+}
+---
+
+<DocsLayout title="Installation">
+  <DocsInstallation />
+</DocsLayout>

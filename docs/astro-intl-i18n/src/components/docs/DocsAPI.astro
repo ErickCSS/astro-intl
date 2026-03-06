@@ -23,6 +23,7 @@ const functions = [
   {
     key: "getTranslationsReact",
     type: "function",
+    deprecated: true,
   },
   {
     key: "getDefaultLocale",
@@ -72,6 +73,18 @@ const functions = [
     key: "routesMap",
     type: "type",
   },
+  {
+    key: "createGetTranslationsReact",
+    type: "function",
+  },
+  {
+    key: "createGetTranslationsSvelte",
+    type: "function",
+  },
+  {
+    key: "renderRichText",
+    type: "function",
+  },
 ] as const;
 ---
 
@@ -105,6 +118,14 @@ const functions = [
             >
               {t(`api.${fn.key}.name` as any)}
             </code>
+            {(fn as any).deprecated && (
+              <span
+                class="text-xs px-2 py-0.5 rounded-full font-medium"
+                style="background: rgba(251,191,36,0.15); color: #fbbf24;"
+              >
+                Deprecated
+              </span>
+            )}
           </div>
 
           <div class="px-5 py-4" style="background: var(--color-bg-secondary);">

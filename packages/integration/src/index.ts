@@ -8,7 +8,6 @@ import {
   isValidLocale as _isValidLocale,
   getMessages as _getMessages,
   getTranslations as _getTranslations,
-  getTranslationsReact as _getTranslationsReact,
   defineRequestConfig as _defineRequestConfig,
   __resetRequestConfig as _resetRequestConfig,
   __setConfigMessages,
@@ -68,7 +67,6 @@ export const getLocales = _getLocales;
 export const isValidLocale = _isValidLocale;
 export const getMessages = _getMessages;
 export const getTranslations = _getTranslations;
-export const getTranslationsReact = _getTranslationsReact;
 export const defineRequestConfig = _defineRequestConfig;
 export const __resetRequestConfig = _resetRequestConfig;
 export const path = _path;

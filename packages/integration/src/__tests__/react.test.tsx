@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { createGetTranslationsReact } from "../react.js";
+import { createGetTranslations } from "../adapters/react.js";
 
 describe("react.ts", () => {
   const ui = {
@@ -33,9 +33,9 @@ describe("react.ts", () => {
     },
   } as const;
 
-  describe("createGetTranslationsReact", () => {
+  describe("createGetTranslations", () => {
     it("should create translation function for default locale", () => {
-      const getT = createGetTranslationsReact(ui, "en");
+      const getT = createGetTranslations(ui, "en");
       const t = getT("en", "common");
 
       expect(t("greeting" as any)).toBe("Hello");
@@ -43,7 +43,7 @@ describe("react.ts", () => {
     });
 
     it("should create translation function for non-default locale", () => {
-      const getT = createGetTranslationsReact(ui, "en");
+      const getT = createGetTranslations(ui, "en");
       const t = getT("es", "common");
 
       expect(t("greeting" as any)).toBe("Hola");
@@ -51,28 +51,28 @@ describe("react.ts", () => {
     });
 
     it("should handle nested keys", () => {
-      const getT = createGetTranslationsReact(ui, "en");
+      const getT = createGetTranslations(ui, "en");
       const t = getT("en", "common");
 
       expect(t("nested.deep" as any)).toBe("Deep value");
     });
 
     it("should return key when translation not found", () => {
-      const getT = createGetTranslationsReact(ui, "en");
+      const getT = createGetTranslations(ui, "en");
       const t = getT("en", "common");
 
       expect(t("nonexistent" as any)).toBe("nonexistent");
     });
 
     it("should fallback to default locale when locale not found", () => {
-      const getT = createGetTranslationsReact(ui, "en");
+      const getT = createGetTranslations(ui, "en");
       const t = getT("fr" as any, "common");
 
       expect(t("greeting" as any)).toBe("Hello");
     });
 
     it("should work with different namespaces", () => {
-      const getT = createGetTranslationsReact(ui, "en");
+      const getT = createGetTranslations(ui, "en");
       const tCommon = getT("en", "common");
       const tHome = getT("en", "home");
 
@@ -83,30 +83,36 @@ describe("react.ts", () => {
 
   describe("t.rich", () => {
     it("should interpolate React components", () => {
-      const getT = createGetTranslationsReact(ui, "en");
+      const getT = createGetTranslations(ui, "en");
       const t = getT("en", "home");
 
-      const result = t.rich("withTags" as any, {
-        link: (chunks) => `<a>${chunks}</a>`,
-      });
+      const result = t.rich(
+        "withTags" as any,
+        {
+          link: (chunks: string) => `<a>${chunks}</a>`,
+        } as any
+      );
 
       expect(result).toEqual(["Click ", "<a>here</a>", " to continue"]);
     });
 
     it("should handle multiple tags", () => {
-      const getT = createGetTranslationsReact(ui, "en");
+      const getT = createGetTranslations(ui, "en");
       const t = getT("en", "home");
 
-      const result = t.rich("multipleTags" as any, {
-        bold: (chunks) => `<strong>${chunks}</strong>`,
-        italic: (chunks) => `<em>${chunks}</em>`,
-      });
+      const result = t.rich(
+        "multipleTags" as any,
+        {
+          bold: (chunks: string) => `<strong>${chunks}</strong>`,
+          italic: (chunks: string) => `<em>${chunks}</em>`,
+        } as any
+      );
 
       expect(result).toEqual(["Text with ", "<strong>bold</strong>", " and ", "<em>italic</em>"]);
     });
 
     it("should handle text without tags", () => {
-      const getT = createGetTranslationsReact(ui, "en");
+      const getT = createGetTranslations(ui, "en");
       const t = getT("en", "common");
 
       const result = t.rich("greeting" as any, {});
@@ -115,12 +121,15 @@ describe("react.ts", () => {
     });
 
     it("should work with Spanish locale", () => {
-      const getT = createGetTranslationsReact(ui, "en");
+      const getT = createGetTranslations(ui, "en");
       const t = getT("es", "home");
 
-      const result = t.rich("withTags" as any, {
-        link: (chunks) => `<a>${chunks}</a>`,
-      });
+      const result = t.rich(
+        "withTags" as any,
+        {
+          link: (chunks: string) => `<a>${chunks}</a>`,
+        } as any
+      );
 
       expect(result).toEqual(["Haz clic ", "<a>aquí</a>", " para continuar"]);
     });
@@ -134,15 +143,26 @@ describe("react.ts", () => {
         },
       } as const;
 
-      const getT = createGetTranslationsReact(customUi, "en");
+      const getT = createGetTranslations(customUi, "en");
       const t = getT("en", "test");
 
-      const result = t.rich("nested" as any, {
-        outer: (chunks) => `[${chunks}]`,
-        inner: (chunks) => `{${chunks}}`,
-      });
+      const result = t.rich(
+        "nested" as any,
+        {
+          outer: (chunks: any) => ({ wrapper: "outer", children: chunks }),
+          inner: (chunks: any) => ({ wrapper: "inner", children: chunks }),
+        } as any
+      );
 
-      expect(result).toEqual(["Start ", "[outer {inner} outer]", " end"]);
+      // outer receives a ReactNode[] because inner was processed recursively
+      expect(result).toEqual([
+        "Start ",
+        {
+          wrapper: "outer",
+          children: ["outer ", { wrapper: "inner", children: "inner" }, " outer"],
+        },
+        " end",
+      ]);
     });
 
     it("should handle adjacent tags", () => {
@@ -154,13 +174,16 @@ describe("react.ts", () => {
         },
       } as const;
 
-      const getT = createGetTranslationsReact(customUi, "en");
+      const getT = createGetTranslations(customUi, "en");
       const t = getT("en", "test");
 
-      const result = t.rich("adjacent" as any, {
-        tag1: (chunks) => `[${chunks}]`,
-        tag2: (chunks) => `{${chunks}}`,
-      });
+      const result = t.rich(
+        "adjacent" as any,
+        {
+          tag1: (chunks: string) => `[${chunks}]`,
+          tag2: (chunks: string) => `{${chunks}}`,
+        } as any
+      );
 
       expect(result).toEqual(["[First]", "{Second}"]);
     });
@@ -174,12 +197,15 @@ describe("react.ts", () => {
         },
       } as const;
 
-      const getT = createGetTranslationsReact(customUi, "en");
+      const getT = createGetTranslations(customUi, "en");
       const t = getT("en", "test");
 
-      const result = t.rich("empty" as any, {
-        tag: (chunks) => `[${chunks}]`,
-      });
+      const result = t.rich(
+        "empty" as any,
+        {
+          tag: (chunks: string) => `[${chunks}]`,
+        } as any
+      );
 
       expect(result).toEqual(["Text ", "[]", " more text"]);
     });
