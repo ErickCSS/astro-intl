@@ -1,34 +1,34 @@
 # astro-intl
 
-Sistema de internacionalización simple y type-safe para Astro, inspirado en next-intl.
+Simple and type-safe internationalization system for Astro, inspired by next-intl.
 
 [![npm version](https://img.shields.io/npm/v/astro-intl.svg)](https://www.npmjs.com/package/astro-intl)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-yellow.svg?style=flat&logo=buy-me-a-coffee)](https://buymeacoffee.com/erickcs)
 
-## 📚 Documentación
+## 📚 Documentation
 
-Para documentación completa, ejemplos y guías, visita:
+For complete documentation, examples and guides, visit:
 
 **[astro-intl.dev](https://astro-intl.dev)**
 
-## ✨ Características
+## ✨ Features
 
-- 🔒 **Type-safe** - Autocompletado y validación de tipos para tus traducciones
-- 🚀 **Simple** - API intuitiva inspirada en next-intl
-- 🎯 **Integración nativa** - Diseñado específicamente para Astro
-- ⚛️ **Soporte React** - Adapter dedicado con `t.rich()` para rich text. Importa desde `astro-intl/react`
-- 🧡 **Soporte Svelte** - Adapter dedicado con `t.rich()` y `renderRichText()`. Importa desde `astro-intl/svelte`
-- 🌍 **Flexible** - Soporta múltiples idiomas y estructuras de traducción
-- ⚡ **Rendimiento** - Carga solo las traducciones necesarias
-- 🛠️ **TypeScript first** - Escrito completamente en TypeScript
-- 🛡️ **Concurrency-safe** - `AsyncLocalStorage` en SSR para aislar requests concurrentes
-- 🌐 **Multi-runtime** - Compatible con Node.js, Cloudflare Workers y Deno
-- 🗺️ **Routing localizado** - URLs traducidas por locale con rewrites automáticos via middleware
-- 🔗 **Generación de URLs** - `path()` y `switchLocalePath()` para construir URLs localizadas
+- 🔒 **Type-safe** - Autocompletion and type validation for your translations
+- 🚀 **Simple** - Intuitive API inspired by next-intl
+- 🎯 **Native integration** - Designed specifically for Astro
+- ⚛️ **React support** - Dedicated adapter with `t.rich()` for rich text. Import from `astro-intl/react`
+- 🧡 **Svelte support** - Dedicated adapter with `t.rich()` and `renderRichText()`. Import from `astro-intl/svelte`
+- 🌍 **Flexible** - Supports multiple languages and translation structures
+- ⚡ **Performance** - Loads only the necessary translations
+- 🛠️ **TypeScript first** - Written entirely in TypeScript
+- 🛡️ **Concurrency-safe** - `AsyncLocalStorage` in SSR to isolate concurrent requests
+- 🌐 **Multi-runtime** - Compatible with Node.js, Cloudflare Workers and Deno
+- 🗺️ **Localized routing** - Translated URLs per locale with automatic rewrites via middleware
+- 🔗 **URL generation** - `path()` and `switchLocalePath()` to build localized URLs
 - 📦 **Sub-path imports** - `astro-intl/react`, `astro-intl/svelte`, `astro-intl/routing`, `astro-intl/middleware`
 
-## 📦 Instalación
+## 📦 Installation
 
 ```bash
 # npm
@@ -41,9 +41,9 @@ pnpm add astro-intl
 yarn add astro-intl
 ```
 
-## 🚀 Inicio rápido
+## 🚀 Quick start
 
-### 1. Configura la integración
+### 1. Configure the integration
 
 ```js
 // astro.config.mjs
@@ -60,7 +60,7 @@ export default defineConfig({
 });
 ```
 
-### 2. Crea tus archivos de traducción
+### 2. Create your translation files
 
 ```text
 src/
@@ -78,7 +78,7 @@ src/
 }
 ```
 
-### 3. Usa las traducciones en tus componentes
+### 3. Use translations in your components
 
 ```astro
 ---
@@ -91,10 +91,10 @@ const t = getTranslations();
 <p>{t('greeting', { name: 'World' })}</p>
 ```
 
-### 4. Usa en React o Svelte
+### 4. Use in React or Svelte
 
 ```tsx
-// React — importa desde astro-intl/react
+// React — import from astro-intl/react
 import { getTranslations } from "astro-intl/react";
 
 export function Greeting() {
@@ -104,7 +104,7 @@ export function Greeting() {
 ```
 
 ```svelte
-<!-- Svelte — importa desde astro-intl/svelte -->
+<!-- Svelte — import from astro-intl/svelte -->
 <script>
   import { getTranslations } from 'astro-intl/svelte';
   const t = getTranslations();
@@ -113,30 +113,30 @@ export function Greeting() {
 <h1>{t('welcome')}</h1>
 ```
 
-## 📖 Aprende más
+## 📖 Learn more
 
-- **[Documentación completa](https://astro-intl.dev)** - Guías, API y ejemplos
-- **[Configuración](https://astro-intl.dev/docs#configuration)** - Opciones de configuración
-- **[Routing](https://astro-intl.dev/docs#routing)** - URLs traducidas por locale
-- **[Ejemplos](https://astro-intl.dev/docs#examples)** - Casos de uso comunes
+- **[Full documentation](https://astro-intl.dev)** - Guides, API and examples
+- **[Configuration](https://astro-intl.dev/docs#configuration)** - Configuration options
+- **[Routing](https://astro-intl.dev/docs#routing)** - Translated URLs per locale
+- **[Examples](https://astro-intl.dev/docs#examples)** - Common use cases
 
-## 🤝 Contribuir
+## 🤝 Contributing
 
-Las contribuciones son bienvenidas. Por favor:
+Contributions are welcome. Please:
 
-1. Fork el repositorio
-2. Crea una rama para tu feature (`git checkout -b feature/amazing-feature`)
-3. Commit tus cambios (`git commit -m 'Add amazing feature'`)
-4. Push a la rama (`git push origin feature/amazing-feature`)
-5. Abre un Pull Request
+1. Fork the repository
+2. Create a branch for your feature (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## 📄 Licencia
+## 📄 License
 
 MIT © [Erick Cruz](https://github.com/ErickCSS)
 
 ## 🔗 Links
 
-- [Documentación](https://astro-intl.dev)
+- [Documentation](https://astro-intl.dev)
 - [npm](https://www.npmjs.com/package/astro-intl)
 - [GitHub](https://github.com/ErickCSS/astro-intl)
 - [Issues](https://github.com/ErickCSS/astro-intl/issues)
@@ -144,4 +144,4 @@ MIT © [Erick Cruz](https://github.com/ErickCSS)
 
 ---
 
-Hecho con ❤️ para la comunidad de Astro
+Made with ❤️ for the Astro community
