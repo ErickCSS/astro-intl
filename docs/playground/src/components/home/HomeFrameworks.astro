@@ -1,0 +1,76 @@
+---
+import { getTranslations, getLocale } from "astro-intl";
+
+const tFrameworks = getTranslations("frameworks");
+const locale = getLocale();
+
+const available = [
+  { name: tFrameworks("astro"), icon: "/Frameworks/astro-icon-dark.svg" },
+  { name: tFrameworks("react"), icon: "/Frameworks/react_dark.svg" },
+  { name: tFrameworks("svelte"), icon: "/Frameworks/svelte.svg" },
+];
+
+const comingSoon = [
+  { name: tFrameworks("preact"), icon: "/Frameworks/preact.svg" },
+  { name: tFrameworks("vue"), icon: "/Frameworks/vue.svg" },
+  { name: tFrameworks("solidjs"), icon: "/Frameworks/solidjs.svg" },
+];
+---
+
+<section class="py-24">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-14">
+      <h2 class="text-3xl md:text-4xl font-bold mb-3" style="color: var(--color-text);">
+        {tFrameworks("title")}
+      </h2>
+      <p class="text-base" style="color: var(--color-text-tertiary);">
+        {tFrameworks("subtitle")}
+      </p>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+      {
+        available.map((fw) => (
+          <div
+            class="group flex flex-col items-center gap-3 p-5 rounded-xl transition-all duration-200"
+            style="background: var(--color-bg-card); border: 1px solid var(--color-border);"
+          >
+            <img
+              src={fw.icon}
+              alt={fw.name}
+              class="w-10 h-10 transition-transform duration-200 group-hover:scale-110"
+            />
+            <span class="text-sm font-medium" style="color: var(--color-text);">
+              {fw.name}
+            </span>
+            <span
+              class="text-xs px-2 py-0.5 rounded-full font-medium"
+              style="background: rgba(111,207,151,0.15); color: var(--color-accent);"
+            >
+              {tFrameworks("available")}
+            </span>
+          </div>
+        ))
+      }
+      {
+        comingSoon.map((fw) => (
+          <div
+            class="flex flex-col items-center gap-3 p-5 rounded-xl"
+            style="background: var(--color-bg-card); border: 1px solid var(--color-border); opacity: 0.55;"
+          >
+            <img src={fw.icon} alt={fw.name} class="w-10 h-10 grayscale" />
+            <span class="text-sm font-medium" style="color: var(--color-text-tertiary);">
+              {fw.name}
+            </span>
+            <span
+              class="text-xs px-2 py-0.5 rounded-full font-medium"
+              style="background: var(--color-bg-secondary); color: var(--color-text-tertiary); border: 1px solid var(--color-border);"
+            >
+              {tFrameworks("comingSoon")}
+            </span>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

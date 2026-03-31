@@ -136,7 +136,9 @@
       "title": "Installation",
       "description": "Install astro-intl using your preferred package manager.",
       "addIntegration": "Optionally register the integration in your astro.config.mjs:",
-      "integrationNote": "The integration is optional — it only logs a startup message. The core API works without it."
+      "integrationNote": "The integration is optional — it only logs a startup message. The core API works without it.",
+      "astroV6Badge": "✅ Astro v6 Compatible",
+      "astroV6Note": "astro-intl v2.1.0 fully supports Astro 4, 5, and 6. It leverages the new astro:routes:resolved hook for automatic route detection and provides getFallbackRoutes() for fallback route configuration. See the Routing section for details."
     },
     "fileStructure": {
       "title": "File Structure",
@@ -261,7 +263,7 @@
       },
       "intlConfig": {
         "name": "IntlConfig",
-        "description": "Configuration type for the integration options. Contains <code>defaultLocale: string</code> — the locale used when the URL has no language prefix."
+        "description": "Configuration type for the integration options. Contains <code>defaultLocale: string</code>, <code>locales: string[]</code>, <code>routes?: RoutesMap</code>, and <code>fallbackRoutes?: FallbackRouteInfo[]</code>."
       },
       "getDefaultLocale": {
         "name": "getDefaultLocale",
@@ -320,6 +322,15 @@
         "name": "renderRichText",
         "signature": "renderRichText(segments: RichSegment[], options?: { tags?: Record<string, string>; components?: Record<string, (chunks: string) => string> }): string",
         "description": "Converts an array of <code>RichSegment[]</code> into an HTML string. Use <code>tags</code> for native HTML elements (e.g. <code>{ bold: \"strong\" }</code>) or <code>components</code> for custom rendering functions. Import from <code>astro-intl/svelte</code>."
+      },
+      "getFallbackRoutes": {
+        "name": "getFallbackRoutes",
+        "signature": "getFallbackRoutes(): FallbackRouteInfo[]",
+        "description": "Returns the i18n fallback routes collected from Astro 6.1's <code>astro:routes:resolved</code> hook. Returns an empty array on Astro < 6.1 or when no fallback routes are configured. Each entry contains the route <code>pattern</code>, optional <code>pathname</code>, and the <code>locale</code>."
+      },
+      "fallbackRouteInfo": {
+        "name": "FallbackRouteInfo",
+        "description": "Type for fallback route entries. Contains <code>pattern: string</code> (the route pattern), <code>pathname?: string</code> (the static pathname if available), and <code>locale: string</code> (the locale this fallback serves)."
       }
     },
     "routing": {
@@ -348,7 +359,11 @@
       "switchDescription": "Use <code>switchLocalePath(currentPath, nextLocale)</code> to convert the current URL to its equivalent in another locale. It matches the current path against route templates, extracts params, and rebuilds the URL with the target locale's template.",
       "switchNote": "If the current path doesn't match any route template, <code>switchLocalePath</code> falls back to simply swapping the locale prefix.",
       "paramsTitle": "Dynamic Parameters",
-      "paramsDescription": "Route templates support dynamic segments with <code>[param]</code> syntax. You can have multiple params per route — they are extracted and substituted automatically."
+      "paramsDescription": "Route templates support dynamic segments with <code>[param]</code> syntax. You can have multiple params per route — they are extracted and substituted automatically.",
+      "fallbackTitle": "Fallback Routes (Astro 6.1+)",
+      "fallbackDescription": "Starting with Astro 6.1, the integration automatically detects <code>fallbackRoutes</code> from the <code>astro:routes:resolved</code> hook. When you configure <code>i18n.fallbackType: 'rewrite'</code> in your Astro config, Astro generates fallback routes for locales that don't have their own content. astro-intl collects these and makes them available via <code>getFallbackRoutes()</code>.",
+      "fallbackNote": "On Astro < 6.1, <code>getFallbackRoutes()</code> returns an empty array — no errors, fully backward compatible.",
+      "fallbackExampleLabel": "Query fallback routes at runtime:"
     },
     "examples": {
       "title": "Examples",
@@ -386,7 +401,8 @@
     "labels": {
       "added": "Added",
       "changed": "Changed",
-      "fixed": "Fixed"
+      "fixed": "Fixed",
+      "security": "Security"
     }
   }
 }

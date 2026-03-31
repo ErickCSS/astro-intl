@@ -270,6 +270,29 @@
       "pathHelper": "Salida de path()"
     }
   },
+  "community": {
+    "title": "¿Usas astro-intl en producción?",
+    "subtitle": "Cuéntanos sobre tu proyecto y comparte tu experiencia con la librería. Tu feedback nos ayuda a mejorar y da confianza a otros desarrolladores.",
+    "shareButton": "Compartir testimonio",
+    "githubButton": "Ver en GitHub",
+    "points": [
+      "¿Qué tipo de proyecto estás construyendo con astro-intl?",
+      "¿Qué fue lo que más te gustó de la integración y la API?",
+      "¿Qué feature o mejora te gustaría ver a continuación?"
+    ]
+  },
+  "frameworks": {
+    "title": "Soporte de Frameworks",
+    "subtitle": "Usa astro-intl con tu framework UI favorito",
+    "available": "Disponible",
+    "comingSoon": "Próximamente",
+    "astro": "Astro",
+    "react": "React",
+    "svelte": "Svelte",
+    "preact": "Preact",
+    "vue": "Vue",
+    "solidjs": "SolidJS"
+  },
   "changelog": {
     "pageTitle": "Changelog",
     "pageSubtitle": "Todos los cambios notables de astro-intl",
@@ -282,7 +305,8 @@
     "labels": {
       "added": "Agregado",
       "changed": "Cambiado",
-      "fixed": "Corregido"
+      "fixed": "Corregido",
+      "security": "Seguridad"
     },
     "v103": {
       "title": "1.0.3",
