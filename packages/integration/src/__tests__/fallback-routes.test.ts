@@ -23,9 +23,7 @@ describe("Fallback Routes (Astro 6.1+)", () => {
   });
 
   it("overwrites previous fallback routes on re-set", () => {
-    setFallbackRoutes([
-      { pattern: "/fr/about", pathname: "/fr/about/", locale: "fr" },
-    ]);
+    setFallbackRoutes([{ pattern: "/fr/about", pathname: "/fr/about/", locale: "fr" }]);
 
     const newRoutes: FallbackRouteInfo[] = [
       { pattern: "/de/contact", pathname: "/de/contact/", locale: "de" },
@@ -36,9 +34,7 @@ describe("Fallback Routes (Astro 6.1+)", () => {
   });
 
   it("clears fallback routes on reset", () => {
-    setFallbackRoutes([
-      { pattern: "/fr/about", pathname: "/fr/about/", locale: "fr" },
-    ]);
+    setFallbackRoutes([{ pattern: "/fr/about", pathname: "/fr/about/", locale: "fr" }]);
 
     __resetRequestConfig();
 
@@ -46,9 +42,7 @@ describe("Fallback Routes (Astro 6.1+)", () => {
   });
 
   it("handles routes without pathname (pattern-only)", () => {
-    const routes: FallbackRouteInfo[] = [
-      { pattern: "/fr/blog/[...slug]", locale: "fr" },
-    ];
+    const routes: FallbackRouteInfo[] = [{ pattern: "/fr/blog/[...slug]", locale: "fr" }];
 
     setFallbackRoutes(routes);
     expect(getFallbackRoutes()).toEqual(routes);
