@@ -29,7 +29,7 @@ importers:
         specifier: ^6.1.2
         version: 6.1.2(@types/node@25.5.0)(@vercel/functions@3.4.3)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.60.1)(typescript@5.9.3)
       astro-intl:
-        specifier: npm:astro-intl@^2.1.0
+        specifier: ^2.1.0
         version: 2.1.0(astro@6.1.2(@types/node@25.5.0)(@vercel/functions@3.4.3)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.60.1)(typescript@5.9.3))(react@19.2.4)(svelte@5.55.1)
       flag-icons:
         specifier: ^7.5.0

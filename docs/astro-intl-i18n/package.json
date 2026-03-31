@@ -16,7 +16,7 @@
     "@tailwindcss/vite": "^4.2.2",
     "@vercel/analytics": "^1.6.1",
     "astro": "^6.1.2",
-    "astro-intl": "npm:astro-intl@^2.1.0",
+    "astro-intl": "^2.1.0",
     "flag-icons": "^7.5.0",
     "shiki": "^3.23.0",
     "tailwindcss": "^4.2.2"
