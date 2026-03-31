@@ -136,7 +136,9 @@
       "title": "Instalación",
       "description": "Instala astro-intl usando tu gestor de paquetes preferido.",
       "addIntegration": "Opcionalmente registra la integración en tu astro.config.mjs:",
-      "integrationNote": "La integración es opcional — solo registra un mensaje de inicio. La API principal funciona sin ella."
+      "integrationNote": "La integración es opcional — solo registra un mensaje de inicio. La API principal funciona sin ella.",
+      "astroV6Badge": "✅ Compatible con Astro v6",
+      "astroV6Note": "astro-intl v2.1.0 soporta completamente Astro 4, 5 y 6. Aprovecha el nuevo hook astro:routes:resolved para detección automática de rutas y ofrece getFallbackRoutes() para configuración de rutas de fallback. Consulta la sección de Routing para más detalles."
     },
     "fileStructure": {
       "title": "Estructura de Archivos",
@@ -261,7 +263,7 @@
       },
       "intlConfig": {
         "name": "IntlConfig",
-        "description": "Tipo de configuración para las opciones de la integración. Contiene <code>defaultLocale: string</code> — el locale usado cuando la URL no tiene prefijo de idioma."
+        "description": "Tipo de configuración para las opciones de la integración. Contiene <code>defaultLocale: string</code>, <code>locales: string[]</code>, <code>routes?: RoutesMap</code> y <code>fallbackRoutes?: FallbackRouteInfo[]</code>."
       },
       "getDefaultLocale": {
         "name": "getDefaultLocale",
@@ -320,6 +322,15 @@
         "name": "renderRichText",
         "signature": "renderRichText(segments: RichSegment[], options?: { tags?: Record<string, string>; components?: Record<string, (chunks: string) => string> }): string",
         "description": "Convierte un array de <code>RichSegment[]</code> en un string HTML. Usa <code>tags</code> para elementos HTML nativos (ej. <code>{ bold: \"strong\" }</code>) o <code>components</code> para funciones de renderizado personalizadas. Importar desde <code>astro-intl/svelte</code>."
+      },
+      "getFallbackRoutes": {
+        "name": "getFallbackRoutes",
+        "signature": "getFallbackRoutes(): FallbackRouteInfo[]",
+        "description": "Retorna las rutas fallback de i18n recopiladas del hook <code>astro:routes:resolved</code> de Astro 6.1. Retorna un array vacío en Astro < 6.1 o cuando no hay rutas fallback configuradas. Cada entrada contiene el <code>pattern</code> de la ruta, el <code>pathname</code> opcional y el <code>locale</code>."
+      },
+      "fallbackRouteInfo": {
+        "name": "FallbackRouteInfo",
+        "description": "Tipo para las entradas de rutas fallback. Contiene <code>pattern: string</code> (el patrón de ruta), <code>pathname?: string</code> (el pathname estático si está disponible) y <code>locale: string</code> (el locale al que sirve este fallback)."
       }
     },
     "routing": {
@@ -348,7 +359,11 @@
       "switchDescription": "Usa <code>switchLocalePath(currentPath, nextLocale)</code> para convertir la URL actual a su equivalente en otro locale. Matchea la ruta contra los templates, extrae los params y reconstruye la URL con el template del locale destino.",
       "switchNote": "Si la ruta actual no matchea ningún template de ruta, <code>switchLocalePath</code> hace fallback a simplemente intercambiar el prefijo del locale.",
       "paramsTitle": "Parámetros Dinámicos",
-      "paramsDescription": "Los templates de rutas soportan segmentos dinámicos con sintaxis <code>[param]</code>. Puedes tener múltiples params por ruta — se extraen y sustituyen automáticamente."
+      "paramsDescription": "Los templates de rutas soportan segmentos dinámicos con sintaxis <code>[param]</code>. Puedes tener múltiples params por ruta — se extraen y sustituyen automáticamente.",
+      "fallbackTitle": "Rutas Fallback (Astro 6.1+)",
+      "fallbackDescription": "A partir de Astro 6.1, la integración detecta automáticamente las <code>fallbackRoutes</code> del hook <code>astro:routes:resolved</code>. Cuando configuras <code>i18n.fallbackType: 'rewrite'</code> en tu config de Astro, Astro genera rutas fallback para locales que no tienen su propio contenido. astro-intl las recopila y las hace disponibles via <code>getFallbackRoutes()</code>.",
+      "fallbackNote": "En Astro < 6.1, <code>getFallbackRoutes()</code> retorna un array vacío — sin errores, totalmente compatible hacia atrás.",
+      "fallbackExampleLabel": "Consulta las rutas fallback en tiempo de ejecución:"
     },
     "examples": {
       "title": "Ejemplos",
@@ -386,7 +401,45 @@
     "labels": {
       "added": "Agregado",
       "changed": "Cambiado",
-      "fixed": "Corregido"
+      "fixed": "Corregido",
+      "security": "Seguridad"
+    },
+    "v210": {
+      "title": "2.1.0",
+      "items": [
+        {
+          "type": "added",
+          "text": "<strong>Soporte para Astro v6</strong> — <code>peerDependencies</code> ahora acepta <code>^4 || ^5 || ^6</code>. Compatible hacia atrás con Astro 4 y 5."
+        },
+        {
+          "type": "added",
+          "text": "<code>getFallbackRoutes()</code> — nueva función pública que retorna las rutas fallback de i18n recopiladas del hook <code>astro:routes:resolved</code> de Astro 6.1. Retorna un array vacío en Astro < 6.1."
+        },
+        {
+          "type": "added",
+          "text": "Tipo <code>FallbackRouteInfo</code> — tipo exportado con <code>{ pattern: string; pathname?: string; locale: string }</code>."
+        },
+        {
+          "type": "added",
+          "text": "Hook <code>astro:routes:resolved</code> — la integración ahora escucha este hook para detectar y almacenar automáticamente las rutas fallback cuando <code>i18n.fallbackType: 'rewrite'</code> está configurado en Astro."
+        },
+        {
+          "type": "changed",
+          "text": "<code>devDependencies.astro</code> actualizado a <code>^6.1.0</code>."
+        },
+        {
+          "type": "changed",
+          "text": "<code>@astrojs/vercel</code> actualizado a <code>^10.0.3</code> en proyectos de docs (compatible con Astro 6)."
+        },
+        {
+          "type": "changed",
+          "text": "<code>happy-dom</code> actualizado a <code>^20.8.9</code> para corregir CVE-2026-33943 (RCE via ECMAScriptModuleCompiler)."
+        },
+        {
+          "type": "security",
+          "text": "Resueltas las 32 alertas de vulnerabilidad de Dependabot, incluyendo <code>flatted</code>, <code>happy-dom</code>, <code>h3</code>, <code>svgo</code>, <code>picomatch</code>, <code>tar</code>, <code>@astrojs/vercel</code>, <code>devalue</code>, <code>brace-expansion</code>, <code>smol-toml</code> y <code>astro</code>."
+        }
+      ]
     },
     "v110": {
       "title": "1.1.0",

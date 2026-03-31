@@ -29,8 +29,17 @@ export type ParamsForRoute<Template extends string> = [ExtractParams<Template>] 
   ? Record<string, never>
   : Record<ExtractParams<Template>, string>;
 
+// ─── Fallback route info (Astro 6.1+ astro:routes:resolved) ─────────
+
+export type FallbackRouteInfo = {
+  pattern: string;
+  pathname?: string;
+  locale: string;
+};
+
 export type IntlConfig = {
   defaultLocale: string;
   locales: string[];
   routes?: RoutesMap;
+  fallbackRoutes?: FallbackRouteInfo[];
 };

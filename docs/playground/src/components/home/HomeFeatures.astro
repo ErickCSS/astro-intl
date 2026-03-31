@@ -1,0 +1,188 @@
+---
+import { getTranslations } from "astro-intl";
+
+const tFeatures = getTranslations("features");
+---
+
+<!-- Features -->
+<section id="features" class="py-24 bg-bg-secondary">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-14">
+      <h2 class="text-3xl md:text-4xl font-bold mb-3" style="color: var(--color-text);">
+        {tFeatures("title")}
+      </h2>
+      <p class="text-base" style="color: var(--color-text-tertiary);">{tFeatures("subtitle")}</p>
+    </div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div
+        class="p-6 rounded-xl transition-all"
+        style="background: var(--color-bg-card); border: 1px solid var(--color-border);"
+      >
+        <div
+          class="w-10 h-10 rounded-lg flex items-center justify-center mb-4"
+          style="background: var(--color-accent-dim);"
+        >
+          <svg
+            class="w-5 h-5"
+            style="color: var(--color-accent);"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            ><path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg
+          >
+        </div>
+        <h3 class="text-base font-semibold mb-1.5" style="color: var(--color-text);">
+          {tFeatures("noPropsDrilling.title")}
+        </h3>
+        <p class="text-sm leading-relaxed" style="color: var(--color-text-tertiary);">
+          {tFeatures("noPropsDrilling.description")}
+        </p>
+      </div>
+      <div
+        class="p-6 rounded-xl transition-all"
+        style="background: var(--color-bg-card); border: 1px solid var(--color-border);"
+      >
+        <div
+          class="w-10 h-10 rounded-lg flex items-center justify-center mb-4"
+          style="background: var(--color-accent-dim);"
+        >
+          <svg
+            class="w-5 h-5"
+            style="color: var(--color-accent);"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            ><path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg
+          >
+        </div>
+        <h3 class="text-base font-semibold mb-1.5" style="color: var(--color-text);">
+          {tFeatures("typeSafe.title")}
+        </h3>
+        <p class="text-sm leading-relaxed" style="color: var(--color-text-tertiary);">
+          {tFeatures("typeSafe.description")}
+        </p>
+      </div>
+      <div
+        class="p-6 rounded-xl transition-all"
+        style="background: var(--color-bg-card); border: 1px solid var(--color-border);"
+      >
+        <div
+          class="w-10 h-10 rounded-lg flex items-center justify-center mb-4"
+          style="background: var(--color-accent-dim);"
+        >
+          <svg
+            class="w-5 h-5"
+            style="color: var(--color-accent);"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            ><path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg
+          >
+        </div>
+        <h3 class="text-base font-semibold mb-1.5" style="color: var(--color-text);">
+          {tFeatures("dynamicLoading.title")}
+        </h3>
+        <p class="text-sm leading-relaxed" style="color: var(--color-text-tertiary);">
+          {tFeatures("dynamicLoading.description")}
+        </p>
+      </div>
+      <div
+        class="p-6 rounded-xl transition-all"
+        style="background: var(--color-bg-card); border: 1px solid var(--color-border);"
+      >
+        <div
+          class="w-10 h-10 rounded-lg flex items-center justify-center mb-4"
+          style="background: var(--color-accent-dim);"
+        >
+          <svg
+            class="w-5 h-5"
+            style="color: var(--color-accent);"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            ><path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg
+          >
+        </div>
+        <h3 class="text-base font-semibold mb-1.5" style="color: var(--color-text);">
+          {tFeatures("namespaces.title")}
+        </h3>
+        <p class="text-sm leading-relaxed" style="color: var(--color-text-tertiary);">
+          {tFeatures("namespaces.description")}
+        </p>
+      </div>
+      <div
+        class="p-6 rounded-xl transition-all"
+        style="background: var(--color-bg-card); border: 1px solid var(--color-border);"
+      >
+        <div
+          class="w-10 h-10 rounded-lg flex items-center justify-center mb-4"
+          style="background: var(--color-accent-dim);"
+        >
+          <svg
+            class="w-5 h-5"
+            style="color: var(--color-accent);"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            ><path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+            ></path></svg
+          >
+        </div>
+        <h3 class="text-base font-semibold mb-1.5" style="color: var(--color-text);">
+          {tFeatures("richText.title")}
+        </h3>
+        <p class="text-sm leading-relaxed" style="color: var(--color-text-tertiary);">
+          {tFeatures("richText.description")}
+        </p>
+      </div>
+      <div
+        class="p-6 rounded-xl transition-all"
+        style="background: var(--color-bg-card); border: 1px solid var(--color-border);"
+      >
+        <div
+          class="w-10 h-10 rounded-lg flex items-center justify-center mb-4"
+          style="background: var(--color-accent-dim);"
+        >
+          <svg
+            class="w-5 h-5"
+            style="color: var(--color-accent);"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            ><path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg
+          >
+        </div>
+        <h3 class="text-base font-semibold mb-1.5" style="color: var(--color-text);">
+          {tFeatures("simple.title")}
+        </h3>
+        <p class="text-sm leading-relaxed" style="color: var(--color-text-tertiary);">
+          {tFeatures("simple.description")}
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

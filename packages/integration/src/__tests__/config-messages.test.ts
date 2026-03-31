@@ -102,9 +102,10 @@ describe("Config-based messages (simple approach)", () => {
     expect(getTranslations()("greeting" as any)).toBe("Bonjour");
   });
 
-  it("should throw when no config or messages are provided", async () => {
+  it("should return false when no config or messages are provided", async () => {
     const url = new URL("https://example.com/en/page");
-    await expect(setRequestLocale(url)).rejects.toThrow(/No getRequestConfig or messages provided/);
+    const result = await setRequestLocale(url);
+    expect(result).toBe(false);
   });
 });
 
