@@ -5,6 +5,21 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.2.0] - 2026-04-07
+
+### Added
+
+- **`t.raw()` function** — access raw translation values (arrays, objects, numbers) without string coercion. Use `t.raw("key")` to get the native value type instead of `[object Object]`.
+- **`messagesDir` integration option** — simplified API for loading JSON files. Set `messagesDir: "./src/i18n/messages"` and the integration will automatically load `{locale}.json` files with the correct import attributes.
+- **Auto-detection of locale in static mode** — `getLocale()` now automatically detects the locale from `window.location.pathname` when `setRequestLocale()` hasn't been called (client-side only).
+- **`<AutoRedirect />` component** — new Astro component export from `astro-intl/components`. Detects browser language and redirects to the appropriate localized route without the blank page issue of `Astro.redirect()`. Supports `locales` and `defaultLocale` props.
+- **`MessagesDirConfig` type** — exported type for the `messagesDir` configuration option.
+
+### Changed
+
+- Updated `package.json` exports to include `./components` sub-path for the `AutoRedirect` component.
+- Improved error messages when request config is not found.
+
 ## [2.1.0] - 2026
 
 ### Added

@@ -13,6 +13,11 @@ export type MessagesConfig = Record<
   | (() => Promise<{ default: Record<string, unknown> } | Record<string, unknown>>)
 >;
 
+export type MessagesDirConfig = {
+  /** Directory path containing locale JSON files (e.g., "./src/i18n/messages") */
+  dir: string;
+};
+
 export type RoutesMap = {
   [routeKey: string]: {
     [locale: string]: string;

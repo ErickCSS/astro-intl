@@ -1,6 +1,6 @@
 {
   "name": "astro-intl",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "type": "module",
   "description": "Sistema de internacionalización simple y type-safe para Astro.",
   "keywords": [
@@ -55,6 +55,9 @@
     "./routing": {
       "types": "./dist/routing.d.ts",
       "import": "./dist/routing.js"
+    },
+    "./components": {
+      "import": "./dist/components/AutoRedirect.astro"
     }
   },
   "peerDependencies": {
