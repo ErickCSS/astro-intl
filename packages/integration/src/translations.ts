@@ -16,6 +16,10 @@ export function getTranslations<T extends Record<string, unknown> = Record<strin
     return interpolateValues(str, values);
   }
 
+  function raw<K extends DotPaths<T>>(key: K): unknown {
+    return getNestedValue(messages as Record<string, unknown>, key);
+  }
+
   const markup = function (
     key: DotPaths<T>,
     options:
@@ -49,9 +53,10 @@ export function getTranslations<T extends Record<string, unknown> = Record<strin
     return str;
   };
 
-  Object.assign(t, { markup });
+  Object.assign(t, { markup, raw });
 
   return t as typeof t & {
     markup: typeof markup;
+    raw: typeof raw;
   };
 }

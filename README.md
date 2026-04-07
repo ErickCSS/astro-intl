@@ -26,7 +26,58 @@ Para documentación completa, ejemplos y guías, visita:
 - 🌐 **Multi-runtime** - Compatible con Node.js, Cloudflare Workers y Deno
 - 🗺️ **Routing localizado** - URLs traducidas por locale con rewrites automáticos via middleware
 - 🔗 **Generación de URLs** - `path()` y `switchLocalePath()` para construir URLs localizadas
-- 📦 **Sub-path imports** - `astro-intl/react`, `astro-intl/svelte`, `astro-intl/routing`, `astro-intl/middleware`
+- 📦 **Sub-path imports** - `astro-intl/react`, `astro-intl/svelte`, `astro-intl/routing`, `astro-intl/middleware`, `astro-intl/components`
+
+## 🆕 Nuevas Features (v2.2.0)
+
+### `t.raw()` - Acceso a valores sin coerción
+
+Accede a arrays, objetos y números sin que se conviertan a string:
+
+```astro
+---
+const t = getTranslations('about');
+const intro = t.raw('intro') as string[]; // ['Line 1', 'Line 2']
+const stats = t.raw('stats') as { count: number };
+---
+
+<ul>
+  {intro.map(line => <li>{line}</li>)}
+</ul>
+<p>Count: {stats.count}</p>
+```
+
+### `messagesDir` - Configuración simplificada
+
+Carga automática de archivos JSON con el import attribute correcto:
+
+```js
+// astro.config.mjs
+import astroIntl from 'astro-intl';
+
+export default defineConfig({
+  integrations: [
+    astroIntl({
+      defaultLocale: 'en',
+      locales: ['en', 'es'],
+      messagesDir: './src/i18n/messages', // Carga {locale}.json automáticamente
+    }),
+  ],
+});
+```
+
+### `<AutoRedirect />` - Redirección automática
+
+Detecta el idioma del navegador y redirige sin página en blanco:
+
+```astro
+---
+// src/pages/index.astro
+import { AutoRedirect } from 'astro-intl/components';
+---
+
+<AutoRedirect locales={['en', 'es']} defaultLocale="en" />
+```
 
 ## 📦 Instalación
 

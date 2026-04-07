@@ -269,25 +269,50 @@ export async function runWithLocale<R>(
   return fn();
 }
 
+// ─── Auto-detect locale from URL (for static mode without explicit setRequestLocale) ────────────────────────────────────────────
+
+function autoDetectLocaleFromUrl(): string | null {
+  // Try to detect from browser URL (client-side)
+  if (typeof window !== "undefined" && window.location) {
+    const pathname = window.location.pathname;
+    const [, lang] = pathname.split("/");
+    if (lang && ($.intlConfig.locales.length === 0 || $.intlConfig.locales.includes(lang))) {
+      return sanitizeLocale(lang);
+    }
+    return $.intlConfig.defaultLocale;
+  }
+  return null;
+}
+
 // ─── Read current state ─────────────────────────────────────────────
 
 export function getLocale(): string {
   const state = getRequestState();
-  if (!state) {
-    throw new Error("[astro-intl] No request config found. Did you call setRequestLocale()?");
+  if (state) {
+    return state.locale;
   }
-  return state.locale;
+
+  // Try auto-detection for static mode
+  const detectedLocale = autoDetectLocaleFromUrl();
+  if (detectedLocale) {
+    return detectedLocale;
+  }
+
+  throw new Error("[astro-intl] No request config found. Did you call setRequestLocale()?");
 }
 
 export function getMessages<T extends Record<string, unknown> = Record<string, unknown>>(
   namespace?: string
 ): T {
   const state = getRequestState();
-  if (!state) {
-    throw new Error("[astro-intl] No request config found. Did you call setRequestLocale()?");
+  if (state) {
+    return namespace ? (state.messages[namespace] as T) : (state.messages as T);
   }
 
-  return namespace ? (state.messages[namespace] as T) : (state.messages as T);
+  // For async initialization case, throw with helpful message
+  // The user should either call setRequestLocale or we need to be in a context
+  // where auto-initialization has already happened
+  throw new Error("[astro-intl] No request config found. Did you call setRequestLocale()?");
 }
 
 export function getRequestLocale(): string {

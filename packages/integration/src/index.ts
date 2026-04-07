@@ -22,11 +22,24 @@ export type AstroIntlOptions = {
   defaultLocale?: string;
   locales?: string[];
   messages?: MessagesConfig;
+  messagesDir?: string;
   routes?: RoutesMap;
 };
 
+// Helper to create MessagesConfig from a directory path
+function createMessagesConfigFromDir(dir: string, locales: string[]): MessagesConfig {
+  const config: MessagesConfig = {};
+
+  for (const locale of locales) {
+    config[locale] = () =>
+      import(/* @vite-ignore */ `${dir}/${locale}.json`, { with: { type: "json" } });
+  }
+
+  return config;
+}
+
 export default function astroIntl(options: AstroIntlOptions = {}): AstroIntegration {
-  const { enabled = true, defaultLocale, locales, messages, routes } = options;
+  const { enabled = true, defaultLocale, locales, messages, messagesDir, routes } = options;
 
   if (defaultLocale || locales || routes) {
     __setIntlConfig({
@@ -38,6 +51,10 @@ export default function astroIntl(options: AstroIntlOptions = {}): AstroIntegrat
 
   if (messages) {
     __setConfigMessages(messages);
+  } else if (messagesDir && locales) {
+    // Auto-create messages config from directory
+    const dirConfig = createMessagesConfigFromDir(messagesDir, locales);
+    __setConfigMessages(dirConfig);
   }
 
   return {
@@ -109,6 +126,7 @@ export type {
   Primitive,
   GetRequestConfigFn,
   MessagesConfig,
+  MessagesDirConfig,
   IntlConfig,
   RoutesMap,
   ExtractParams,

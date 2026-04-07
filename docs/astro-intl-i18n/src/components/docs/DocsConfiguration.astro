@@ -102,7 +102,7 @@ const t = getTranslations("docs");
 
     <!-- Advanced approach -->
     <div
-      class="mb-2 p-4 rounded-lg"
+      class="mb-6 p-4 rounded-lg"
       style="background: var(--color-bg-secondary); border: 1px solid var(--color-border);"
     >
       <h4 class="text-sm font-semibold mb-2" style="color: var(--color-text);">
@@ -130,6 +130,28 @@ const t = getTranslations("docs");
           code={'import { defineConfig } from "astro/config";\nimport astroIntl from "astro-intl";\n\nexport default defineConfig({\n  integrations: [\n    astroIntl({\n      defaultLocale: "en",\n      locales: ["en", "es"],\n    }),\n  ],\n});'}
         />
       </div>
+    </div>
+
+    <!-- MessagesDir approach -->
+    <div
+      class="mb-2 p-4 rounded-lg"
+      style="background: var(--color-bg-secondary); border: 1px solid var(--color-border);"
+    >
+      <h4 class="text-sm font-semibold mb-2" style="color: var(--color-text);">
+        {t("configuration.messagesDirTitle")}
+      </h4>
+      <p
+        class="text-sm mb-3"
+        style="color: var(--color-text-tertiary);"
+        set:html={t.markup("configuration.messagesDirDescription", {
+          code: (c: string) => `<code>${c}</code>`,
+        })}
+      />
+      <CodeBlock
+        title="astro.config.mjs"
+        lang="javascript"
+        code={'import { defineConfig } from "astro/config";\nimport astroIntl from "astro-intl";\n\nexport default defineConfig({\n  integrations: [\n    astroIntl({\n      defaultLocale: "en",\n      locales: ["en", "es"],\n      messagesDir: "./src/i18n/messages",\n    }),\n  ],\n});'}
+      />
     </div>
   </div>
 

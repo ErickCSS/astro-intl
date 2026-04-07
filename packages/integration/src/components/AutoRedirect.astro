@@ -1,0 +1,31 @@
+---
+/**
+ * AutoRedirect Component
+ * 
+ * Detects the user's browser language and redirects to the appropriate
+ * localized route. Use this in your root page (e.g., src/pages/index.astro)
+ * to avoid the blank page issue with Astro.redirect().
+ * 
+ * @example
+ * ---
+ * import { AutoRedirect } from 'astro-intl/components';
+ * ---
+ * <AutoRedirect locales={['en', 'es']} defaultLocale="en" />
+ */
+export interface Props {
+  /** Array of supported locale codes */
+  locales: string[];
+  /** Default locale to fallback to if browser language is not supported */
+  defaultLocale: string;
+}
+
+const { locales, defaultLocale } = Astro.props;
+---
+
+<script define:vars={{ locales, defaultLocale }}>
+  (function() {
+    const lang = (navigator.language || navigator.languages?.[0] || "").slice(0, 2).toLowerCase();
+    const locale = locales.includes(lang) ? lang : defaultLocale;
+    window.location.replace("/" + locale + "/");
+  })();
+</script>
