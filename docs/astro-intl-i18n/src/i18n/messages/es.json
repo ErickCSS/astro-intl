@@ -424,7 +424,20 @@
       "preact": "Preact",
       "vue": "Vue",
       "solidjs": "SolidJS"
-    },
+    }
+  },
+  "frameworks": {
+    "title": "Soporte de Frameworks",
+    "subtitle": "Usa astro-intl con tu framework UI favorito",
+    "available": "Disponible",
+    "comingSoon": "Próximamente",
+    "astro": "Astro",
+    "react": "React",
+    "svelte": "Svelte",
+    "preact": "Preact",
+    "vue": "Vue",
+    "solidjs": "SolidJS"
+  },
   "changelog": {
     "pageTitle": "Changelog",
     "pageSubtitle": "Todos los cambios notables de astro-intl",
