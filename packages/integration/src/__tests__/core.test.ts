@@ -104,8 +104,12 @@ describe("core.ts", () => {
   });
 
   describe("getLocale", () => {
-    it("should throw error when called before setRequestLocale", () => {
-      expect(() => getLocale()).toThrow(/No request config found/);
+    it("should return default locale via auto-detection when called before setRequestLocale", () => {
+      // With auto-detection, getLocale now tries to detect from window.location
+      // In test environment (no window), it should fall back to the default locale
+      const locale = getLocale();
+      expect(typeof locale).toBe("string");
+      expect(locale.length).toBeGreaterThan(0);
     });
 
     it("should return current locale after setRequestLocale", async () => {
@@ -332,6 +336,105 @@ describe("core.ts", () => {
         });
 
         expect(result).toBe('Click <a href="/go">here</a>');
+      });
+    });
+
+    describe("t.raw()", () => {
+      it("should return array values without coercion", async () => {
+        const url = new URL("https://example.com/en/home");
+        await setRequestLocale(url, () => ({
+          locale: "en",
+          messages: {
+            about: {
+              intro: ["Line 1", "Line 2", "Line 3"],
+              pillars: ["Pillar A", "Pillar B"],
+            },
+          },
+        }));
+
+        const t = getTranslations("about");
+        const intro = t.raw("intro") as string[];
+        const pillars = t.raw("pillars") as string[];
+
+        expect(Array.isArray(intro)).toBe(true);
+        expect(intro).toEqual(["Line 1", "Line 2", "Line 3"]);
+        expect(Array.isArray(pillars)).toBe(true);
+        expect(pillars).toEqual(["Pillar A", "Pillar B"]);
+      });
+
+      it("should return object values without coercion", async () => {
+        const url = new URL("https://example.com/en/home");
+        await setRequestLocale(url, () => ({
+          locale: "en",
+          messages: {
+            metadata: {
+              social: {
+                twitter: { handle: "@example", url: "https://twitter.com/example" },
+                github: { handle: "example", url: "https://github.com/example" },
+              },
+            },
+          },
+        }));
+
+        const t = getTranslations("metadata");
+        const social = t.raw("social") as Record<string, { handle: string; url: string }>;
+
+        expect(typeof social).toBe("object");
+        expect(social.twitter.handle).toBe("@example");
+        expect(social.github.url).toBe("https://github.com/example");
+      });
+
+      it("should return number values without coercion", async () => {
+        const url = new URL("https://example.com/en/home");
+        await setRequestLocale(url, () => ({
+          locale: "en",
+          messages: {
+            stats: {
+              count: 42,
+              percentage: 99.9,
+            },
+          },
+        }));
+
+        const t = getTranslations("stats");
+        const count = t.raw("count") as number;
+        const percentage = t.raw("percentage") as number;
+
+        expect(typeof count).toBe("number");
+        expect(count).toBe(42);
+        expect(typeof percentage).toBe("number");
+        expect(percentage).toBe(99.9);
+      });
+
+      it("should return string values as-is", async () => {
+        const url = new URL("https://example.com/en/home");
+        await setRequestLocale(url, () => ({
+          locale: "en",
+          messages: {
+            greeting: "Hello World",
+          },
+        }));
+
+        const t = getTranslations();
+        const greeting = t.raw("greeting") as string;
+
+        expect(typeof greeting).toBe("string");
+        expect(greeting).toBe("Hello World");
+      });
+
+      it("should return undefined for non-existent keys", async () => {
+        const url = new URL("https://example.com/en/home");
+        await setRequestLocale(url, () => ({
+          locale: "en",
+          messages: {
+            greeting: "Hello",
+          },
+        }));
+
+        const t = getTranslations();
+        const result = t.raw("nonexistent");
+
+        expect(result).toBeUndefined();
       });
     });
   });

@@ -270,6 +270,29 @@
       "pathHelper": "path() output"
     }
   },
+  "community": {
+    "title": "Using astro-intl in production?",
+    "subtitle": "Tell us about your project and share your experience with the library. Your feedback helps us improve and gives other developers confidence.",
+    "shareButton": "Share testimonial",
+    "githubButton": "View on GitHub",
+    "points": [
+      "What kind of project are you building with astro-intl?",
+      "What did you like most about the integration and the API?",
+      "What feature or improvement would you like to see next?"
+    ]
+  },
+  "frameworks": {
+    "title": "Framework Support",
+    "subtitle": "Use astro-intl with your favorite UI framework",
+    "available": "Available",
+    "comingSoon": "Coming Soon",
+    "astro": "Astro",
+    "react": "React",
+    "svelte": "Svelte",
+    "preact": "Preact",
+    "vue": "Vue",
+    "solidjs": "SolidJS"
+  },
   "changelog": {
     "pageTitle": "Changelog",
     "pageSubtitle": "All notable changes to astro-intl",
@@ -282,7 +305,8 @@
     "labels": {
       "added": "Added",
       "changed": "Changed",
-      "fixed": "Fixed"
+      "fixed": "Fixed",
+      "security": "Security"
     }
   }
 }

@@ -1,5 +1,5 @@
 import type { AstroIntegration } from "astro";
-import type { MessagesConfig, RoutesMap } from "./types/index.js";
+import type { MessagesConfig, RoutesMap, FallbackRouteInfo } from "./types/index.js";
 import {
   setRequestLocale as _setRequestLocale,
   runWithLocale as _runWithLocale,
@@ -9,23 +9,37 @@ import {
   getMessages as _getMessages,
   getTranslations as _getTranslations,
   defineRequestConfig as _defineRequestConfig,
+  getFallbackRoutes as _getFallbackRoutes,
+  setFallbackRoutes as _setFallbackRoutes,
   __resetRequestConfig as _resetRequestConfig,
   __setConfigMessages,
   __setIntlConfig,
-  path as _path,
-  switchLocalePath as _switchLocalePath,
 } from "./core.js";
+import { path as _path, switchLocalePath as _switchLocalePath } from "./core.js";
 
 export type AstroIntlOptions = {
   enabled?: boolean;
   defaultLocale?: string;
   locales?: string[];
   messages?: MessagesConfig;
+  messagesDir?: string;
   routes?: RoutesMap;
 };
 
+// Helper to create MessagesConfig from a directory path
+function createMessagesConfigFromDir(dir: string, locales: string[]): MessagesConfig {
+  const config: MessagesConfig = {};
+
+  for (const locale of locales) {
+    config[locale] = () =>
+      import(/* @vite-ignore */ `${dir}/${locale}.json`, { with: { type: "json" } });
+  }
+
+  return config;
+}
+
 export default function astroIntl(options: AstroIntlOptions = {}): AstroIntegration {
-  const { enabled = true, defaultLocale, locales, messages, routes } = options;
+  const { enabled = true, defaultLocale, locales, messages, messagesDir, routes } = options;
 
   if (defaultLocale || locales || routes) {
     __setIntlConfig({
@@ -37,6 +51,10 @@ export default function astroIntl(options: AstroIntlOptions = {}): AstroIntegrat
 
   if (messages) {
     __setConfigMessages(messages);
+  } else if (messagesDir && locales) {
+    // Auto-create messages config from directory
+    const dirConfig = createMessagesConfigFromDir(messagesDir, locales);
+    __setConfigMessages(dirConfig);
   }
 
   return {
@@ -55,6 +73,35 @@ export default function astroIntl(options: AstroIntlOptions = {}): AstroIntegrat
           },
         });
       },
+      "astro:routes:resolved": ({ routes }) => {
+        if (!enabled) return;
+
+        const collected: FallbackRouteInfo[] = [];
+        for (const route of routes) {
+          // fallbackRoutes is available in Astro 6.1+
+          const fallbacks = (route as unknown as Record<string, unknown>).fallbackRoutes as
+            | Array<{ pattern: string; pathname?: string }>
+            | undefined;
+          if (!fallbacks) continue;
+
+          for (const fb of fallbacks) {
+            // Extract locale from the pattern (first segment after /)
+            const segments = (fb.pathname ?? fb.pattern).split("/");
+            const locale = segments[1] || "";
+            if (locale) {
+              collected.push({
+                pattern: fb.pattern,
+                pathname: fb.pathname,
+                locale,
+              });
+            }
+          }
+        }
+
+        if (collected.length > 0) {
+          _setFallbackRoutes(collected);
+        }
+      },
     },
   };
 }
@@ -69,6 +116,7 @@ export const getMessages = _getMessages;
 export const getTranslations = _getTranslations;
 export const defineRequestConfig = _defineRequestConfig;
 export const __resetRequestConfig = _resetRequestConfig;
+export const getFallbackRoutes = _getFallbackRoutes;
 export const path = _path;
 export const switchLocalePath = _switchLocalePath;
 
@@ -78,9 +126,11 @@ export type {
   Primitive,
   GetRequestConfigFn,
   MessagesConfig,
+  MessagesDirConfig,
   IntlConfig,
   RoutesMap,
   ExtractParams,
   ParamsForRoute,
+  FallbackRouteInfo,
 } from "./types/index.js";
 export type { DotPaths } from "./core.js";

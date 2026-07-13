@@ -12,6 +12,30 @@ const t = getTranslations("docs");
   </div>
   <p class="text-sm mb-6 ml-4" style="color: var(--color-text-tertiary);">{t("installation.description")}</p>
 
+  <!-- Astro v6 Compatibility Callout -->
+  <div
+    class="flex items-start gap-3 px-4 py-3 rounded-lg text-sm mb-6 ml-4"
+    style="background: rgba(61,139,94,0.12); border: 1px solid var(--color-primary); color: var(--color-text);"
+  >
+    <svg
+      class="w-5 h-5 mt-0.5 shrink-0"
+      style="color: var(--color-accent);"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+    </svg>
+    <div>
+      <span class="font-semibold" style="color: var(--color-accent);">{t("installation.astroV6Badge")}</span>
+      <p class="mt-1" style="color: var(--color-text-secondary);">{t("installation.astroV6Note")}</p>
+    </div>
+  </div>
+
   <div class="mb-8">
     <InstallTabs pkg="astro-intl" />
   </div>

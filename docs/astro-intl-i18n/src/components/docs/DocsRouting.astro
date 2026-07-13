@@ -305,7 +305,7 @@ src/pages/[lang]/tienda/
   </div>
 
   <!-- Dynamic parameters -->
-  <div class="mb-2">
+  <div class="mb-10">
     <h3
       class="text-sm font-semibold mb-1"
       style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
@@ -333,5 +333,53 @@ const url = path("shop", {
 });
 // → /es/tienda/electronics/123`}
     />
+  </div>
+
+  <!-- Fallback Routes (Astro 6.1+) -->
+  <div class="mb-2">
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("routing.fallbackTitle")}
+    </h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("routing.fallbackDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+
+    <div class="mb-4">
+      <p class="text-xs font-medium mb-2" style="color: var(--color-text-secondary);">
+        {t("routing.fallbackExampleLabel")}
+      </p>
+      <CodeBlock
+        title="src/pages/[lang]/index.astro"
+        lang="astro"
+        code={'---\nimport { getFallbackRoutes } from "astro-intl";\n\nconst fallbacks = getFallbackRoutes();\n// [\n//   { pattern: "/fr/about", pathname: "/fr/about/", locale: "fr" },\n//   { pattern: "/fr/blog/[...slug]", locale: "fr" },\n// ]\n\n// Example: check if the current page has a fallback for a locale\nconst hasFrenchFallback = fallbacks.some(fb => fb.locale === "fr");\n---'}
+      />
+    </div>
+
+    <!-- Compatibility note -->
+    <div
+      class="flex items-start gap-3 px-4 py-3 rounded-lg text-sm"
+      style="background: var(--color-accent-dim); border: 1px solid var(--color-border-hover); color: var(--color-accent);"
+    >
+      <svg class="w-4 h-4 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <span
+        style="color: var(--color-text-secondary);"
+        set:html={t.markup("routing.fallbackNote", {
+          code: (c: string) => `<code>${c}</code>`,
+        })}
+      />
+    </div>
   </div>
 </section>

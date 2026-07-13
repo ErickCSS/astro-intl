@@ -1,7 +1,6 @@
 ---
+import AutoRedirect from "astro-intl/components";
 import { routing } from "../i18n/routing";
-const locales = [...routing.locales];
-const DEFAULT_LOCALE = routing.defaultLocale;
 ---
 
 <!doctype html>
@@ -179,11 +178,7 @@ const DEFAULT_LOCALE = routing.defaultLocale;
         }
       }
     </style>
-    <script define:vars={{ locales, DEFAULT_LOCALE }}>
-      const lang = (navigator.language || navigator.languages?.[0] || "").slice(0, 2).toLowerCase();
-      const locale = locales.includes(lang) ? lang : DEFAULT_LOCALE;
-      window.location.replace("/" + locale);
-    </script>
+    <AutoRedirect locales={[...routing.locales]} defaultLocale={routing.defaultLocale} />
   </head>
   <body>
     <div class="scene">

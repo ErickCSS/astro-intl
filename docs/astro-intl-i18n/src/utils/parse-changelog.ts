@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 export interface ChangelogItem {
-  type: "added" | "changed" | "fixed";
+  type: "added" | "changed" | "fixed" | "security";
   text: string;
 }
 
@@ -17,6 +17,7 @@ const TYPE_MAP: Record<string, ChangelogItem["type"]> = {
   added: "added",
   changed: "changed",
   fixed: "fixed",
+  security: "security",
 };
 
 const BADGE_MAP: Record<string, string> = {

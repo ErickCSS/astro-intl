@@ -144,6 +144,95 @@ const tHero = getTranslations("hero");
     />
   </div>
 
+  <!-- Raw Values -->
+  <div class="mb-6">
+    <h3
+      class="text-sm font-semibold mb-1"
+      style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+    >
+      {t("usage.rawTitle")}
+    </h3>
+    <p
+      class="text-sm mb-4"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("usage.rawDescription", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+
+    <!-- Arrays Example -->
+    <div class="mb-4">
+      <h4 class="text-sm font-semibold mb-1" style="color: var(--color-text);">
+        {t("usage.rawArraysTitle")}
+      </h4>
+      <p
+        class="text-sm mb-2"
+        style="color: var(--color-text-tertiary);"
+        set:html={t.markup("usage.rawArraysDescription", {
+          code: (c: string) => `<code>${c}</code>`,
+        })}
+      />
+      <CodeBlock
+        title="messages/en.json"
+        lang="json"
+        code={`{\n  "features": ["Fast", "Lightweight", "Type-safe"]\n}`}
+      />
+      <CodeBlock
+        title="Component.astro"
+        lang="astro"
+        code={`---\nimport { getTranslations } from "astro-intl";\nconst t = getTranslations();\n\n// Get raw array\nconst features = t.raw("features") as string[];\n// features = ["Fast", "Lightweight", "Type-safe"]\n---\n\n<ul>\n  &#123;features.map(feature => &lt;li&gt;&#123;feature&#125;&lt;/li&gt;)&#125;\n&lt;/ul&gt;`}
+      />
+    </div>
+
+    <!-- Objects Example -->
+    <div class="mb-4">
+      <h4 class="text-sm font-semibold mb-1" style="color: var(--color-text);">
+        {t("usage.rawObjectsTitle")}
+      </h4>
+      <p
+        class="text-sm mb-2"
+        style="color: var(--color-text-tertiary);"
+        set:html={t.markup("usage.rawObjectsDescription", {
+          code: (c: string) => `<code>${c}</code>`,
+        })}
+      />
+      <CodeBlock
+        title="messages/en.json"
+        lang="json"
+        code={`{\n  "theme": {\n    "primary": "#3b82f6",\n    "secondary": "#64748b"\n  }\n}`}
+      />
+      <CodeBlock
+        title="Component.astro"
+        lang="astro"
+        code={`---\nconst theme = t.raw("theme") as { primary: string; secondary: string };\n// theme = { primary: "#3b82f6", secondary: "#64748b" }\n---\n\n&lt;div style={\`background: &#36;{theme.primary}\`}&gt;...&lt;/div&gt;`}
+      />
+    </div>
+
+    <!-- Numbers Example -->
+    <div class="mb-2">
+      <h4 class="text-sm font-semibold mb-1" style="color: var(--color-text);">
+        {t("usage.rawNumbersTitle")}
+      </h4>
+      <p
+        class="text-sm mb-2"
+        style="color: var(--color-text-tertiary);"
+        set:html={t.markup("usage.rawNumbersDescription", {
+          code: (c: string) => `<code>${c}</code>`,
+        })}
+      />
+      <CodeBlock
+        title="messages/en.json"
+        lang="json"
+        code={`{\n  "config": {\n    "maxItems": 100,\n    "timeout": 30\n  }\n}`}
+      />
+      <CodeBlock
+        title="Component.astro"
+        lang="astro"
+        code={`---\nconst maxItems = t.raw("config.maxItems") as number;\n// maxItems = 100 (number, not string)\n\n// Can use for calculations\nconst limit = maxItems * 0.8; // 80\n---`}
+      />
+    </div>
+  </div>
+
   <!-- React (deprecated) -->
   <div class="mb-2">
     <div

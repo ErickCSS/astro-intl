@@ -93,7 +93,8 @@ export function createIntlMiddleware(options: IntlMiddlewareOptions) {
       return next();
     }
 
-    await setRequestLocale(context.url);
+    const ok = await setRequestLocale(context.url);
+    if (!ok) return next();
 
     // Rewrite translated routes to their canonical filesystem paths
     if (routes) {

@@ -1,0 +1,40 @@
+---
+import { getTranslations } from "astro-intl";
+
+const tFooter = getTranslations("footer");
+---
+
+<!-- Footer -->
+<footer class="py-10" style="border-top: 1px solid var(--color-border);">
+  <div
+    class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4"
+  >
+    <div class="flex items-center gap-2">
+      <span class="text-sm font-semibold" style="color: var(--color-text);"
+        >astro<span style="color: var(--color-accent);">-intl</span></span
+      >
+      <span class="text-xs" style="color: var(--color-text-tertiary);">—</span>
+      <span class="text-xs" style="color: var(--color-text-tertiary);">{tFooter("description")}</span>
+    </div>
+    <div class="flex flex-col md:flex-row items-center gap-3">
+      <a
+        href="https://buymeacoffee.com/erickcs"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-xs transition-colors"
+        style="color: var(--color-text-tertiary);"
+      >
+        ☕ Buy me a coffee
+      </a>
+      <p
+        class="text-xs"
+        style="color: var(--color-text-tertiary);"
+        set:html={tFooter.markup("madeWith", {
+          heart: (chunks: string) => `<span style="color: #e05c5c;">${chunks}</span>`,
+          link: (chunks: string) =>
+            `<a href="https://erickcs.com" target="_blank" rel="noopener noreferrer" style="color: var(--color-accent); text-decoration: none; font-weight: 500;">${chunks}</a>`,
+        })}
+      />
+    </div>
+  </div>
+</footer>

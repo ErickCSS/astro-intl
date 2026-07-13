@@ -1,0 +1,120 @@
+---
+import DocsLayout from "@/layouts/DocsLayout.astro";
+import { getTranslations, getLocale } from "astro-intl";
+import CodeBlock from "@/components/CodeBlock.astro";
+
+export function getStaticPaths() {
+  return [{ params: { lang: "en" } }, { params: { lang: "es" } }];
+}
+
+const t = getTranslations("docs");
+const locale = getLocale();
+const base = `/${locale}/docs`;
+---
+
+<DocsLayout>
+  <section id="auto-redirect" class="mb-14 scroll-mt-24">
+    <div class="flex items-center gap-3 mb-8">
+      <span class="w-1 h-5 rounded-full" style="background: var(--color-accent);"></span>
+      <h2 class="text-xl font-bold" style="color: var(--color-text);">{t("autoRedirect.title")}</h2>
+    </div>
+
+    <p
+      class="text-sm mb-10"
+      style="color: var(--color-text-tertiary);"
+      set:html={t.markup("autoRedirect.description", {
+        code: (c: string) => `<code>${c}</code>`,
+      })}
+    />
+
+    <!-- Basic Usage -->
+    <div class="mb-10">
+      <h3
+        class="text-sm font-semibold mb-1"
+        style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+      >
+        {t("autoRedirect.basicTitle")}
+      </h3>
+      <p
+        class="text-sm mb-4"
+        style="color: var(--color-text-tertiary);"
+        set:html={t.markup("autoRedirect.basicDescription", {
+          code: (c: string) => `<code>${c}</code>`,
+        })}
+      />
+      <CodeBlock
+        title="src/pages/index.astro"
+        lang="astro"
+        code={`---\nimport AutoRedirect from 'astro-intl/components';\n---\n\n<!doctype html>\n<html lang="en">\n  <head>\n    <title>Redirecting...</title>\n  </head>\n  <body>\n    <AutoRedirect \n      locales={['en', 'es', 'fr']} \n      defaultLocale="en" \n    />\n  </body>\n</html>`}
+      />
+    </div>
+
+    <!-- Why Not Astro.redirect() -->
+    <div class="mb-10">
+      <h3
+        class="text-sm font-semibold mb-1"
+        style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+      >
+        {t("autoRedirect.staticModeTitle")}
+      </h3>
+      <p
+        class="text-sm mb-4"
+        style="color: var(--color-text-tertiary);"
+        set:html={t.markup("autoRedirect.staticModeDescription", {
+          code: (c: string) => `<code>${c}</code>`,
+        })}
+      />
+    </div>
+
+    <!-- Props -->
+    <div class="mb-10">
+      <h3
+        class="text-sm font-semibold mb-1"
+        style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+      >
+        {t("autoRedirect.propsTitle")}
+      </h3>
+      <ul class="text-sm mb-4" style="color: var(--color-text-tertiary);">
+        <li set:html={t.markup("autoRedirect.localesProp", { code: (c: string) => `<code>${c}</code>` })} />
+        <li
+          set:html={t.markup("autoRedirect.defaultLocaleProp", { code: (c: string) => `<code>${c}</code>` })}
+        />
+      </ul>
+    </div>
+
+    <!-- Complete Example -->
+    <div class="mb-10">
+      <h3
+        class="text-sm font-semibold mb-1"
+        style="color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.05em;"
+      >
+        {t("autoRedirect.exampleTitle")}
+      </h3>
+      <p
+        class="text-sm mb-4"
+        style="color: var(--color-text-tertiary);"
+        set:html={t.markup("autoRedirect.exampleDescription", {
+          code: (c: string) => `<code>${c}</code>`,
+        })}
+      />
+      <CodeBlock
+        title="src/pages/index.astro"
+        lang="astro"
+        code={`---\n// src/pages/index.astro\nimport AutoRedirect from 'astro-intl/components';\n---\n\n<!doctype html>\n<html lang="en">\n  <head>\n    <meta charset="utf-8" />\n    <meta name="viewport" content="width=device-width, initial-scale=1.0" />\n    <title>Redirecting to your language...</title>\n    <meta name="robots" content="noindex, follow" />\n  </head>\n  <body>\n    <!-- \n      This component will:\n      1. Detect the user's browser language\n      2. Check if it matches any of the supported locales\n      3. Redirect to /{locale}/ (fallback to defaultLocale)\n    -->\n    <AutoRedirect \n      locales={['en', 'es', 'fr']} \n      defaultLocale="en" \n    />\n    \n    <!-- Optional: Show a loading state while redirecting -->\n    <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">\n      <p>Detecting your language...</p>\n    </div>\n  </body>\n</html>`}
+      />
+    </div>
+
+    <!-- Tip Box -->
+    <div
+      class="p-4 rounded-lg mb-10"
+      style="background: var(--color-accent-dim); border-left: 4px solid var(--color-accent);"
+    >
+      <p class="text-sm" style="margin: 0; color: var(--color-text);">
+        <strong style="color: var(--color-accent);">💡 Tip:</strong>
+        The <code>AutoRedirect</code> component is designed specifically for static sites. If you're using SSR mode
+        (<code>output: 'server'</code>), you can use
+        <code>Astro.redirect()</code> instead for server-side redirects.
+      </p>
+    </div>
+  </section>
+</DocsLayout>

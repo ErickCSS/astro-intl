@@ -1,0 +1,78 @@
+---
+import { getTranslations } from "astro-intl";
+
+const tCommunity = getTranslations("community");
+---
+
+<!-- Community -->
+<section class="py-24">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div
+      class="rounded-2xl p-8 md:p-12 relative overflow-hidden"
+      style="background: var(--color-bg-secondary); border: 1px solid var(--color-border);"
+    >
+      <div
+        class="absolute inset-0 pointer-events-none"
+        style="background: radial-gradient(ellipse 55% 55% at 75% 20%, rgba(111,207,151,0.12) 0%, transparent 70%);"
+      >
+      </div>
+      <div class="relative grid gap-8 lg:grid-cols-2 lg:items-center">
+        <div>
+          <h2 class="text-3xl md:text-4xl font-bold mb-4" style="color: var(--color-text);">
+            {tCommunity("title")}
+          </h2>
+          <p class="text-base md:text-lg mb-8 max-w-xl" style="color: var(--color-text-secondary);">
+            {tCommunity("subtitle")}
+          </p>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <a
+              href="https://github.com/ErickCSS/astro-intl/discussions/9"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm transition-all"
+              style="background: var(--color-primary); color: var(--color-text);"
+            >
+              {tCommunity("shareButton")}
+            </a>
+            <a
+              href="https://github.com/ErickCSS/astro-intl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm transition-all"
+              style="color: var(--color-text-secondary); border: 1px solid var(--color-border);"
+            >
+              {tCommunity("githubButton")}
+            </a>
+          </div>
+        </div>
+
+        <div class="grid gap-3">
+          <div
+            class="rounded-xl p-4"
+            style="background: var(--color-bg-card); border: 1px solid var(--color-border);"
+          >
+            <p class="text-sm md:text-base" style="color: var(--color-text-secondary);">
+              {tCommunity("points.0")}
+            </p>
+          </div>
+          <div
+            class="rounded-xl p-4"
+            style="background: var(--color-bg-card); border: 1px solid var(--color-border);"
+          >
+            <p class="text-sm md:text-base" style="color: var(--color-text-secondary);">
+              {tCommunity("points.1")}
+            </p>
+          </div>
+          <div
+            class="rounded-xl p-4"
+            style="background: var(--color-bg-card); border: 1px solid var(--color-border);"
+          >
+            <p class="text-sm md:text-base" style="color: var(--color-text-secondary);">
+              {tCommunity("points.2")}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

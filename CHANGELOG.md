@@ -5,6 +5,51 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.2.0] - 2026-04-07
+
+### Added
+
+- **`t.raw()` function** — access raw translation values (arrays, objects, numbers) without string coercion. Use `t.raw("key")` to get the native value type instead of `[object Object]`.
+- **`messagesDir` integration option** — simplified API for loading JSON files. Set `messagesDir: "./src/i18n/messages"` and the integration will automatically load `{locale}.json` files with the correct import attributes.
+- **Auto-detection of locale in static mode** — `getLocale()` now automatically detects the locale from `window.location.pathname` when `setRequestLocale()` hasn't been called (client-side only).
+- **`<AutoRedirect />` component** — new Astro component export from `astro-intl/components`. Detects browser language and redirects to the appropriate localized route without the blank page issue of `Astro.redirect()`. Supports `locales` and `defaultLocale` props.
+- **`MessagesDirConfig` type** — exported type for the `messagesDir` configuration option.
+
+### Changed
+
+- Updated `package.json` exports to include `./components` sub-path for the `AutoRedirect` component.
+- Improved error messages when request config is not found.
+
+## [2.1.0] - 2026
+
+### Added
+
+- **Astro v6 support** — `peerDependencies` now accepts `^4 || ^5 || ^6`. Backward compatible with Astro 4 and 5.
+- **`getFallbackRoutes()` API** — new public function that returns i18n fallback routes collected from Astro 6.1's `astro:routes:resolved` hook. Returns an empty array on Astro < 6.1.
+- **`FallbackRouteInfo` type** — exported type with `{ pattern: string; pathname?: string; locale: string }`.
+- **`astro:routes:resolved` hook** — the integration now listens to this hook to automatically detect and store fallback routes when `i18n.fallbackType: 'rewrite'` is configured in Astro.
+
+### Changed
+
+- `devDependencies.astro` updated to `^6.1.0`.
+- `@astrojs/vercel` updated to `^10.0.3` in docs projects (Astro 6 compatible).
+- `happy-dom` updated to `^20.8.9` to fix CVE-2026-33943 (RCE via ECMAScriptModuleCompiler).
+
+### Security
+
+- Resolved all 32 Dependabot vulnerability alerts, including:
+  - `flatted` — Prototype Pollution and unbounded recursion DoS via `parse()`
+  - `happy-dom` — ECMAScriptModuleCompiler RCE and fetch credentials leak
+  - `h3` — SSE injection, path traversal, and double decoding bypasses
+  - `svgo` — DoS via Billion Laughs entity expansion
+  - `picomatch` — ReDoS via extglob and POSIX character class method injection
+  - `tar` / `node-tar` — symlink/hardlink path traversal
+  - `@astrojs/vercel` — unauthenticated path override via `x-astro-path`
+  - `devalue` — prototype pollution in `parse` and `unflatten`
+  - `brace-expansion` — zero-step sequence hang
+  - `smol-toml` — DoS via commented lines
+  - `astro` — remote allowlist bypass via unanchored matchPathname wildcard
+
 ## [2.0.0] - 2026
 
 ### Breaking Changes

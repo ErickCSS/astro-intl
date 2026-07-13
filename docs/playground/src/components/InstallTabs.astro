@@ -1,0 +1,168 @@
+---
+interface Props {
+  pkg: string;
+}
+
+const { pkg } = Astro.props;
+
+const managers = [
+  { label: "npm", cmd: `npm install ${pkg}` },
+  { label: "pnpm", cmd: `pnpm add ${pkg}` },
+  { label: "yarn", cmd: `yarn add ${pkg}` },
+];
+---
+
+<div
+  class="install-tabs flex flex-col rounded-xl overflow-hidden"
+  style="border: 1px solid var(--color-border); background: var(--color-bg-tertiary);"
+>
+  <!-- Manager selector row -->
+  <div class="flex items-center gap-1 px-3 pt-2 pb-0" style="border-bottom: 1px solid var(--color-border);">
+    {
+      managers.map((m, i) => (
+        <button
+          class="install-tab-btn px-3 py-1 text-xs font-medium rounded-t-md transition-all"
+          data-tab={i}
+          data-active={i === 0 ? "true" : "false"}
+        >
+          {m.label}
+        </button>
+      ))
+    }
+  </div>
+
+  <!-- Command rows -->
+  {
+    managers.map((m, i) => (
+      <div
+        class="install-tab-content flex items-center gap-3 px-4 py-3"
+        data-tab-content={i}
+        data-active={i === 0 ? "true" : "false"}
+        data-cmd={m.cmd}
+      >
+        <span class="text-sm font-mono select-none" style="color: var(--color-text-tertiary);">
+          $
+        </span>
+        <code
+          class="text-sm font-mono flex-1"
+          style="background: transparent; border: none; padding: 0; color: var(--color-accent);"
+        >
+          {m.cmd}
+        </code>
+        <button
+          class="copy-btn flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs transition-all"
+          aria-label="Copy command"
+        >
+          <svg class="copy-icon w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+            />
+          </svg>
+          <svg class="check-icon w-3.5 h-3.5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+        </button>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .install-tab-btn {
+    color: var(--color-text-tertiary);
+    border: 1px solid transparent;
+    border-bottom: none;
+    cursor: pointer;
+  }
+
+  .install-tab-btn:hover {
+    color: var(--color-text-secondary);
+    background: var(--color-bg-hover);
+  }
+
+  .install-tab-btn[data-active="true"] {
+    color: var(--color-text);
+    background: var(--color-bg-secondary);
+    border-color: var(--color-border);
+    border-bottom-color: transparent;
+  }
+
+  .install-tab-content {
+    display: none;
+  }
+
+  .install-tab-content[data-active="true"] {
+    display: flex;
+  }
+
+  .copy-btn {
+    color: var(--color-text-tertiary);
+    border: 1px solid transparent;
+  }
+
+  .copy-btn:hover {
+    color: var(--color-text-secondary);
+    background: var(--color-bg-hover);
+    border-color: var(--color-border);
+  }
+
+  .copy-btn.copied {
+    color: var(--color-accent);
+  }
+
+  .hidden {
+    display: none;
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".install-tabs").forEach((container) => {
+      // Tab switching
+      container.querySelectorAll(".install-tab-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const idx = btn.getAttribute("data-tab");
+          if (!idx) return;
+
+          container
+            .querySelectorAll(".install-tab-btn")
+            .forEach((b) => b.setAttribute("data-active", "false"));
+          btn.setAttribute("data-active", "true");
+
+          container
+            .querySelectorAll(".install-tab-content")
+            .forEach((c) => c.setAttribute("data-active", "false"));
+          const active = container.querySelector(`[data-tab-content="${idx}"]`);
+          if (active) active.setAttribute("data-active", "true");
+        });
+      });
+
+      // Copy buttons
+      container.querySelectorAll(".install-tab-content").forEach((row) => {
+        const copyBtn = row.querySelector(".copy-btn");
+        if (!copyBtn) return;
+
+        copyBtn.addEventListener("click", () => {
+          const cmd = row.getAttribute("data-cmd") ?? "";
+          navigator.clipboard.writeText(cmd).then(() => {
+            const copyIcon = copyBtn.querySelector(".copy-icon");
+            const checkIcon = copyBtn.querySelector(".check-icon");
+
+            copyBtn.classList.add("copied");
+            copyIcon?.classList.add("hidden");
+            checkIcon?.classList.remove("hidden");
+
+            setTimeout(() => {
+              copyBtn.classList.remove("copied");
+              copyIcon?.classList.remove("hidden");
+              checkIcon?.classList.add("hidden");
+            }, 2000);
+          });
+        });
+      });
+    });
+  });
+</script>

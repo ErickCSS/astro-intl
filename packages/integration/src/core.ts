@@ -8,6 +8,8 @@ export {
   getMessages,
   getDefaultLocale,
   defineRequestConfig,
+  getFallbackRoutes,
+  setFallbackRoutes,
   __setConfigMessages,
   __resetRequestConfig,
   __setIntlConfig,
