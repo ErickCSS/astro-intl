@@ -186,8 +186,8 @@
       "markupInterpolationTitle": "Markup + Interpolación",
       "markupInterpolationDescription": "Combina interpolación de variables con reemplazo de tags pasando <code>{curlyOpen} values, tags {curlyClose}</code> a <code>t.markup()</code>. La interpolación se ejecuta primero, luego se procesan los tags.",
       "reactTitle": "Componentes React",
-      "reactDescription": "Usa <code>getTranslationsReact(namespace)</code> dentro de componentes React, luego llama a <code>t.rich(key, tags)</code> para interpolar nodos React.",
-      "reactDeprecated": "<code>getTranslationsReact</code> está obsoleto desde v2.0.0. Usa <code>astro-intl/react</code> en su lugar.",
+      "reactDescription": "Importa <code>getTranslations(namespace)</code> desde <code>astro-intl/react</code>, luego llama a <code>t.rich(key, tags)</code> para interpolar nodos React.",
+      "reactDeprecated": "Los helpers de React están disponibles desde el subpath dedicado <code>astro-intl/react</code>.",
       "reactDeprecatedLink": "Ver docs de React",
       "rawTitle": "t.raw() — Valores Sin Coerción",
       "rawDescription": "Usa <code>t.raw(key)</code> para acceder al valor de traducción sin coerción a string. Perfecto para arrays, objetos y números que necesitas en su tipo JavaScript nativo.",
@@ -214,7 +214,7 @@
       "tipStoreTitle": "Cuándo usar standalone vs store",
       "tipStore": "Usa la versión <strong>con store</strong> (<code>getTranslations</code>) en Astro islands donde el contexto de locale ya está configurado. Usa <strong>standalone</strong> (<code>createGetTranslations</code>) en unit tests, Storybook, o cualquier contexto fuera del ciclo de vida de Astro.",
       "breakingTitle": "Breaking Change (v2.0.0)",
-      "breakingDescription": "<code>getTranslationsReact</code> ha sido eliminado del export raíz de <code>astro-intl</code>. Importa desde <code>astro-intl/react</code> en su lugar."
+      "breakingDescription": "Los helpers de React se movieron del paquete raíz a <code>astro-intl/react</code>. Consulta la guía de migración v1→v2 para las firmas históricas."
     },
     "svelte": {
       "title": "Adaptador Svelte",
@@ -242,7 +242,7 @@
       "title": "Referencia de API",
       "setRequestLocale": {
         "name": "setRequestLocale",
-        "signature": "setRequestLocale(url: URL, getConfig: Function): Promise<void>",
+        "signature": "setRequestLocale(url: URL, getConfig?: GetRequestConfigFn): Promise<boolean>",
         "description": "Extrae el locale del pathname de la URL (primer segmento) y llama a tu función <code>getConfig</code> para cargar los mensajes. Debe ser awaited antes de cualquier otra llamada."
       },
       "getLocale": {
@@ -255,11 +255,6 @@
         "signature": "getTranslations<T>(namespace?: string)",
         "description": "Retorna una función <code>t(key, values?)</code> tipada con scope al namespace dado. El objeto <code>values</code> opcional reemplaza placeholders <code>{curlyOpen}varName{curlyClose}</code>. También expone <code>t.markup(key, tags | {curlyOpen} values?, tags {curlyClose})</code> para interpolación HTML y <code>t.raw(key)</code> para acceder a valores sin coerción."
       },
-      "getTranslationsReact": {
-        "name": "getTranslationsReact",
-        "signature": "getTranslationsReact<T>(namespace?: string)",
-        "description": "Igual que <code>getTranslations</code> pero retorna una función con <code>t.rich(key, tags)</code> para interpolación de nodos React."
-      },
       "requestConfig": {
         "name": "RequestConfig",
         "description": "Tipo retornado por tu función <code>getRequestConfig</code>. Contiene <code>locale: string</code> y <code>messages: Record<string, unknown></code>."
@@ -271,7 +266,7 @@
       "runWithLocale": {
         "name": "runWithLocale",
         "signature": "runWithLocale<R>(url: URL, fn: () => R | Promise<R>, getConfig?: GetRequestConfigFn): Promise<R>",
-        "description": "Ejecuta una función dentro de un contexto aislado por request. Usa <code>AsyncLocalStorage</code> en Node.js para SSR concurrency-safe. Cae en fallback a variable global en runtimes sin soporte (Cloudflare Workers, Deno)."
+        "description": "Ejecuta una función dentro de un contexto aislado por request usando <code>AsyncLocalStorage</code> de Node.js. Los runtimes SSR sin almacenamiento seguro fallan explícitamente en vez de compartir estado global."
       },
       "intlConfig": {
         "name": "IntlConfig",

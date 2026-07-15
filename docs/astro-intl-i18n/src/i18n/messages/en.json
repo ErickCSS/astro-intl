@@ -187,8 +187,8 @@
       "markupInterpolationTitle": "Markup + Interpolation",
       "markupInterpolationDescription": "Combine variable interpolation with tag replacement by passing <code>{curlyOpen} values, tags {curlyClose}</code> to <code>t.markup()</code>. Interpolation runs first, then tags are processed.",
       "reactTitle": "React Components",
-      "reactDescription": "Use <code>getTranslationsReact(namespace)</code> inside React components, then call <code>t.rich(key, tags)</code> to interpolate React nodes.",
-      "reactDeprecated": "<code>getTranslationsReact</code> is deprecated since v2.0.0. Use <code>astro-intl/react</code> instead.",
+      "reactDescription": "Import <code>getTranslations(namespace)</code> from <code>astro-intl/react</code>, then call <code>t.rich(key, tags)</code> to interpolate React nodes.",
+      "reactDeprecated": "React helpers are available from the dedicated <code>astro-intl/react</code> subpath.",
       "reactDeprecatedLink": "See React docs",
       "rawTitle": "t.raw() — Raw Values",
       "rawDescription": "Use <code>t.raw(key)</code> to access the raw translation value without string coercion. Perfect for arrays, objects, and numbers that you need in their native JavaScript type.",
@@ -215,7 +215,7 @@
       "tipStoreTitle": "When to use standalone vs store",
       "tipStore": "Use the <strong>store-backed</strong> version (<code>getTranslations</code>) in Astro islands where the locale context is already set. Use <strong>standalone</strong> (<code>createGetTranslations</code>) in unit tests, Storybook, or any context outside Astro's request lifecycle.",
       "breakingTitle": "Breaking Change (v2.0.0)",
-      "breakingDescription": "<code>getTranslationsReact</code> has been removed from the root <code>astro-intl</code> export. Import from <code>astro-intl/react</code> instead."
+      "breakingDescription": "React helpers moved from the package root to <code>astro-intl/react</code>. See the v1→v2 migration guide for historical signatures."
     },
     "svelte": {
       "title": "Svelte Adapter",
@@ -243,7 +243,7 @@
       "title": "API Reference",
       "setRequestLocale": {
         "name": "setRequestLocale",
-        "signature": "setRequestLocale(url: URL, getConfig: Function): Promise<void>",
+        "signature": "setRequestLocale(url: URL, getConfig?: GetRequestConfigFn): Promise<boolean>",
         "description": "Extracts the locale from the URL pathname (first segment) and calls your <code>getConfig</code> function to load messages. Must be awaited before any other call."
       },
       "getLocale": {
@@ -256,11 +256,6 @@
         "signature": "getTranslations<T>(namespace?: string)",
         "description": "Returns a typed <code>t(key, values?)</code> function scoped to the given namespace. The optional <code>values</code> object replaces <code>{curlyOpen}varName{curlyClose}</code> placeholders. Also exposes <code>t.markup(key, tags | {curlyOpen} values?, tags {curlyClose})</code> for HTML interpolation and <code>t.raw(key)</code> for accessing raw values without coercion."
       },
-      "getTranslationsReact": {
-        "name": "getTranslationsReact",
-        "signature": "getTranslationsReact<T>(namespace?: string)",
-        "description": "Same as <code>getTranslations</code> but returns a function with <code>t.rich(key, tags)</code> for React node interpolation."
-      },
       "requestConfig": {
         "name": "RequestConfig",
         "description": "Type returned by your <code>getRequestConfig</code> function. Contains <code>locale: string</code> and <code>messages: Record<string, unknown></code>."
@@ -272,7 +267,7 @@
       "runWithLocale": {
         "name": "runWithLocale",
         "signature": "runWithLocale<R>(url: URL, fn: () => R | Promise<R>, getConfig?: GetRequestConfigFn): Promise<R>",
-        "description": "Runs a function inside an isolated per-request context. Uses <code>AsyncLocalStorage</code> on Node.js for concurrency-safe SSR. Falls back to a global variable on runtimes without it (Cloudflare Workers, Deno)."
+        "description": "Runs a function inside an isolated per-request context using Node.js <code>AsyncLocalStorage</code>. SSR runtimes without safe request-local storage fail explicitly instead of sharing global state."
       },
       "intlConfig": {
         "name": "IntlConfig",

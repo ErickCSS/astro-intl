@@ -5,6 +5,36 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Security
+
+- Isolated SSR locale and message state with Node.js `AsyncLocalStorage`; unsupported SSR runtimes now fail explicitly instead of sharing process-global request data.
+- Replaced regex-only HTML filtering with parser-based allowlist sanitization for `t.markup()`.
+- Escaped and sanitized Svelte rich-text rendering and rejected unsafe native tag mappings.
+- Validated locale path segments before routing and browser redirect construction.
+- Escaped JSON-LD script content and safely rendered the documentation changelog.
+
+### Fixed
+
+- Clean publication builds now exclude tests, copy `AutoRedirect.astro`, validate exports and reject unexpected tarball files.
+- Vitest discovers source tests only and no longer re-runs compiled tests from `dist`.
+- Updated current React and request-locale examples while preserving historical signatures in the v1→v2 migration guide.
+
+### Changed
+
+- Added official Astro 7 support by extending the peer range to `^4 || ^5 || ^6 || ^7`, while preserving Astro 4–6 compatibility and all current public APIs.
+- Updated the playground canary to Astro 7.0.9, `@astrojs/vercel` 11.0.3 and `@astrojs/sitemap` 3.7.3.
+- Extended the tarball compatibility matrix to Astro 4.16.19, 5.18.2, 6.4.8 and 7.0.9.
+- Validated Astro 7 with Vite 8/Rolldown, the Rust `.astro` compiler, queued nested rendering, Advanced Routing in full and explicitly composed pipelines, and locale-separated route caching.
+- Documented that Astro 7 requires Node.js 22.12.0 or newer without changing `astro-intl`'s Node.js requirement for Astro 4–6 consumers.
+
+## [2.2.1] - 2026-04-08
+
+### Changed
+
+- Republished 2.2.0 with the package version updated to 2.2.1. The public tarballs contain identical compiled code.
+
 ## [2.2.0] - 2026-04-07
 
 ### Added

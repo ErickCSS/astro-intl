@@ -1,7 +1,43 @@
 import type { Primitive } from "./types/index.js";
 import { getMessages } from "./store.js";
 import { getNestedValue, interpolateValues, type DotPaths } from "./interpolation.js";
-import { escapeRegExp, sanitizeHtml } from "./sanitize.js";
+import { sanitizeHtml } from "./sanitize.js";
+
+function replaceRichTag(
+  input: string,
+  tag: string,
+  render: (chunks: string) => string
+): string {
+  if (!/^[A-Za-z][A-Za-z0-9_-]*$/.test(tag)) {
+    throw new Error(`[astro-intl] Invalid markup tag name "${tag}".`);
+  }
+
+  const open = `<${tag}>`;
+  const close = `</${tag}>`;
+  let cursor = 0;
+  let output = "";
+
+  while (cursor < input.length) {
+    const openIndex = input.indexOf(open, cursor);
+    if (openIndex === -1) {
+      output += input.slice(cursor);
+      break;
+    }
+
+    const contentStart = openIndex + open.length;
+    const closeIndex = input.indexOf(close, contentStart);
+    if (closeIndex === -1) {
+      output += input.slice(cursor);
+      break;
+    }
+
+    output += input.slice(cursor, openIndex);
+    output += render(input.slice(contentStart, closeIndex));
+    cursor = closeIndex + close.length;
+  }
+
+  return output;
+}
 
 // ─── getTranslations (Astro / plain HTML) ───────────────────────────
 
@@ -43,9 +79,7 @@ export function getTranslations<T extends Record<string, unknown> = Record<strin
     str = interpolateValues(str, values);
 
     for (const [tag, fn] of Object.entries(tags)) {
-      const escaped = escapeRegExp(tag);
-      const regex = new RegExp(`<${escaped}>(.*?)</${escaped}>`, "g");
-      str = str.replace(regex, (_match, chunks: string) => fn(chunks));
+      str = replaceRichTag(str, tag, fn);
     }
 
     str = sanitizeHtml(str);

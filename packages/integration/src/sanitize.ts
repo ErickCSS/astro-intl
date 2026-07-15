@@ -1,3 +1,5 @@
+import sanitize from "sanitize-html";
+
 // ─── Locale validation ──────────────────────────────────────────────
 
 const LOCALE_REGEX = /^[a-zA-Z]{2,3}(-[a-zA-Z0-9]{2,8})*$/;
@@ -18,20 +20,79 @@ export function escapeRegExp(str: string): string {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-// ─── HTML sanitisation (defence-in-depth, NOT a full sanitiser) ─────
+// ─── HTML sanitisation ──────────────────────────────────────────────
 
-const DANGEROUS_HTML_REGEX =
-  /<\s*\/?\s*(script|iframe|object|embed|form|input|textarea|button|select|meta|link|base|applet|style)\b[^>]*>/gi;
-const EVENT_HANDLER_REGEX = /\s+on\w+\s*=\s*["'][^"']*["']/gi;
-const JAVASCRIPT_URI_REGEX = /\b(href|src|action)\s*=\s*["']\s*javascript\s*:/gi;
-const DATA_URI_REGEX = /\b(href|src|action)\s*=\s*["']\s*data\s*:/gi;
+const SAFE_HTML_TAGS = [
+  "a",
+  "abbr",
+  "b",
+  "blockquote",
+  "br",
+  "code",
+  "del",
+  "em",
+  "i",
+  "kbd",
+  "li",
+  "ol",
+  "p",
+  "pre",
+  "s",
+  "span",
+  "strong",
+  "sub",
+  "sup",
+  "u",
+  "ul",
+] as const;
+
+const SAFE_HTML_TAG_SET = new Set<string>(SAFE_HTML_TAGS);
+
+export function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+export function isAllowedHtmlTag(tag: string): boolean {
+  return SAFE_HTML_TAG_SET.has(tag.toLowerCase());
+}
 
 export function sanitizeHtml(html: string): string {
-  return html
-    .replace(DANGEROUS_HTML_REGEX, "")
-    .replace(EVENT_HANDLER_REGEX, "")
-    .replace(JAVASCRIPT_URI_REGEX, "")
-    .replace(DATA_URI_REGEX, "");
+  return sanitize(html, {
+    allowedTags: [...SAFE_HTML_TAGS],
+    allowedAttributes: {
+      a: ["href", "target", "rel", "title", "class"],
+      code: ["class"],
+      pre: ["class"],
+      span: ["class"],
+      strong: ["class"],
+      em: ["class"],
+    },
+    allowedSchemes: ["http", "https", "mailto", "tel"],
+    allowedSchemesAppliedToAttributes: ["href"],
+    allowProtocolRelative: false,
+    disallowedTagsMode: "discard",
+    parseStyleAttributes: false,
+    transformTags: {
+      a: (tagName, attribs) => {
+        const next = { ...attribs };
+        if (next.target !== "_blank" && next.target !== "_self") {
+          delete next.target;
+        }
+        if (next.target === "_blank") {
+          const rel = new Set((next.rel ?? "").split(/\s+/).filter(Boolean));
+          rel.add("noopener");
+          rel.add("noreferrer");
+          next.rel = [...rel].join(" ");
+        }
+        return { tagName, attribs: next };
+      },
+    },
+  });
 }
 
 // ─── Prototype-pollution guard ──────────────────────────────────────

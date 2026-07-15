@@ -1,208 +1,66 @@
-# 📦 Guía de Publicación en npm
+# Guía interna de publicación en npm
 
-## Prerrequisitos
+Esta guía describe la promoción controlada de `astro-intl`. Preparar un candidato no autoriza publicarlo. La publicación npm y el despliegue de la web oficial requieren aprobaciones explícitas y separadas.
 
-1. **Cuenta en npm**: Crea una cuenta en [npmjs.com](https://www.npmjs.com/)
-2. **Autenticación**: Inicia sesión en tu terminal:
-   ```bash
-   npm login
-   ```
+## Compatibilidad del candidato 2.2.2
 
-## Pasos para Publicar
+- Astro 4.16.19, 5.18.2, 6.4.8 y 7.0.9.
+- Astro 7 requiere Node.js 22.12.0 o superior por requisito del propio Astro.
+- React y Svelte continúan como peers opcionales.
+- No se añade ni se elimina ninguna API pública.
 
-### 1. Actualizar información del package.json
+## Preparación
 
-Edita estos campos en `package.json`:
+Desde la raíz del repositorio:
 
-- **author**: Reemplaza `"Tu Nombre <tu@email.com>"` con tu información
-- **repository**: Actualiza la URL de tu repositorio de GitHub
-- **name**: Verifica que el nombre `"astro-intl"` esté disponible en npm (o cámbialo si ya existe)
-
-### 2. Compilar el paquete
-
-Antes de publicar, asegúrate de compilar:
-
-```bash
-cd packages/integration
-npm run build
+```sh
+pnpm install --frozen-lockfile
+pnpm check
+pnpm compat:check
+pnpm audit:prod
 ```
 
-Esto generará los archivos en `dist/` que se incluirán en la publicación.
+`pnpm check` ejecuta lint, las pruebas fuente, el build limpio, la validación del tarball, la documentación y los dos consumidores. `pnpm compat:check` instala el `.tgz` en consumidores temporales de las cuatro versiones de Astro.
 
-### 3. Verificar qué se publicará
+Antes de continuar también se deben comprobar dos builds limpios consecutivos y registrar que sus inventarios y SHA-256 son idénticos.
 
-Revisa qué archivos se incluirán:
+## Revisión del tarball
 
-```bash
-npm pack --dry-run
+```sh
+pnpm pack:check
 ```
 
-Esto mostrará una lista de archivos. Deberías ver:
+La validación debe confirmar:
 
-- `dist/` (archivos compilados)
-- `package.json`
-- `README.md`
+- 27 archivos exactamente, según `package-files.json`;
+- ningún test, declaración de test, fuente interna o tarball anidado;
+- presencia de `AutoRedirect.astro` después de un build desde cero;
+- imports funcionales de `.`, `/middleware`, `/routing`, `/react`, `/svelte` y `/components` desde una instalación temporal;
+- SHA-1, integridad SHA-512, tamaño y commit de origen registrados en `docs/audit/RELEASE-CANDIDATE-2.2.2.md`.
 
-### 4. Publicar en npm
+El `.tgz` de revisión se genera en una carpeta temporal y no se versiona.
 
-```bash
-npm publish
-```
+## Aprobación y publicación
 
-Si el nombre ya existe, puedes usar un scope:
+Solo después de revisar el diff, el changelog, la auditoría de seguridad y la identidad del tarball:
 
-```bash
-# Cambia el nombre en package.json a "@tu-usuario/astro-intl"
-npm publish --access public
-```
+1. Crear el commit y tag aprobados.
+2. Repetir `pnpm check`, `pnpm compat:check` y `pnpm audit:prod` desde ese commit.
+3. Generar nuevamente el tarball y comparar su identidad con el registro aprobado.
+4. Solicitar aprobación explícita para publicar.
+5. Publicar manualmente el paquete revisado.
+6. Leer de vuelta metadata, integridad y archivos desde npm.
 
-### 5. Verificar la publicación
+No existe publicación automática desde CI en esta fase.
 
-Visita: `https://www.npmjs.com/package/astro-intl` (o el nombre que hayas usado)
+## Promoción de la web oficial
 
-## Actualizaciones Futuras
+La web `docs/astro-intl-i18n` permanece en `astro-intl@2.2.1` y Astro 6 mientras 2.2.2 no esté publicada. Después de validar la publicación:
 
-Para publicar nuevas versiones:
+1. cambiar la dependencia a `astro-intl@2.2.2` exacta;
+2. actualizar Astro 7 y sus adaptadores en una tarea controlada;
+3. instalar con lockfile reproducible y crear un preview;
+4. revisar la web;
+5. solicitar una aprobación distinta para desplegar.
 
-1. Actualiza la versión en `package.json`:
-
-   ```bash
-   npm version patch  # 1.0.0 -> 1.0.1
-   npm version minor  # 1.0.0 -> 1.1.0
-   npm version major  # 1.0.0 -> 2.0.0
-   ```
-
-2. Compila y publica:
-   ```bash
-   npm run build
-   npm publish
-   ```
-
-## Solución de Problemas
-
-### Error: "You do not have permission to publish"
-
-- Asegúrate de estar autenticado: `npm whoami`
-- Verifica que `publishConfig.access` esté en `"public"`
-
-### Error: "Package name already exists"
-
-- Cambia el nombre en `package.json` o usa un scope: `@tu-usuario/astro-intl`
-
-### Error: "Missing files"
-
-- Verifica que hayas ejecutado `npm run build`
-- Revisa que el campo `files` en `package.json` incluya `"dist"`
-
----
-
-# 🔧 Configuración en astro.config.mjs
-
-Una vez publicado en npm, los usuarios lo instalarán y configurarán así:
-
-## Instalación
-
-```bash
-npm install astro-intl
-# o
-pnpm add astro-intl
-# o
-yarn add astro-intl
-```
-
-## Configuración
-
-En `astro.config.mjs`:
-
-```js
-import { defineConfig } from "astro/config";
-import astroIntl from "astro-intl";
-
-export default defineConfig({
-  integrations: [
-    astroIntl({
-      enabled: true, // opcional, por defecto es true
-    }),
-  ],
-});
-```
-
-## Uso en componentes Astro
-
-```astro
----
-import { setRequestLocale, getTranslations } from 'astro-intl';
-
-// Configurar el locale para esta petición
-setRequestLocale({
-  locale: 'es',
-  messages: {
-    welcome: 'Bienvenido',
-    greeting: 'Hola {name}'
-  }
-});
-
-// Obtener función de traducción
-const t = getTranslations();
----
-
-<h1>{t('welcome')}</h1>
-<p>{t('greeting', { name: 'Usuario' })}</p>
-```
-
-## Uso en componentes React
-
-```tsx
-import { getTranslationsReact } from "astro-intl/react";
-
-export function MyComponent() {
-  const t = getTranslationsReact();
-
-  return (
-    <div>
-      <h1>{t("welcome")}</h1>
-    </div>
-  );
-}
-```
-
-## Estructura de archivos de traducción recomendada
-
-```
-src/
-├── i18n/
-│   ├── es.json
-│   ├── en.json
-│   └── index.ts
-└── pages/
-    └── index.astro
-```
-
-Ejemplo de `src/i18n/es.json`:
-
-```json
-{
-  "nav": {
-    "home": "Inicio",
-    "about": "Acerca de"
-  },
-  "home": {
-    "title": "Bienvenido",
-    "description": "Descripción de la página"
-  }
-}
-```
-
-Ejemplo de `src/i18n/index.ts`:
-
-```ts
-import es from "./es.json";
-import en from "./en.json";
-
-export const messages = {
-  es,
-  en,
-};
-
-export type Messages = typeof es;
-```
+El playground `docs/playground` es el canary de `workspace:*` y puede adelantarse a la web oficial.

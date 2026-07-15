@@ -15,6 +15,17 @@ type RequestState = {
   messages: Record<string, unknown>;
 };
 
+let AsyncLocalStorageConstructor:
+  | (new <T>() => ALS<T>)
+  | null = null;
+
+try {
+  const asyncHooks = await import("node:async_hooks");
+  AsyncLocalStorageConstructor = asyncHooks.AsyncLocalStorage;
+} catch {
+  // Non-Node runtimes are handled explicitly when SSR state is requested.
+}
+
 // ─── Global singleton ───────────────────────────────────────────────
 // When bundlers (Vite) resolve workspace-linked packages, sub-path
 // exports like "astro-intl/middleware" may get a separate module
@@ -24,15 +35,15 @@ type RequestState = {
 interface ALS<T> {
   getStore(): T | undefined;
   run<R>(store: T, fn: () => R): R;
+  enterWith(store: T): void;
 }
 
 interface IntlGlobalState {
   registeredGetRequestConfig: GetRequestConfigFn | null;
   configMessages: MessagesConfig | null;
   intlConfig: IntlConfig;
-  als: ALS<RequestState> | null;
-  alsInitialized: boolean;
-  fallbackState: RequestState | null;
+  als: ALS<RequestState | null> | null;
+  clientState: RequestState | null;
 }
 
 const GLOBAL_KEY = Symbol.for("__astro_intl_store__");
@@ -46,8 +57,7 @@ function getGlobalState(): IntlGlobalState {
     configMessages: null,
     intlConfig: { defaultLocale: "en", locales: [] },
     als: null,
-    alsInitialized: false,
-    fallbackState: null,
+    clientState: null,
   };
   g[GLOBAL_KEY] = fresh;
   return fresh;
@@ -55,40 +65,54 @@ function getGlobalState(): IntlGlobalState {
 
 const $ = getGlobalState();
 
-// ─── AsyncLocalStorage detection ────────────────────────────────────
+// ─── AsyncLocalStorage ───────────────────────────────────────────────
 
-function ensureAls(): void {
-  if ($.alsInitialized) return;
-  $.alsInitialized = true;
-  try {
-    const g = globalThis as unknown as { AsyncLocalStorage?: new <T>() => ALS<T> };
-    if (typeof g.AsyncLocalStorage === "function") {
-      $.als = new g.AsyncLocalStorage<RequestState>();
-    }
-  } catch {
-    // Not available — fallback mode
+function ensureAls(): ALS<RequestState | null> | null {
+  if (typeof window !== "undefined") return null;
+  if ($.als) return $.als;
+  if (AsyncLocalStorageConstructor) {
+    $.als = new AsyncLocalStorageConstructor<RequestState | null>();
   }
+  return $.als;
 }
 
 // ─── Internal getters/setters ───────────────────────────────────────
 
 function getRequestState(): RequestState | null {
-  ensureAls();
-  if ($.als) {
-    return $.als.getStore() ?? null;
+  if (typeof window !== "undefined") return $.clientState;
+  return $.als?.getStore() ?? null;
+}
+
+function clearRequestState(): void {
+  if (typeof window !== "undefined") {
+    $.clientState = null;
+    return;
   }
-  return $.fallbackState;
+  const als = ensureAls();
+  als?.enterWith(null);
 }
 
 // ─── Public API ─────────────────────────────────────────────────────
 
 export function __setIntlConfig(config: Partial<IntlConfig>) {
-  if (config.defaultLocale) {
-    $.intlConfig = { ...$.intlConfig, defaultLocale: config.defaultLocale };
+  const nextDefaultLocale = config.defaultLocale
+    ? sanitizeLocale(config.defaultLocale)
+    : $.intlConfig.defaultLocale;
+  const nextLocales = config.locales
+    ? config.locales.map((locale) => sanitizeLocale(locale))
+    : $.intlConfig.locales;
+
+  if (nextLocales.length > 0 && !nextLocales.includes(nextDefaultLocale)) {
+    throw new Error(
+      `[astro-intl] defaultLocale "${nextDefaultLocale}" must be included in configured locales: ${nextLocales.join(", ")}`
+    );
   }
-  if (config.locales) {
-    $.intlConfig = { ...$.intlConfig, locales: config.locales };
-  }
+
+  $.intlConfig = {
+    ...$.intlConfig,
+    defaultLocale: nextDefaultLocale,
+    locales: nextLocales,
+  };
   if (config.routes) {
     $.intlConfig = { ...$.intlConfig, routes: config.routes };
     detectRouteConflicts(config.routes);
@@ -108,8 +132,14 @@ export function getLocales(): string[] {
 }
 
 export function isValidLocale(locale: string): boolean {
+  let sanitized: string;
+  try {
+    sanitized = sanitizeLocale(locale);
+  } catch {
+    return false;
+  }
   if ($.intlConfig.locales.length === 0) return true;
-  return $.intlConfig.locales.includes(locale);
+  return $.intlConfig.locales.includes(sanitized);
 }
 
 export function defineRequestConfig(
@@ -126,7 +156,8 @@ export function __setConfigMessages(messages: MessagesConfig) {
 export function __resetRequestConfig() {
   $.registeredGetRequestConfig = null;
   $.configMessages = null;
-  $.fallbackState = null;
+  $.clientState = null;
+  $.als = null;
   $.intlConfig = { defaultLocale: "en", locales: [], routes: undefined, fallbackRoutes: [] };
 }
 
@@ -202,6 +233,7 @@ export async function setRequestLocale(url: URL, getConfig?: GetRequestConfigFn)
   const [, lang] = url.pathname.split("/");
 
   if (lang && $.intlConfig.locales.length > 0 && !$.intlConfig.locales.includes(lang)) {
+    clearRequestState();
     return false;
   }
 
@@ -209,25 +241,44 @@ export async function setRequestLocale(url: URL, getConfig?: GetRequestConfigFn)
 
   const resolvedGetConfig = getConfig ?? $.registeredGetRequestConfig;
 
-  let state: RequestState;
-
-  if (resolvedGetConfig) {
-    const config = await resolvedGetConfig(locale);
-    state = {
-      locale: config.locale,
-      messages: config.messages,
-    };
-  } else if ($.configMessages) {
-    const messages = await resolveMessages(locale, $.configMessages);
-    state = { locale, messages };
-  } else {
-    // No config available — this can happen when Astro 6's built-in i18n
-    // router triggers internal reroutes before the user middleware runs.
-    // Return false so the caller can decide what to do.
-    return false;
+  const state: RequestState = { locale, messages: {} };
+  const als = typeof window === "undefined" ? ensureAls() : null;
+  if (typeof window === "undefined") {
+    if (!als) {
+      throw new Error(
+        "[astro-intl] This SSR runtime does not provide AsyncLocalStorage. " +
+          "Request state cannot be isolated safely; use a supported Node runtime or static rendering."
+      );
+    }
+    // Enter before the first await so the caller's continuation inherits this request context.
+    als.enterWith(state);
   }
 
-  $.fallbackState = state;
+  try {
+    if (resolvedGetConfig) {
+      const config = await resolvedGetConfig(locale);
+      state.locale = sanitizeLocale(config.locale);
+      state.messages = config.messages;
+    } else if ($.configMessages) {
+      const messages = await resolveMessages(locale, $.configMessages);
+      state.messages = messages;
+    } else {
+      // No config available — this can happen when Astro 6's built-in i18n
+      // router triggers internal reroutes before the user middleware runs.
+      // Return false so the caller can decide what to do.
+      clearRequestState();
+      return false;
+    }
+  } catch (error) {
+    clearRequestState();
+    throw error;
+  }
+
+  if (typeof window !== "undefined") {
+    $.clientState = state;
+    return true;
+  }
+
   return true;
 }
 
@@ -247,7 +298,7 @@ export async function runWithLocale<R>(
 
   if (resolvedGetConfig) {
     const config = await resolvedGetConfig(locale);
-    state = { locale: config.locale, messages: config.messages };
+    state = { locale: sanitizeLocale(config.locale), messages: config.messages };
   } else if ($.configMessages) {
     const messages = await resolveMessages(locale, $.configMessages);
     state = { locale, messages };
@@ -258,15 +309,24 @@ export async function runWithLocale<R>(
     );
   }
 
-  if ($.als) {
-    return $.als.run(state, () => {
-      $.fallbackState = state;
-      return fn();
-    });
+  if (typeof window !== "undefined") {
+    const previous = $.clientState;
+    $.clientState = state;
+    try {
+      return await fn();
+    } finally {
+      $.clientState = previous;
+    }
   }
 
-  $.fallbackState = state;
-  return fn();
+  const als = ensureAls();
+  if (!als) {
+    throw new Error(
+      "[astro-intl] This SSR runtime does not provide AsyncLocalStorage. " +
+        "Request state cannot be isolated safely; use a supported Node runtime or static rendering."
+    );
+  }
+  return als.run(state, fn);
 }
 
 // ─── Auto-detect locale from URL (for static mode without explicit setRequestLocale) ────────────────────────────────────────────

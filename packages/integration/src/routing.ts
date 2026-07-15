@@ -1,4 +1,5 @@
 import { getRoutes, getDefaultLocale, getLocales, getLocale, isValidLocale } from "./store.js";
+import { sanitizeLocale } from "./sanitize.js";
 
 // ─── Regex cache ─────────────────────────────────────────────────────
 
@@ -108,7 +109,7 @@ export function path(
     );
   }
 
-  const locale = options.locale ?? getLocale();
+  const locale = sanitizeLocale(options.locale ?? getLocale());
 
   if (getLocales().length > 0 && !isValidLocale(locale)) {
     throw new Error(
@@ -136,8 +137,9 @@ export function path(
 // ─── switchLocalePath() ──────────────────────────────────────────────
 
 export function switchLocalePath(currentPath: string | URL, nextLocale: string): string {
+  const resolvedNextLocale = sanitizeLocale(nextLocale);
   const locales = getLocales();
-  if (locales.length > 0 && !isValidLocale(nextLocale)) {
+  if (locales.length > 0 && !isValidLocale(resolvedNextLocale)) {
     throw new Error(
       `[astro-intl] Invalid locale "${nextLocale}" for switchLocalePath(). ` +
         `Configured locales: ${locales.join(", ")}`
@@ -185,7 +187,7 @@ export function switchLocalePath(currentPath: string | URL, nextLocale: string):
 
   // No locale detected in path → prepend nextLocale
   if (!currentLocale) {
-    return `/${nextLocale}${pathname}${suffix}`;
+    return `/${resolvedNextLocale}${pathname}${suffix}`;
   }
 
   // Extract rest of path after locale segment
@@ -204,7 +206,7 @@ export function switchLocalePath(currentPath: string | URL, nextLocale: string):
       const match = restPath.match(regex);
 
       if (match) {
-        const nextTemplate = routeEntry[nextLocale];
+        const nextTemplate = routeEntry[resolvedNextLocale];
         if (!nextTemplate) {
           // No template for nextLocale → fallback
           break;
@@ -217,11 +219,11 @@ export function switchLocalePath(currentPath: string | URL, nextLocale: string):
         });
 
         const nextPath = substituteParams(nextTemplate, params, false);
-        return `/${nextLocale}${nextPath}${suffix}`;
+        return `/${resolvedNextLocale}${nextPath}${suffix}`;
       }
     }
   }
 
   // Fallback: just swap locale prefix
-  return `/${nextLocale}${restPath}${suffix}`;
+  return `/${resolvedNextLocale}${restPath}${suffix}`;
 }

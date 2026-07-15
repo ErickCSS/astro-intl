@@ -288,10 +288,10 @@ const tHero = getTranslations("hero");
     <CodeBlock
       title="MyComponent.tsx — t.rich()"
       lang="tsx"
-      code={`import { getTranslationsReact } from "astro-intl";
+      code={`import { getTranslations } from "astro-intl/react";
 
 export default function MyComponent() {
-  const t = getTranslationsReact("hero");
+  const t = getTranslations("hero");
 
   return (
     <p>

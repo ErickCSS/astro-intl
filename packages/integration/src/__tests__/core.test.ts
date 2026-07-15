@@ -301,6 +301,50 @@ describe("core.ts", () => {
         expect(result).not.toContain("javascript:");
       });
 
+      it("should remove unquoted handlers and active SVG markup", async () => {
+        const url = new URL("https://example.com/en/home");
+        await setRequestLocale(url, () => ({
+          locale: "en",
+          messages: {
+            text: '<svg onload=alert(1)><circle></circle></svg><img src=x onerror=alert(2)>',
+          },
+        }));
+
+        const result = getTranslations().markup("text" as any, {});
+        expect(result).not.toMatch(/svg|onload|img|onerror/i);
+      });
+
+      it("should reject encoded and protocol-relative unsafe links", async () => {
+        const url = new URL("https://example.com/en/home");
+        await setRequestLocale(url, () => ({
+          locale: "en",
+          messages: {
+            text: '<a href="&#x6a;avascript:alert(1)">one</a><a href="//evil.test">two</a>',
+          },
+        }));
+
+        const result = getTranslations().markup("text" as any, {});
+        expect(result).not.toMatch(/javascript:|evil\.test/i);
+        expect(result).toContain("one");
+        expect(result).toContain("two");
+      });
+
+      it("should sanitize interpolation values and callback output", async () => {
+        const url = new URL("https://example.com/en/home");
+        await setRequestLocale(url, () => ({
+          locale: "en",
+          messages: { text: "Hello {name}, <link>continue</link>" },
+        }));
+
+        const result = getTranslations().markup("text" as any, {
+          values: { name: '<img src=x onerror=alert(1)>' },
+          tags: { link: (chunks) => `<a href=javascript:alert(2)>${chunks}</a>` },
+        });
+
+        expect(result).not.toMatch(/img|onerror|javascript:/i);
+        expect(result).toContain("continue");
+      });
+
       it("should support interpolation combined with tags", async () => {
         const url = new URL("https://example.com/en/home");
         await setRequestLocale(url, () => ({

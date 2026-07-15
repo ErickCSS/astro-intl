@@ -20,12 +20,28 @@ export interface Props {
 }
 
 const { locales, defaultLocale } = Astro.props;
+
+const LOCALE_REGEX = /^[a-zA-Z]{2,3}(-[a-zA-Z0-9]{2,8})*$/;
+const validatedLocales = locales.map((locale) => {
+  const value = locale.trim();
+  if (!LOCALE_REGEX.test(value)) {
+    throw new Error(`[astro-intl] Invalid AutoRedirect locale "${value}".`);
+  }
+  return value;
+});
+const validatedDefaultLocale = defaultLocale.trim();
+if (!LOCALE_REGEX.test(validatedDefaultLocale)) {
+  throw new Error(`[astro-intl] Invalid AutoRedirect defaultLocale "${validatedDefaultLocale}".`);
+}
+if (validatedLocales.length > 0 && !validatedLocales.includes(validatedDefaultLocale)) {
+  throw new Error("[astro-intl] AutoRedirect defaultLocale must be included in locales.");
+}
 ---
 
-<script define:vars={{ locales, defaultLocale }}>
+<script define:vars={{ locales: validatedLocales, defaultLocale: validatedDefaultLocale }}>
   (function() {
     const lang = (navigator.language || navigator.languages?.[0] || "").slice(0, 2).toLowerCase();
     const locale = locales.includes(lang) ? lang : defaultLocale;
-    window.location.replace("/" + locale + "/");
+    window.location.replace("/" + encodeURIComponent(locale) + "/");
   })();
 </script>

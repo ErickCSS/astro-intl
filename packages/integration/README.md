@@ -12,7 +12,7 @@ Simple and type-safe internationalization system for Astro.
 - 📁 **Namespaces**: Organize translations by sections
 - 🌐 **Automatic locale detection**: Extracts the language from the URL
 - 🛡️ **Concurrency-safe**: Uses `AsyncLocalStorage` in SSR to isolate concurrent requests
-- 🌍 **Multi-runtime**: Compatible with Node.js, Cloudflare Workers and Deno
+- 🌍 **Explicit runtime guarantees**: Request isolation is supported in Node SSR; static and client usage remain available without shared SSR state
 - ⚙️ **Configurable default locale**: Define your default locale from options
 - 🗺️ **Localized routing**: Define translated URLs per locale (`/es/sobre-nosotros` instead of `/es/about`)
 - 🔄 **Automatic rewrites**: Middleware rewrites translated URLs to canonical filesystem routes
@@ -46,6 +46,23 @@ Simple and type-safe internationalization system for Astro.
 - **`parseRichSegments()`** shared framework-agnostic base
 
 ## 📦 Installation
+
+### Astro compatibility
+
+`astro-intl@2.2.2` supports Astro 4, 5, 6 and 7:
+
+```json
+{
+  "peerDependencies": {
+    "astro": "^4 || ^5 || ^6 || ^7"
+  }
+}
+```
+
+Astro 7 itself requires Node.js 22.12.0 or newer. `astro-intl` does not raise its own
+Node.js requirement so that existing Astro 4–6 consumers can keep using the Node.js
+versions supported by their Astro release. See the
+[Astro 7 upgrade guide](https://docs.astro.build/en/guides/upgrade-to/v7/).
 
 ### Automatic installation (Recommended)
 
@@ -405,6 +422,43 @@ export const onRequest = createIntlMiddleware(routing);
 
 When a user visits `/es/sobre-nosotros`, the middleware rewrites it to `/es/about` — which maps to your `[lang]/about.astro` file. No duplicate pages.
 
+### Astro 7 Advanced Routing
+
+No Astro 7-specific `astro-intl` API is required. The default request pipeline and a
+custom `src/fetch.ts` both use the existing middleware. To keep Astro's complete
+pipeline, including `src/middleware.ts`, forward the request through `astro(state)`:
+
+```ts
+// src/fetch.ts
+import { astro, FetchState } from "astro/fetch";
+
+export default {
+  fetch(request: Request) {
+    return astro(new FetchState(request));
+  },
+};
+```
+
+You can also compose only the handlers your application needs:
+
+```ts
+// src/fetch.ts
+import { FetchState, middleware, pages } from "astro/fetch";
+
+export default {
+  fetch(request: Request) {
+    const state = new FetchState(request);
+    return middleware(state, (nextState) => pages(nextState));
+  },
+};
+```
+
+The second example intentionally runs only Astro middleware and page rendering.
+Sessions, Actions, cache and other handlers must be added explicitly when the
+application needs them. If `middleware()` is omitted, `src/middleware.ts` is not run,
+so `createIntlMiddleware()` cannot initialize the request locale or messages.
+`astro-intl` does not export or require an `astro-intl/fetch` subpath.
+
 ### Without Middleware
 
 Configure routes via integration options:
@@ -501,7 +555,9 @@ await setRequestLocale(Astro.url, async (locale) => ({
 
 ### `runWithLocale(url, fn, getConfig?)`
 
-Executes a function within a request-isolated context. Uses `AsyncLocalStorage` when available (Node.js) to avoid race conditions in SSR with concurrent requests.
+Executes a function within a request-isolated context. Uses Node.js `AsyncLocalStorage`
+to avoid race conditions in SSR with concurrent requests. An SSR runtime without this
+isolation fails explicitly instead of reusing process-global locale or messages.
 
 **Parameters:**
 
@@ -672,7 +728,7 @@ packages/integration/
 │   ├── framework-base.ts  # parseRichSegments() — framework-agnostic base shared by React and Svelte
 │   ├── sanitize.ts        # Locale validation, HTML sanitization, regex escape
 │   ├── interpolation.ts   # {variable} interpolation, nested value access
-│   ├── store.ts           # Per-request state (AsyncLocalStorage + fallback)
+│   ├── store.ts           # Per-request Node SSR state with AsyncLocalStorage
 │   ├── translations.ts    # getTranslations for Astro components
 │   ├── routing.ts         # path(), switchLocalePath() — localized URL generation
 │   ├── middleware.ts       # createIntlMiddleware() with translated route rewrites
