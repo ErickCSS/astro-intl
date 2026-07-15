@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { renderInlineMarkdown } from "../../../shared/security.mjs";
 
 export interface ChangelogItem {
   type: "added" | "changed" | "fixed" | "security";
@@ -26,13 +27,6 @@ const BADGE_MAP: Record<string, string> = {
 
 function slugify(version: string): string {
   return version.toLowerCase().replace(/[[\]]/g, "").replace(/\s.*/, "").replace(/\./g, "");
-}
-
-function inlineMarkdownToHtml(text: string): string {
-  return text
-    .replace(/`([^`]+)`/g, "<code>$1</code>")
-    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
 }
 
 export function parseChangelog(): ChangelogVersion[] {
@@ -69,7 +63,7 @@ export function parseChangelog(): ChangelogVersion[] {
     if (itemMatch && current) {
       current.items.push({
         type: currentType,
-        text: inlineMarkdownToHtml(itemMatch[1]),
+        text: renderInlineMarkdown(itemMatch[1]),
       });
     }
   }

@@ -13,21 +13,36 @@ export function parseRichSegments(str: string, tagNames: string[]): RichSegment[
     return str.length > 0 ? [{ type: "text", value: str }] : [];
   }
 
-  const escaped = tagNames.map(escapeRegExp);
-  const regex = new RegExp(`<(${escaped.join("|")})>(.*?)<\\/(\\1)>`, "g");
+  const tagSet = new Set(tagNames);
+  const escapedTags = [...tagSet].map(escapeRegExp);
 
   const result: RichSegment[] = [];
   let lastIndex = 0;
+  const stack: Array<{ tag: string; openStart: number; contentStart: number }> = [];
+  const tokenRegex = new RegExp(`<(/?)(${escapedTags.join("|")})>`, "g");
   let match: RegExpExecArray | null;
 
-  while ((match = regex.exec(str)) !== null) {
-    if (match.index > lastIndex) {
-      result.push({ type: "text", value: str.slice(lastIndex, match.index) });
+  while ((match = tokenRegex.exec(str)) !== null) {
+    const isClosing = Boolean(match[1]);
+    const tag = match[2];
+    if (!tagSet.has(tag)) continue;
+
+    if (!isClosing) {
+      stack.push({ tag, openStart: match.index, contentStart: tokenRegex.lastIndex });
+      continue;
     }
 
-    const [, tag, chunks] = match;
-    result.push({ type: "tag", tag, chunks });
-    lastIndex = match.index + match[0].length;
+    const open = stack.at(-1);
+    if (!open || open.tag !== tag) continue;
+
+    stack.pop();
+    if (stack.length === 0) {
+      if (open.openStart > lastIndex) {
+        result.push({ type: "text", value: str.slice(lastIndex, open.openStart) });
+      }
+      result.push({ type: "tag", tag, chunks: str.slice(open.contentStart, match.index) });
+      lastIndex = tokenRegex.lastIndex;
+    }
   }
 
   if (lastIndex < str.length) {

@@ -68,7 +68,11 @@ export default function astroIntl(options: AstroIntlOptions = {}): AstroIntegrat
         updateConfig({
           vite: {
             optimizeDeps: {
-              include: ["astro-intl"],
+              // astro-intl owns request-scoped SSR state and loads Node's
+              // AsyncLocalStorage conditionally. Pre-bundling it as a browser
+              // dependency breaks that runtime boundary. Keep this exclusion
+              // across Astro 4–7, including Astro 7 with Vite 8/Rolldown.
+              exclude: ["astro-intl"],
             },
           },
         });

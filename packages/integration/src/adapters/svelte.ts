@@ -1,6 +1,7 @@
 import { getNestedValue, type DotPaths } from "../interpolation.js";
 import { parseRichSegments, type RichSegment } from "../framework-base.js";
 import { getMessages, getLocale } from "../store.js";
+import { escapeHtml, isAllowedHtmlTag, sanitizeHtml } from "../sanitize.js";
 
 export type { RichSegment } from "../framework-base.js";
 
@@ -47,22 +48,29 @@ export type RichTextOptions = {
 export function renderRichText(segments: RichSegment[], options: RichTextOptions = {}): string {
   const { tags = {}, components = {} } = options;
 
-  return segments
+  const rendered = segments
     .map((seg) => {
-      if (seg.type === "text") return seg.value;
+      if (seg.type === "text") return escapeHtml(seg.value);
 
       const componentFn = components[seg.tag];
-      if (typeof componentFn === "function") return componentFn(seg.chunks);
+      if (typeof componentFn === "function") return componentFn(escapeHtml(seg.chunks));
 
       const htmlTag = tags[seg.tag];
-      if (typeof htmlTag === "string") return `<${htmlTag}>${seg.chunks}</${htmlTag}>`;
+      if (typeof htmlTag === "string") {
+        if (!isAllowedHtmlTag(htmlTag)) {
+          throw new Error(`[astro-intl] Unsafe HTML tag mapping "${htmlTag}" for <${seg.tag}>.`);
+        }
+        return `<${htmlTag}>${escapeHtml(seg.chunks)}</${htmlTag}>`;
+      }
 
       console.warn(
         `[astro-intl] Unregistered rich tag: <${seg.tag}>. Content will render without transformation.`
       );
-      return seg.chunks;
+      return escapeHtml(seg.chunks);
     })
     .join("");
+
+  return sanitizeHtml(rendered);
 }
 
 // ─── getTranslations (store-backed, for use in Astro islands) ───────

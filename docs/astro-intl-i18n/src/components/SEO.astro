@@ -1,6 +1,7 @@
 ---
 import { getLocale } from "astro-intl";
 import { routing } from "@/i18n/routing";
+import { serializeJsonLd } from "../../../shared/security.mjs";
 
 interface Props {
   title: string;
@@ -129,4 +130,4 @@ const jsonLd = {
 <link rel="manifest" href="/manifest.json" />
 <meta name="theme-color" content="#3d8b5e" />
 
-<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+<script type="application/ld+json" set:html={serializeJsonLd(jsonLd)} />

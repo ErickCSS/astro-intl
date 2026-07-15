@@ -245,6 +245,20 @@ describe("switchLocalePath()", () => {
     expect(() => switchLocalePath("/en/about", "fr")).toThrow(/Invalid locale/);
   });
 
+  it("rejects unsafe locale segments without a configured allowlist", () => {
+    __setIntlConfig({ defaultLocale: "en", locales: [] });
+    for (const locale of ["/outside.test", "\\outside.test", "../es", "en us", "en\u0000"]) {
+      expect(() => switchLocalePath("/en/about?x=1#section", locale)).toThrow(/Invalid locale/);
+    }
+  });
+
+  it("accepts BCP-47 locale segments without a configured allowlist", () => {
+    __setIntlConfig({ defaultLocale: "en", locales: [] });
+    expect(switchLocalePath("/en/about?x=1#section", "pt-BR")).toBe(
+      "/pt-BR/about?x=1#section"
+    );
+  });
+
   it("switches from es to en", () => {
     setupConfig();
     expect(switchLocalePath("/es/sobre-nosotros", "en")).toBe("/en/about");

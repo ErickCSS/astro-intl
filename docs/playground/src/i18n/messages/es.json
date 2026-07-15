@@ -154,13 +154,13 @@
       "markupInterpolationTitle": "Markup + Interpolación",
       "markupInterpolationDescription": "Combina interpolación de variables con reemplazo de tags pasando <code>{curlyOpen} values, tags {curlyClose}</code> a <code>t.markup()</code>. La interpolación se ejecuta primero, luego se procesan los tags.",
       "reactTitle": "Componentes React",
-      "reactDescription": "Usa <code>getTranslationsReact(namespace)</code> dentro de componentes React, luego llama a <code>t.rich(key, tags)</code> para interpolar nodos React."
+      "reactDescription": "Importa <code>getTranslations(namespace)</code> desde <code>astro-intl/react</code>, luego llama a <code>t.rich(key, tags)</code> para interpolar nodos React."
     },
     "api": {
       "title": "Referencia de API",
       "setRequestLocale": {
         "name": "setRequestLocale",
-        "signature": "setRequestLocale(url: URL, getConfig: Function): Promise<void>",
+        "signature": "setRequestLocale(url: URL, getConfig?: GetRequestConfigFn): Promise<boolean>",
         "description": "Extrae el locale del pathname de la URL (primer segmento) y llama a tu función <code>getConfig</code> para cargar los mensajes. Debe ser awaited antes de cualquier otra llamada."
       },
       "getLocale": {
@@ -173,11 +173,6 @@
         "signature": "getTranslations<T>(namespace?: string)",
         "description": "Retorna una función <code>t(key, values?)</code> tipada con scope al namespace dado. El objeto <code>values</code> opcional reemplaza placeholders <code>{curlyOpen}varName{curlyClose}</code>. También expone <code>t.markup(key, tags | {curlyOpen} values?, tags {curlyClose})</code> para interpolación HTML con sustitución de variables opcional."
       },
-      "getTranslationsReact": {
-        "name": "getTranslationsReact",
-        "signature": "getTranslationsReact<T>(namespace?: string)",
-        "description": "Igual que <code>getTranslations</code> pero retorna una función con <code>t.rich(key, tags)</code> para interpolación de nodos React."
-      },
       "requestConfig": {
         "name": "RequestConfig",
         "description": "Tipo retornado por tu función <code>getRequestConfig</code>. Contiene <code>locale: string</code> y <code>messages: Record<string, unknown></code>."
@@ -189,7 +184,7 @@
       "runWithLocale": {
         "name": "runWithLocale",
         "signature": "runWithLocale<R>(url: URL, fn: () => R | Promise<R>, getConfig?: GetRequestConfigFn): Promise<R>",
-        "description": "Ejecuta una función dentro de un contexto aislado por request. Usa <code>AsyncLocalStorage</code> en Node.js para SSR concurrency-safe. Cae en fallback a variable global en runtimes sin soporte (Cloudflare Workers, Deno)."
+        "description": "Ejecuta una función dentro de un contexto aislado por request usando <code>AsyncLocalStorage</code> de Node.js. Los runtimes SSR sin almacenamiento seguro fallan explícitamente."
       },
       "intlConfig": {
         "name": "IntlConfig",

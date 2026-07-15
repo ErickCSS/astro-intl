@@ -1,5 +1,5 @@
 import type { RoutesMap } from "./types/index.js";
-import { setRequestLocale, __setIntlConfig } from "./store.js";
+import { runWithLocale, __setIntlConfig } from "./store.js";
 import { templateToRegex } from "./routing.js";
 
 // ─── Astro Middleware Helper ─────────────────────────────────────────
@@ -93,22 +93,21 @@ export function createIntlMiddleware(options: IntlMiddlewareOptions) {
       return next();
     }
 
-    const ok = await setRequestLocale(context.url);
-    if (!ok) return next();
-
-    // Rewrite translated routes to their canonical filesystem paths
-    if (routes) {
-      const rewrittenPath = resolveTranslatedRoute(
-        context.url.pathname,
-        lang,
-        routes,
-        resolvedDefaultLocale
-      );
-      if (rewrittenPath) {
-        return context.rewrite(rewrittenPath);
+    return runWithLocale(context.url, async () => {
+      // Rewrite translated routes to their canonical filesystem paths
+      if (routes) {
+        const rewrittenPath = resolveTranslatedRoute(
+          context.url.pathname,
+          lang,
+          routes,
+          resolvedDefaultLocale
+        );
+        if (rewrittenPath) {
+          return context.rewrite(rewrittenPath);
+        }
       }
-    }
 
-    return next();
+      return next();
+    });
   };
 }

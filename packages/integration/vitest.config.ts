@@ -4,10 +4,13 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "happy-dom",
+    include: ["src/__tests__/**/*.test.{ts,tsx}"],
+    exclude: ["dist/**", "**/*.tgz", "docs/**"],
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],
-      exclude: ["node_modules/", "dist/", "**/*.test.ts", "**/*.spec.ts"],
+      include: ["src/**/*.{ts,tsx}"],
+      exclude: ["src/__tests__/**", "src/types/**"],
     },
   },
 });
