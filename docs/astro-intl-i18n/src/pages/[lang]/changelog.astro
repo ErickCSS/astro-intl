@@ -21,7 +21,7 @@ function getVersions(): ChangelogVersion[] {
     const key = v.id === "unreleased" ? "unreleased" : `v${v.id}`;
     let overrideItems: { type: string; text: string }[] | undefined;
     try {
-      overrideItems = (t as any)(`${key}.items`);
+      overrideItems = (t as any).raw(`${key}.items`);
     } catch {
       // no override — use English from CHANGELOG.md
     }

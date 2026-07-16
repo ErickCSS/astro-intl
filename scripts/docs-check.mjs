@@ -26,8 +26,8 @@ function filesUnder(dir, extensions) {
 const officialPackage = readJson(resolve(root, "docs/astro-intl-i18n/package.json"));
 const playgroundPackage = readJson(resolve(root, "docs/playground/package.json"));
 const integrationPackage = readJson(resolve(root, "packages/integration/package.json"));
-if (officialPackage.dependencies["astro-intl"] !== "2.2.1") {
-  errors.push("The official docs must consume exact stable astro-intl 2.2.1 before publication.");
+if (officialPackage.dependencies["astro-intl"] !== "2.2.2") {
+  errors.push("The official docs must consume exact stable astro-intl 2.2.2 after publication.");
 }
 if (playgroundPackage.dependencies["astro-intl"] !== "workspace:*") {
   errors.push("The playground must consume astro-intl through workspace:*.");
@@ -35,13 +35,19 @@ if (playgroundPackage.dependencies["astro-intl"] !== "workspace:*") {
 if (integrationPackage.peerDependencies.astro !== "^4 || ^5 || ^6 || ^7") {
   errors.push("astro-intl must declare the approved Astro 4–7 peer range.");
 }
-for (const [dependency, expected] of [
+const astro7Dependencies = [
   ["astro", "7.0.9"],
   ["@astrojs/vercel", "11.0.3"],
   ["@astrojs/sitemap", "3.7.3"],
+];
+for (const [name, pkg] of [
+  ["official docs", officialPackage],
+  ["playground", playgroundPackage],
 ]) {
-  if (playgroundPackage.dependencies[dependency] !== expected) {
-    errors.push(`The playground must use exact ${dependency}@${expected}.`);
+  for (const [dependency, expected] of astro7Dependencies) {
+    if (pkg.dependencies[dependency] !== expected) {
+      errors.push(`The ${name} must use exact ${dependency}@${expected}.`);
+    }
   }
 }
 for (const [name, pkg] of [

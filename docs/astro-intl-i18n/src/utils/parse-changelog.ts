@@ -70,20 +70,26 @@ export function parseChangelog(): ChangelogVersion[] {
 
   if (current) versions.push(current);
 
+  // Keep an empty Unreleased section in CHANGELOG.md without rendering an
+  // empty card on the public site after a release.
+  const visibleVersions = versions.filter(
+    (version) => version.id !== "unreleased" || version.items.length > 0
+  );
+
   // Assign badges: first = next (unreleased), last released = latest, rest = initial
-  if (versions.length > 1) {
+  if (visibleVersions.length > 0) {
     let foundLatest = false;
-    for (let i = 0; i < versions.length; i++) {
-      if (versions[i].id === "unreleased") {
-        versions[i].badge = "next";
+    for (let i = 0; i < visibleVersions.length; i++) {
+      if (visibleVersions[i].id === "unreleased") {
+        visibleVersions[i].badge = "next";
       } else if (!foundLatest) {
-        versions[i].badge = "latest";
+        visibleVersions[i].badge = "latest";
         foundLatest = true;
       } else {
-        versions[i].badge = "initial";
+        visibleVersions[i].badge = "initial";
       }
     }
   }
 
-  return versions;
+  return visibleVersions;
 }

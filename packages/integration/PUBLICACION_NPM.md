@@ -55,12 +55,13 @@ No existe publicación automática desde CI en esta fase.
 
 ## Promoción de la web oficial
 
-La web `docs/astro-intl-i18n` permanece en `astro-intl@2.2.1` y Astro 6 mientras 2.2.2 no esté publicada. Después de validar la publicación:
+`astro-intl@2.2.2` fue publicado el 15 de julio de 2026 (zona horaria de Bolivia) desde el commit `b3d036a454b516300ba7e4e31d034c21cc89290d`. Después de leer de vuelta npm, la web `docs/astro-intl-i18n` se promueve a:
 
-1. cambiar la dependencia a `astro-intl@2.2.2` exacta;
-2. actualizar Astro 7 y sus adaptadores en una tarea controlada;
-3. instalar con lockfile reproducible y crear un preview;
-4. revisar la web;
-5. solicitar una aprobación distinta para desplegar.
+- `astro-intl@2.2.2` exacta;
+- Astro 7.0.9;
+- `@astrojs/vercel@11.0.3`;
+- `@astrojs/sitemap@3.7.3`.
+
+La instalación debe conservar un lockfile reproducible. Después se crea y revisa un preview; el despliegue de producción requiere una aprobación distinta.
 
 El playground `docs/playground` es el canary de `workspace:*` y puede adelantarse a la web oficial.

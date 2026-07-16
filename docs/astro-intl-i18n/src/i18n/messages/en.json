@@ -139,8 +139,8 @@
       "description": "Install astro-intl using your preferred package manager.",
       "addIntegration": "Optionally register the integration in your astro.config.mjs:",
       "integrationNote": "The integration is optional — it only logs a startup message. The core API works without it.",
-      "astroV6Badge": "✅ Astro v6 Compatible",
-      "astroV6Note": "astro-intl v2.2.0 adds <code>t.raw()</code> for raw values, <code>messagesDir</code> for simplified JSON loading, <code>AutoRedirect</code> component, and auto-detection of locale in static mode. Fully supports Astro 4, 5, and 6."
+      "astroSupportBadge": "✅ Astro 4–7 Compatible",
+      "astroSupportNote": "astro-intl <code>2.2.2</code> officially supports Astro 7 while retaining Astro 4–6 compatibility. Astro 7 requires Node.js <code>22.12.0</code> or newer; no new astro-intl API or migration is required."
     },
     "fileStructure": {
       "title": "File Structure",
@@ -183,7 +183,7 @@
       "interpolationTitle": "Interpolation",
       "interpolationDescription": "Use <code>{curlyOpen}varName{curlyClose}</code> placeholders in your translation strings and pass a values object as the second argument to <code>t()</code>. Accepted types: <code>string</code>, <code>number</code>, <code>boolean</code>. Missing or <code>null</code>/<code>undefined</code> values keep the placeholder unchanged.",
       "markupTitle": "Markup Translation",
-      "markupDescription": "Use <code>t.markup(key, tags)</code> to interpolate HTML tags inside a translation string. The tags object maps tag names to functions that receive the inner content.",
+      "markupDescription": "Use <code>t.markup(key, tags)</code> to interpolate HTML tags inside a translation string. The tags object maps tag names to functions that receive the inner content. In 2.2.2 the final HTML is sanitized with a parser-based allowlist; tag callbacks are still trusted application code.",
       "markupInterpolationTitle": "Markup + Interpolation",
       "markupInterpolationDescription": "Combine variable interpolation with tag replacement by passing <code>{curlyOpen} values, tags {curlyClose}</code> to <code>t.markup()</code>. Interpolation runs first, then tags are processed.",
       "reactTitle": "React Components",
@@ -229,7 +229,7 @@
       "richTitle": "Rich Text with t.rich()",
       "richDescription": "<code>t.rich(key, tagNames?)</code> returns an array of <code>RichSegment[]</code> — each segment is either plain text or a tagged chunk. You can render them in two ways.",
       "renderHtmlTitle": "Option A: renderRichText() → HTML string",
-      "renderHtmlDescription": "Use <code>renderRichText(segments, options)</code> to convert segments into an HTML string. Pass <code>tags</code> for native HTML elements or <code>components</code> for custom rendering.",
+      "renderHtmlDescription": "Use <code>renderRichText(segments, options)</code> to convert segments into an HTML string. Text and chunks are escaped, native tag mappings are restricted to safe elements, and the final HTML is sanitized. Pass <code>tags</code> for native HTML elements or <code>components</code> for trusted custom rendering.",
       "richTextComponentTitle": "Option B: RichText.svelte component",
       "richTextComponentDescription": "Import the <code>RichText</code> component for declarative rendering. Pass <code>tags</code> for native HTML elements and <code>components</code> for Svelte component rendering.",
       "tipHydrationTitle": "Hydration Tip",
@@ -244,7 +244,7 @@
       "setRequestLocale": {
         "name": "setRequestLocale",
         "signature": "setRequestLocale(url: URL, getConfig?: GetRequestConfigFn): Promise<boolean>",
-        "description": "Extracts the locale from the URL pathname (first segment) and calls your <code>getConfig</code> function to load messages. Must be awaited before any other call."
+        "description": "Extracts and validates the locale from the first URL pathname segment, then calls your <code>getConfig</code> function to load messages. Must be awaited before any other call. For SSR, prefer <code>createIntlMiddleware()</code> or <code>runWithLocale()</code> so the complete render stays request-isolated."
       },
       "getLocale": {
         "name": "getLocale",
@@ -254,7 +254,7 @@
       "getTranslations": {
         "name": "getTranslations",
         "signature": "getTranslations<T>(namespace?: string)",
-        "description": "Returns a typed <code>t(key, values?)</code> function scoped to the given namespace. The optional <code>values</code> object replaces <code>{curlyOpen}varName{curlyClose}</code> placeholders. Also exposes <code>t.markup(key, tags | {curlyOpen} values?, tags {curlyClose})</code> for HTML interpolation and <code>t.raw(key)</code> for accessing raw values without coercion."
+        "description": "Returns a typed <code>t(key, values?)</code> function scoped to the given namespace. The optional <code>values</code> object replaces <code>{curlyOpen}varName{curlyClose}</code> placeholders. Also exposes parser-sanitized <code>t.markup(key, tags | {curlyOpen} values?, tags {curlyClose})</code> for HTML interpolation and <code>t.raw(key)</code> for accessing raw values without coercion."
       },
       "requestConfig": {
         "name": "RequestConfig",
@@ -286,7 +286,7 @@
       "isValidLocale": {
         "name": "isValidLocale",
         "signature": "isValidLocale(locale: string): boolean",
-        "description": "Checks whether a locale string is in the configured <code>locales</code> list. Returns <code>true</code> for any string if no locales have been configured."
+        "description": "Checks that a locale has valid BCP-47-style syntax and, when a <code>locales</code> list is configured, that it is included in that list."
       },
       "getMessages": {
         "name": "getMessages",
@@ -296,17 +296,17 @@
       "createIntlMiddleware": {
         "name": "createIntlMiddleware",
         "signature": "createIntlMiddleware(options: { locales: string[]; defaultLocale?: string; routes?: RoutesMap })",
-        "description": "Creates an Astro middleware that automatically calls <code>setRequestLocale</code> on every request. Also sets <code>locales</code>, <code>defaultLocale</code>, and <code>routes</code> in the intl store. When <code>routes</code> are provided, the middleware rewrites translated URLs to their canonical filesystem paths. Import from <code>astro-intl/middleware</code>."
+        "description": "Creates Astro middleware that validates and loads the request locale, then keeps the complete render or rewrite inside a Node.js <code>AsyncLocalStorage</code> context. It also sets <code>locales</code>, <code>defaultLocale</code>, and <code>routes</code> in the intl store. Import from <code>astro-intl/middleware</code>."
       },
       "path": {
         "name": "path",
         "signature": "path(routeKey: string, options?: { locale?: string; params?: Record<string, string>; encode?: boolean }): string",
-        "description": "Generates a localized URL for a named route. Uses the current locale if none is specified. Substitutes <code>[param]</code> placeholders with the provided params. Import from <code>astro-intl/routing</code>."
+        "description": "Generates a localized URL for a named route. Uses the current locale if none is specified, rejects invalid locale segments, and substitutes <code>[param]</code> placeholders with the provided params. Import from <code>astro-intl/routing</code>."
       },
       "switchLocalePath": {
         "name": "switchLocalePath",
         "signature": "switchLocalePath(currentPath: string | URL, nextLocale: string): string",
-        "description": "Converts the current URL to its equivalent in another locale. Matches the path against route templates, extracts dynamic params, and rebuilds the URL using the target locale's template. Preserves query strings and hashes. Import from <code>astro-intl/routing</code>."
+        "description": "Converts the current URL to its equivalent in another validated locale. Matches the path against route templates, extracts dynamic params, and rebuilds the URL using the target locale's template. Preserves query strings and hashes. Import from <code>astro-intl/routing</code>."
       },
       "dotPaths": {
         "name": "DotPaths<T>",
@@ -329,7 +329,7 @@
       "renderRichText": {
         "name": "renderRichText",
         "signature": "renderRichText(segments: RichSegment[], options?: { tags?: Record<string, string>; components?: Record<string, (chunks: string) => string> }): string",
-        "description": "Converts an array of <code>RichSegment[]</code> into an HTML string. Use <code>tags</code> for native HTML elements (e.g. <code>{ bold: \"strong\" }</code>) or <code>components</code> for custom rendering functions. Import from <code>astro-intl/svelte</code>."
+        "description": "Converts an array of <code>RichSegment[]</code> into a sanitized HTML string. Text and chunks are escaped, unsafe native tag mappings are rejected, and component callbacks are treated as trusted application code before final sanitization. Import from <code>astro-intl/svelte</code>."
       },
       "getFallbackRoutes": {
         "name": "getFallbackRoutes",
@@ -352,7 +352,7 @@
       "autoRedirect": {
         "name": "AutoRedirect Component",
         "signature": "<AutoRedirect locales={string[]} defaultLocale={string} />",
-        "description": "Astro component that detects the user's browser language and redirects to the appropriate localized route. Use this in your root page instead of <code>Astro.redirect()</code> to avoid the blank page issue in static mode. Import from <code>astro-intl/components</code>."
+        "description": "Astro component that validates its locale props, detects the user's browser language, and redirects to the appropriate encoded localized route. <code>defaultLocale</code> must be included in <code>locales</code>. Import from <code>astro-intl/components</code>."
       },
       "autoDetectLocale": {
         "name": "Auto-detect Locale (Static Mode)",
@@ -389,7 +389,12 @@
       "fallbackTitle": "Fallback Routes (Astro 6.1+)",
       "fallbackDescription": "Starting with Astro 6.1, the integration automatically detects <code>fallbackRoutes</code> from the <code>astro:routes:resolved</code> hook. When you configure <code>i18n.fallbackType: 'rewrite'</code> in your Astro config, Astro generates fallback routes for locales that don't have their own content. astro-intl collects these and makes them available via <code>getFallbackRoutes()</code>.",
       "fallbackNote": "On Astro < 6.1, <code>getFallbackRoutes()</code> returns an empty array — no errors, fully backward compatible.",
-      "fallbackExampleLabel": "Query fallback routes at runtime:"
+      "fallbackExampleLabel": "Query fallback routes at runtime:",
+      "astro7Title": "Astro 7 Advanced Routing",
+      "astro7Description": "astro-intl 2.2.2 works with Astro 7's complete request pipeline and explicitly composed <code>src/fetch.ts</code> pipelines. No Astro 7-specific astro-intl API is required.",
+      "astro7FullPipelineLabel": "Keep Astro's complete pipeline, including src/middleware.ts:",
+      "astro7ComposedPipelineLabel": "Or compose only middleware and page rendering:",
+      "astro7Note": "A custom Astro 7 pipeline must include <code>middleware()</code> for <code>createIntlMiddleware()</code> to initialize request locale and messages. Sessions, Actions, cache, and other handlers must also be added explicitly when your app needs them."
     },
     "examples": {
       "title": "Examples",
