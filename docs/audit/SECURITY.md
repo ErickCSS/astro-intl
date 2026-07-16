@@ -67,7 +67,7 @@ La auditoría del consumidor empacado con Astro 7.0.9, React 19.2.4 y Svelte 5.5
 | Subpaths | raíz, middleware, routing, React, Svelte y componente importables |
 | Compatibilidad | Astro 4.16.19, 5.18.2, 6.4.8 y 7.0.9: estático y SSR aprobados |
 | Astro 7 | Advanced Routing completo/compuesto, cache por locale y renderizado anidado concurrente aprobados; assets cliente sin `AsyncLocalStorage` ni `node:async_hooks` |
-| Consumidores | playground workspace y web oficial 2.2.1 compilan |
+| Consumidores | playground workspace y web oficial 2.2.2 sobre Astro 7.0.9 compilan |
 | Dependencias | cero vulnerabilidades en el consumidor empacado con Astro 7.0.9 |
 
 No se afirma que la librería sea invulnerable. La conclusión es que los hallazgos críticos, altos y medios confirmados en el alcance revisado fueron corregidos o descartados con evidencia, y que las limitaciones restantes están explícitas.

@@ -22,8 +22,8 @@ For complete documentation, examples and guides, visit:
 - 🌍 **Flexible** - Supports multiple languages and translation structures
 - ⚡ **Performance** - Loads only the necessary translations
 - 🛠️ **TypeScript first** - Written entirely in TypeScript
-- 🛡️ **Concurrency-safe** - `AsyncLocalStorage` in SSR to isolate concurrent requests
-- 🌐 **Multi-runtime** - Compatible with Node.js, Cloudflare Workers and Deno
+- 🛡️ **Concurrency-safe** - Uses `AsyncLocalStorage` in Node SSR to isolate concurrent requests
+- 🌍 **Explicit runtime guarantees** - Static and client usage remain available; unsupported SSR runtimes fail explicitly instead of sharing request state
 - 🗺️ **Localized routing** - Translated URLs per locale with automatic rewrites via middleware
 - 🔗 **URL generation** - `path()` and `switchLocalePath()` to build localized URLs
 - 📦 **Sub-path imports** - `astro-intl/react`, `astro-intl/svelte`, `astro-intl/routing`, `astro-intl/middleware`
@@ -40,6 +40,13 @@ pnpm add astro-intl
 # yarn
 yarn add astro-intl
 ```
+
+## Astro compatibility
+
+`astro-intl@2.2.2` supports Astro 4, 5, 6 and 7 through the peer range
+`^4 || ^5 || ^6 || ^7`. Astro 7 itself requires Node.js 22.12.0 or newer;
+existing Astro 4–6 consumers do not need to raise their Node.js version because
+of `astro-intl`.
 
 ## 🚀 Quick start
 

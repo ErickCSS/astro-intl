@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [2.2.2] - 2026-07-15
+
 ### Security
 
 - Isolated SSR locale and message state with Node.js `AsyncLocalStorage`; unsupported SSR runtimes now fail explicitly instead of sharing process-global request data.

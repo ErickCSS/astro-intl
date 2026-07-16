@@ -1,20 +1,20 @@
-# Candidato de release 2.2.2
+# Release 2.2.2
 
-Estado: preparado localmente, no publicado y no desplegado.
+Estado: publicado en npm; promoción local de la web oficial completada; despliegue web pendiente.
 
 ## Proveniencia
 
-- Versión candidata: `2.2.2`
-- Versión npm estable durante la preparación: `2.2.1`
+- Versión publicada: `2.2.2`
+- Versión npm estable anterior: `2.2.1`
 - Commit base de la auditoría: `bd99cf27d8b8a5ae13ea7e3a6304bb98aa370650`
-- Commit de origen final: pendiente hasta crear el commit aprobado
+- Commit de origen final: `b3d036a454b516300ba7e4e31d034c21cc89290d`
 - Tarball versionado: no; se genera y elimina en una carpeta temporal
 
 ## Inventario esperado
 
 El manifiesto `packages/integration/package-files.json` contiene los 27 archivos permitidos. `pack:check` rechaza cualquier test, declaración de test, fuente interna, tarball anidado, export inexistente o cambio no aprobado del inventario.
 
-## Resultado provisional
+## Resultado final
 
 - 158 pruebas fuente aprobadas.
 - Lint y build aprobados.
@@ -24,15 +24,15 @@ El manifiesto `packages/integration/package-files.json` contiene los 27 archivos
 - Playground y web oficial aprobados.
 - Auditoría de producción del consumidor Astro 7 sin vulnerabilidades.
 
-## Identidad del tarball
+## Identidad final verificada
 
-Última ejecución local aprobada de `pack:check` después de cerrar la documentación incluida en el paquete:
+La ejecución final de `pack:check` reproduce exactamente la identidad publicada en npm:
 
 - Nombre: `astro-intl-2.2.2.tgz`
-- SHA-1 npm: `12c0c8753e1648cc93956c51511fdb9aa571c727`
-- Integridad SHA-512: `sha512-byQScP9MBE94F1agZn7v7dUC93vFOZDEho+qaWvA42moAoT4XE1xIYQpR0YUdL8E2Z7y8ZOTqzX+Dki2JrNXAg==`
-- Tamaño: 18 985 bytes
-- Tamaño desempaquetado: 73 427 bytes
+- SHA-1 npm: `e90812560b6c2dfcb2fc7969f171323fb32236bd`
+- Integridad SHA-512: `sha512-Ykr+2ydLNfbLXApln0T9h7ABCtMUjNU75xVS5w+jMNQ7OsnpBYkpyUdXB+wQsI/IRfJ6XYDzpT17mtnhwy47Jg==`
+- Tamaño: 18 951 bytes
+- Tamaño desempaquetado: 73 621 bytes
 - Archivos: 27
-
-El hash de un tarball generado antes del commit final sirve para revisar contenido, pero no sustituye registrar el commit/tag aprobado antes de publicar.
+- Fecha: `2026-07-16T00:06:43.197Z` (`2026-07-15` en America/La_Paz)
+- `gitHead`: `b3d036a454b516300ba7e4e31d034c21cc89290d`
