@@ -138,8 +138,8 @@
       "description": "Instala astro-intl usando tu gestor de paquetes preferido.",
       "addIntegration": "Opcionalmente registra la integración en tu astro.config.mjs:",
       "integrationNote": "La integración es opcional — solo registra un mensaje de inicio. La API principal funciona sin ella.",
-      "astroV6Badge": "✅ Compatible con Astro v6",
-      "astroV6Note": "astro-intl v2.2.0 agrega <code>t.raw()</code> para valores sin coerción, <code>messagesDir</code> para carga simplificada de JSON, componente <code>AutoRedirect</code>, y auto-detección de locale en modo estático. Soporta completamente Astro 4, 5 y 6."
+      "astroSupportBadge": "✅ Compatible con Astro 4–7",
+      "astroSupportNote": "astro-intl <code>2.2.2</code> soporta oficialmente Astro 7 y mantiene compatibilidad con Astro 4–6. Astro 7 requiere Node.js <code>22.12.0</code> o superior; no hace falta una API nueva ni una migración de astro-intl."
     },
     "fileStructure": {
       "title": "Estructura de Archivos",
@@ -182,7 +182,7 @@
       "interpolationTitle": "Interpolación",
       "interpolationDescription": "Usa placeholders <code>{curlyOpen}varName{curlyClose}</code> en tus strings de traducción y pasa un objeto de valores como segundo argumento de <code>t()</code>. Tipos aceptados: <code>string</code>, <code>number</code>, <code>boolean</code>. Los valores faltantes o <code>null</code>/<code>undefined</code> mantienen el placeholder sin cambios.",
       "markupTitle": "Traducción con Markup",
-      "markupDescription": "Usa <code>t.markup(key, tags)</code> para interpolar etiquetas HTML dentro de un string de traducción. El objeto tags mapea nombres de etiquetas a funciones que reciben el contenido interno.",
+      "markupDescription": "Usa <code>t.markup(key, tags)</code> para interpolar etiquetas HTML dentro de un string de traducción. El objeto tags mapea nombres de etiquetas a funciones que reciben el contenido interno. En 2.2.2 el HTML final se sanitiza con un parser y una allowlist; los callbacks de tags siguen siendo código confiable de la aplicación.",
       "markupInterpolationTitle": "Markup + Interpolación",
       "markupInterpolationDescription": "Combina interpolación de variables con reemplazo de tags pasando <code>{curlyOpen} values, tags {curlyClose}</code> a <code>t.markup()</code>. La interpolación se ejecuta primero, luego se procesan los tags.",
       "reactTitle": "Componentes React",
@@ -228,7 +228,7 @@
       "richTitle": "Rich Text con t.rich()",
       "richDescription": "<code>t.rich(key, tagNames?)</code> retorna un array de <code>RichSegment[]</code> — cada segmento es texto plano o un chunk con tag. Puedes renderizarlos de dos formas.",
       "renderHtmlTitle": "Opción A: renderRichText() → string HTML",
-      "renderHtmlDescription": "Usa <code>renderRichText(segments, options)</code> para convertir segmentos en un string HTML. Pasa <code>tags</code> para elementos HTML nativos o <code>components</code> para renderizado personalizado.",
+      "renderHtmlDescription": "Usa <code>renderRichText(segments, options)</code> para convertir segmentos en un string HTML. El texto y los chunks se escapan, los tags nativos se limitan a elementos seguros y el HTML final se sanitiza. Pasa <code>tags</code> para elementos nativos o <code>components</code> para renderizado personalizado confiable.",
       "richTextComponentTitle": "Opción B: Componente RichText.svelte",
       "richTextComponentDescription": "Importa el componente <code>RichText</code> para renderizado declarativo. Pasa <code>tags</code> para elementos HTML nativos y <code>components</code> para renderizado de componentes Svelte.",
       "tipHydrationTitle": "Tip de Hidratación",
@@ -243,7 +243,7 @@
       "setRequestLocale": {
         "name": "setRequestLocale",
         "signature": "setRequestLocale(url: URL, getConfig?: GetRequestConfigFn): Promise<boolean>",
-        "description": "Extrae el locale del pathname de la URL (primer segmento) y llama a tu función <code>getConfig</code> para cargar los mensajes. Debe ser awaited antes de cualquier otra llamada."
+        "description": "Extrae y valida el locale del primer segmento del pathname, luego llama a tu función <code>getConfig</code> para cargar los mensajes. Debe ser awaited antes de cualquier otra llamada. En SSR, prefiere <code>createIntlMiddleware()</code> o <code>runWithLocale()</code> para mantener aislado todo el render."
       },
       "getLocale": {
         "name": "getLocale",
@@ -253,7 +253,7 @@
       "getTranslations": {
         "name": "getTranslations",
         "signature": "getTranslations<T>(namespace?: string)",
-        "description": "Retorna una función <code>t(key, values?)</code> tipada con scope al namespace dado. El objeto <code>values</code> opcional reemplaza placeholders <code>{curlyOpen}varName{curlyClose}</code>. También expone <code>t.markup(key, tags | {curlyOpen} values?, tags {curlyClose})</code> para interpolación HTML y <code>t.raw(key)</code> para acceder a valores sin coerción."
+        "description": "Retorna una función <code>t(key, values?)</code> tipada con scope al namespace dado. El objeto <code>values</code> opcional reemplaza placeholders <code>{curlyOpen}varName{curlyClose}</code>. También expone <code>t.markup(key, tags | {curlyOpen} values?, tags {curlyClose})</code> con sanitización por parser para interpolación HTML y <code>t.raw(key)</code> para acceder a valores sin coerción."
       },
       "requestConfig": {
         "name": "RequestConfig",
@@ -285,7 +285,7 @@
       "isValidLocale": {
         "name": "isValidLocale",
         "signature": "isValidLocale(locale: string): boolean",
-        "description": "Verifica si un string de locale está en la lista de <code>locales</code> configurada. Retorna <code>true</code> para cualquier string si no se han configurado locales."
+        "description": "Verifica que el locale tenga una sintaxis válida estilo BCP-47 y, cuando existe una lista <code>locales</code>, que también esté incluido en ella."
       },
       "getMessages": {
         "name": "getMessages",
@@ -295,17 +295,17 @@
       "createIntlMiddleware": {
         "name": "createIntlMiddleware",
         "signature": "createIntlMiddleware(options: { locales: string[]; defaultLocale?: string; routes?: RoutesMap })",
-        "description": "Crea un middleware de Astro que llama automáticamente a <code>setRequestLocale</code> en cada request. También establece <code>locales</code>, <code>defaultLocale</code> y <code>routes</code> en el store de intl. Cuando se proporcionan <code>routes</code>, el middleware reescribe las URLs traducidas a sus rutas canónicas del filesystem. Importar desde <code>astro-intl/middleware</code>."
+        "description": "Crea middleware de Astro que valida y carga el locale del request, y mantiene todo el render o rewrite dentro de un contexto <code>AsyncLocalStorage</code> de Node.js. También configura <code>locales</code>, <code>defaultLocale</code> y <code>routes</code> en el store. Importar desde <code>astro-intl/middleware</code>."
       },
       "path": {
         "name": "path",
         "signature": "path(routeKey: string, options?: { locale?: string; params?: Record<string, string>; encode?: boolean }): string",
-        "description": "Genera una URL localizada para una ruta nombrada. Usa el locale actual si no se especifica uno. Sustituye los placeholders <code>[param]</code> con los params proporcionados. Importar desde <code>astro-intl/routing</code>."
+        "description": "Genera una URL localizada para una ruta nombrada. Usa el locale actual si no se especifica uno, rechaza segmentos de locale inválidos y sustituye los placeholders <code>[param]</code> con los params proporcionados. Importar desde <code>astro-intl/routing</code>."
       },
       "switchLocalePath": {
         "name": "switchLocalePath",
         "signature": "switchLocalePath(currentPath: string | URL, nextLocale: string): string",
-        "description": "Convierte la URL actual a su equivalente en otro locale. Matchea la ruta contra los templates de rutas, extrae los params dinámicos y reconstruye la URL usando el template del locale destino. Preserva query strings y hashes. Importar desde <code>astro-intl/routing</code>."
+        "description": "Convierte la URL actual a su equivalente en otro locale validado. Matchea la ruta contra los templates, extrae los params dinámicos y reconstruye la URL con el template del locale destino. Preserva query strings y hashes. Importar desde <code>astro-intl/routing</code>."
       },
       "dotPaths": {
         "name": "DotPaths<T>",
@@ -328,7 +328,7 @@
       "renderRichText": {
         "name": "renderRichText",
         "signature": "renderRichText(segments: RichSegment[], options?: { tags?: Record<string, string>; components?: Record<string, (chunks: string) => string> }): string",
-        "description": "Convierte un array de <code>RichSegment[]</code> en un string HTML. Usa <code>tags</code> para elementos HTML nativos (ej. <code>{ bold: \"strong\" }</code>) o <code>components</code> para funciones de renderizado personalizadas. Importar desde <code>astro-intl/svelte</code>."
+        "description": "Convierte un array de <code>RichSegment[]</code> en un string HTML sanitizado. El texto y los chunks se escapan, los tags nativos inseguros se rechazan y los callbacks de componentes se tratan como código confiable antes de la sanitización final. Importar desde <code>astro-intl/svelte</code>."
       },
       "getFallbackRoutes": {
         "name": "getFallbackRoutes",
@@ -351,7 +351,7 @@
       "autoRedirect": {
         "name": "Componente AutoRedirect",
         "signature": "<AutoRedirect locales={string[]} defaultLocale={string} />",
-        "description": "Componente de Astro que detecta el idioma del navegador del usuario y redirige automáticamente a la ruta localizada apropiada. Úsalo en tu página raíz en lugar de <code>Astro.redirect()</code> para evitar el problema de la página en blanco en modo estático. Importa desde <code>astro-intl/components</code>."
+        "description": "Componente de Astro que valida sus props de locale, detecta el idioma del navegador y redirige a la ruta localizada codificada apropiada. <code>defaultLocale</code> debe estar incluido en <code>locales</code>. Importa desde <code>astro-intl/components</code>."
       },
       "autoDetectLocale": {
         "name": "Auto-detección de Locale (Modo Estático)",
@@ -388,7 +388,12 @@
       "fallbackTitle": "Rutas Fallback (Astro 6.1+)",
       "fallbackDescription": "A partir de Astro 6.1, la integración detecta automáticamente las <code>fallbackRoutes</code> del hook <code>astro:routes:resolved</code>. Cuando configuras <code>i18n.fallbackType: 'rewrite'</code> en tu config de Astro, Astro genera rutas fallback para locales que no tienen su propio contenido. astro-intl las recopila y las hace disponibles via <code>getFallbackRoutes()</code>.",
       "fallbackNote": "En Astro < 6.1, <code>getFallbackRoutes()</code> retorna un array vacío — sin errores, totalmente compatible hacia atrás.",
-      "fallbackExampleLabel": "Consulta las rutas fallback en tiempo de ejecución:"
+      "fallbackExampleLabel": "Consulta las rutas fallback en tiempo de ejecución:",
+      "astro7Title": "Advanced Routing de Astro 7",
+      "astro7Description": "astro-intl 2.2.2 funciona con el pipeline completo de requests de Astro 7 y con pipelines compuestos explícitamente en <code>src/fetch.ts</code>. No requiere una API específica de astro-intl para Astro 7.",
+      "astro7FullPipelineLabel": "Conserva el pipeline completo de Astro, incluido src/middleware.ts:",
+      "astro7ComposedPipelineLabel": "O compón únicamente middleware y renderizado de páginas:",
+      "astro7Note": "Un pipeline personalizado de Astro 7 debe incluir <code>middleware()</code> para que <code>createIntlMiddleware()</code> inicialice el locale y los mensajes del request. Sessions, Actions, cache y otros handlers también deben añadirse explícitamente cuando tu aplicación los necesite."
     },
     "autoRedirect": {
       "title": "Redirección Automática",
@@ -447,6 +452,63 @@
       "changed": "Cambiado",
       "fixed": "Corregido",
       "security": "Seguridad"
+    },
+    "v222": {
+      "title": "2.2.2",
+      "items": [
+        {
+          "type": "security",
+          "text": "Estado SSR de locale y mensajes aislado con <code>AsyncLocalStorage</code> de Node.js; los runtimes SSR no soportados ahora fallan explícitamente en vez de compartir estado global."
+        },
+        {
+          "type": "security",
+          "text": "El filtrado HTML basado solo en regex fue reemplazado por sanitización con parser y allowlist para <code>t.markup()</code>."
+        },
+        {
+          "type": "security",
+          "text": "El rich text de Svelte ahora escapa y sanitiza su salida, y rechaza mapeos inseguros de tags nativos."
+        },
+        {
+          "type": "security",
+          "text": "Los segmentos de locale se validan antes de construir rutas y redirecciones del navegador."
+        },
+        {
+          "type": "security",
+          "text": "El contenido JSON-LD se escapa y el changelog de la documentación se renderiza de forma segura."
+        },
+        {
+          "type": "fixed",
+          "text": "Los builds limpios de publicación excluyen tests, copian <code>AutoRedirect.astro</code>, validan exports y rechazan archivos inesperados en el tarball."
+        },
+        {
+          "type": "fixed",
+          "text": "Vitest solo descubre tests fuente y ya no vuelve a ejecutar tests compilados desde <code>dist</code>."
+        },
+        {
+          "type": "fixed",
+          "text": "Se actualizaron los ejemplos vigentes de React y locale por request, preservando las firmas históricas en la guía de migración v1→v2."
+        },
+        {
+          "type": "changed",
+          "text": "Soporte oficial de Astro 7 mediante el peer <code>^4 || ^5 || ^6 || ^7</code>, manteniendo Astro 4–6 y todas las APIs públicas actuales."
+        },
+        {
+          "type": "changed",
+          "text": "El playground canary se actualizó a Astro 7.0.9, <code>@astrojs/vercel</code> 11.0.3 y <code>@astrojs/sitemap</code> 3.7.3."
+        },
+        {
+          "type": "changed",
+          "text": "La matriz de compatibilidad desde tarball ahora cubre Astro 4.16.19, 5.18.2, 6.4.8 y 7.0.9."
+        },
+        {
+          "type": "changed",
+          "text": "Astro 7 fue validado con Vite 8/Rolldown, compilador Rust de <code>.astro</code>, renderizado anidado en cola, Advanced Routing completo y compuesto, y cache de rutas separado por locale."
+        },
+        {
+          "type": "changed",
+          "text": "Se documentó que Astro 7 requiere Node.js 22.12.0 o superior sin cambiar el requisito de Node.js de astro-intl para consumidores de Astro 4–6."
+        }
+      ]
     },
     "v210": {
       "title": "2.1.0",

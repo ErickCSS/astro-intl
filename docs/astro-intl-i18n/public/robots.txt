@@ -6,4 +6,4 @@ Allow: /
 Disallow: /index.html
 
 # Sitemap
-Sitemap: https://astro-intl.vercel.app/sitemap-index.xml
+Sitemap: https://astro-intl.dev/sitemap-index.xml
