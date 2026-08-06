@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import {
   existsSync,
   mkdirSync,
@@ -73,7 +73,7 @@ try {
         type: "module",
         dependencies: {
           "astro-intl": `file:${tarball.replace(/\\/g, "/")}`,
-          astro: "7.0.9",
+          astro: "7.1.4",
           react: "19.2.4",
           svelte: "5.56.5",
         },
@@ -86,7 +86,7 @@ try {
     resolve(consumerDir, "smoke.mjs"),
     `import { existsSync } from "node:fs";\n` +
       `import { fileURLToPath } from "node:url";\n` +
-      `for (const id of ["astro-intl", "astro-intl/middleware", "astro-intl/routing", "astro-intl/react", "astro-intl/svelte"]) {\n` +
+      `for (const id of ["astro-intl", "astro-intl/middleware", "astro-intl/routing", "astro-intl/react", "astro-intl/svelte", "astro-intl/validate"]) {\n` +
       `  const mod = await import(id); if (Object.keys(mod).length === 0) throw new Error("Empty export: " + id);\n` +
       `}\n` +
       `const component = import.meta.resolve("astro-intl/components");\n` +
@@ -100,6 +100,30 @@ try {
     stdio: "inherit",
   });
 
+  const messagesDir = resolve(consumerDir, "messages");
+  mkdirSync(messagesDir, { recursive: true });
+  writeFileSync(resolve(messagesDir, "en.json"), JSON.stringify({ greeting: "Hello {name}" }));
+  writeFileSync(resolve(messagesDir, "es.json"), JSON.stringify({ greeting: "Hola {name}" }));
+  const cliPath = resolve(consumerDir, "node_modules/astro-intl/dist/cli.js");
+  execFileSync(
+    process.execPath,
+    [cliPath, "validate", "--dir", messagesDir, "--reference", "en"],
+    { cwd: consumerDir, stdio: "inherit" }
+  );
+
+  writeFileSync(resolve(messagesDir, "es.json"), JSON.stringify({ farewell: "Adiós" }));
+  const invalidCli = spawnSync(
+    process.execPath,
+    [cliPath, "validate", "--dir", messagesDir, "--reference", "en"],
+    { cwd: consumerDir, encoding: "utf8" }
+  );
+  if (invalidCli.status !== 1) {
+    throw new Error(
+      `Catalog CLI returned ${invalidCli.status ?? "no status"} for invalid catalogs.\n` +
+        `${invalidCli.stdout}\n${invalidCli.stderr}`
+    );
+  }
+
   console.log(
     JSON.stringify(
       {
@@ -110,7 +134,7 @@ try {
         unpackedSize: packResult.unpackedSize,
         fileCount: files.length,
         files,
-        smoke: "passed",
+        smoke: "imports and catalog CLI passed",
       },
       null,
       2

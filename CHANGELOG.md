@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [2.3.0] - 2026-08-05
+
+### Added
+
+- Added `astro-intl validate` for deterministic JSON catalog validation in local workflows and CI.
+- Added the `astro-intl/validate` subpath with `validateCatalogs()` and typed diagnostics for missing keys, extra keys, value type mismatches and incompatible placeholders.
+
+### Security
+
+- Updated Astro 7 development, documentation and compatibility consumers from 7.0.9 to 7.1.4 to resolve `GHSA-4g3v-8h47-v7g6`.
+- Production dependency auditing now fails for moderate-or-higher vulnerabilities.
+
+### Fixed
+
+- Aligned the English and Spanish documentation catalogs and added catalog validation to the repository checks.
+- Fixed the documentation CSS import order and normalized repository text files to LF.
+
 ## [2.2.2] - 2026-07-15
 
 ### Security

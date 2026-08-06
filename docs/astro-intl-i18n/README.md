@@ -2,7 +2,7 @@
 
 Este proyecto genera la documentación publicada de `astro-intl`. Debe depender de una versión npm exacta y estable; nunca de `workspace:*` ni de un rango con `^`.
 
-Estado actual: la web consume `astro-intl@2.2.2`, Astro 7.0.9 y los adaptadores de Astro 7 con versiones exactas. El despliegue sigue siendo una acción separada del build y de la publicación npm.
+Estado actual: la web consume `astro-intl@2.2.2`, Astro 7.1.4 y los adaptadores de Astro 7 con versiones exactas. El despliegue sigue siendo una acción separada del build y de la publicación npm.
 
 ## Flujo de promoción
 

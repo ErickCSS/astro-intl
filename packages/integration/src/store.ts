@@ -15,9 +15,7 @@ type RequestState = {
   messages: Record<string, unknown>;
 };
 
-let AsyncLocalStorageConstructor:
-  | (new <T>() => ALS<T>)
-  | null = null;
+let AsyncLocalStorageConstructor: (new <T>() => ALS<T>) | null = null;
 
 try {
   const asyncHooks = await import("node:async_hooks");

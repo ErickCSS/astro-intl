@@ -400,7 +400,12 @@
       "title": "Examples",
       "namespaceTitle": "Using Namespaces",
       "namespaceDescription": "Namespaces let you split large translation files into logical sections. Pass the namespace name to <code>getTranslations</code>.",
-      "interpolationTitle": "Interpolation"
+      "interpolationTitle": "Interpolation",
+      "interpolationDescription": "Replace <code>{curlyOpen}varName{curlyClose}</code> placeholders in translations with dynamic runtime values.",
+      "typeTitle": "Type-Safe Keys",
+      "typeDescription": "Pass your message type as a generic to <code>getTranslations</code> for full autocomplete and type checking of translation keys.",
+      "localeTitle": "Reading the Current Locale",
+      "localeDescription": "Use <code>getLocale()</code> anywhere after <code>setRequestLocale</code> has been called — for example, to build locale-aware URLs."
     },
     "autoRedirect": {
       "title": "Auto Redirect",

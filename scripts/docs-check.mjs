@@ -35,8 +35,20 @@ if (playgroundPackage.dependencies["astro-intl"] !== "workspace:*") {
 if (integrationPackage.peerDependencies.astro !== "^4 || ^5 || ^6 || ^7") {
   errors.push("astro-intl must declare the approved Astro 4–7 peer range.");
 }
+if (integrationPackage.bin?.["astro-intl"] !== "./dist/cli.js") {
+  errors.push("astro-intl must expose the catalog validation CLI.");
+}
+if (!integrationPackage.exports?.["./validate"]) {
+  errors.push("astro-intl must expose the ./validate subpath.");
+}
+for (const path of ["README.md", "packages/integration/README.md"]) {
+  const content = readFileSync(resolve(root, path), "utf8");
+  if (!content.includes("astro-intl validate --dir")) {
+    errors.push(`${path} must document the catalog validation command.`);
+  }
+}
 const astro7Dependencies = [
-  ["astro", "7.0.9"],
+  ["astro", "7.1.4"],
   ["@astrojs/vercel", "11.0.3"],
   ["@astrojs/sitemap", "3.7.3"],
 ];

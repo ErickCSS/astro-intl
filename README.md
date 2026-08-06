@@ -26,7 +26,8 @@ For complete documentation, examples and guides, visit:
 - 🌍 **Explicit runtime guarantees** - Static and client usage remain available; unsupported SSR runtimes fail explicitly instead of sharing request state
 - 🗺️ **Localized routing** - Translated URLs per locale with automatic rewrites via middleware
 - 🔗 **URL generation** - `path()` and `switchLocalePath()` to build localized URLs
-- 📦 **Sub-path imports** - `astro-intl/react`, `astro-intl/svelte`, `astro-intl/routing`, `astro-intl/middleware`
+- ✅ **Catalog validation** - Detect missing keys, extra keys, type differences and incompatible placeholders before deployment
+- 📦 **Sub-path imports** - `astro-intl/react`, `astro-intl/svelte`, `astro-intl/routing`, `astro-intl/middleware`, `astro-intl/validate`
 
 ## 📦 Installation
 
@@ -43,7 +44,7 @@ yarn add astro-intl
 
 ## Astro compatibility
 
-`astro-intl@2.2.2` supports Astro 4, 5, 6 and 7 through the peer range
+`astro-intl@2.3.0` supports Astro 4, 5, 6 and 7 through the peer range
 `^4 || ^5 || ^6 || ^7`. Astro 7 itself requires Node.js 22.12.0 or newer;
 existing Astro 4–6 consumers do not need to raise their Node.js version because
 of `astro-intl`.
@@ -119,6 +120,18 @@ export function Greeting() {
 
 <h1>{t('welcome')}</h1>
 ```
+
+### 5. Validate translation catalogs
+
+Use one locale as the reference and validate every JSON file in the messages directory:
+
+```bash
+astro-intl validate --dir ./src/i18n/messages --reference en
+```
+
+The command exits with code `1` when catalogs have missing or extra keys,
+incompatible value types, or different `{placeholders}`. Configuration and file
+errors exit with code `2`.
 
 ## 📖 Learn more
 

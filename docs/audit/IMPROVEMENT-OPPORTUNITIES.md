@@ -14,6 +14,7 @@
 | CI sin permisos explícitos | Corregido | `.github/workflows/ci.yml:3,22,42,58` |
 | Documentación de APIs retiradas | Corregido | `docs:check` y `docs/MIGRATION-V1-V2.md` |
 | Compatibilidad Astro 7 | Validada | peer 4–7, `compat-check.mjs`, Advanced Routing, cache y renderizado anidado |
+| Validación de catálogos | Corregido | `astro-intl validate`, API `astro-intl/validate` y `catalogs:check` |
 
 ## Riesgos descartados o acotados
 
@@ -50,10 +51,6 @@ Los `.tgz` antiguos ya no pueden entrar al nuevo tarball por el inventario, pero
 ### P2 — Tipado de rutas y `t.raw()`
 
 Inferir route keys, parámetros obligatorios y valores raw desde tipos literales reforzaría la propuesta type-safe. Debe diseñarse sin romper inferencia de la API 2.x.
-
-### P2 — Validación de catálogos
-
-Agregar una herramienta que detecte claves faltantes, sobrantes y placeholders incompatibles entre locales.
 
 ### P3 — Observabilidad
 

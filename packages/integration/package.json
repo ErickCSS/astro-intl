@@ -1,6 +1,6 @@
 {
   "name": "astro-intl",
-  "version": "2.2.2",
+  "version": "2.3.0",
   "type": "module",
   "description": "Simple and type-safe internationalization system for Astro.",
   "keywords": [
@@ -36,6 +36,9 @@
   "files": [
     "dist"
   ],
+  "bin": {
+    "astro-intl": "./dist/cli.js"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -58,6 +61,10 @@
     "./routing": {
       "types": "./dist/routing.d.ts",
       "import": "./dist/routing.js"
+    },
+    "./validate": {
+      "types": "./dist/validate.d.ts",
+      "import": "./dist/validate.js"
     },
     "./components": {
       "import": "./dist/components/AutoRedirect.astro"
@@ -94,7 +101,7 @@
     "@types/react": "^18.3.28",
     "@types/sanitize-html": "^2.16.1",
     "@vitest/ui": "^4.1.2",
-    "astro": "7.0.9",
+    "astro": "7.1.4",
     "eslint": "^9.39.4",
     "happy-dom": "^20.8.9",
     "prettier": "^3.8.1",

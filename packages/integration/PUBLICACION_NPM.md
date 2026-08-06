@@ -2,12 +2,14 @@
 
 Esta guía describe la promoción controlada de `astro-intl`. Preparar un candidato no autoriza publicarlo. La publicación npm y el despliegue de la web oficial requieren aprobaciones explícitas y separadas.
 
-## Compatibilidad del candidato 2.2.2
+## Compatibilidad del candidato 2.3.0
 
-- Astro 4.16.19, 5.18.2, 6.4.8 y 7.0.9.
+- Astro 4.16.19, 5.18.2, 6.4.8 y 7.1.4.
 - Astro 7 requiere Node.js 22.12.0 o superior por requisito del propio Astro.
 - React y Svelte continúan como peers opcionales.
-- No se añade ni se elimina ninguna API pública.
+- Se añade el subpath público `astro-intl/validate` con `validateCatalogs()` y diagnósticos tipados.
+- Se añade el binario público `astro-intl` con el comando `validate`.
+- No se elimina ni modifica de forma incompatible ninguna API existente.
 
 ## Preparación
 
@@ -32,11 +34,12 @@ pnpm pack:check
 
 La validación debe confirmar:
 
-- 27 archivos exactamente, según `package-files.json`;
+- 31 archivos exactamente, según `package-files.json`;
 - ningún test, declaración de test, fuente interna o tarball anidado;
 - presencia de `AutoRedirect.astro` después de un build desde cero;
-- imports funcionales de `.`, `/middleware`, `/routing`, `/react`, `/svelte` y `/components` desde una instalación temporal;
-- SHA-1, integridad SHA-512, tamaño y commit de origen registrados en `docs/audit/RELEASE-CANDIDATE-2.2.2.md`.
+- imports funcionales de `.`, `/middleware`, `/routing`, `/react`, `/svelte`, `/validate` y `/components` desde una instalación temporal;
+- ejecución válida e inválida del comando de catálogos desde una instalación temporal;
+- SHA-1, integridad SHA-512, tamaño y commit de origen registrados en `docs/audit/RELEASE-CANDIDATE-2.3.0.md`.
 
 El `.tgz` de revisión se genera en una carpeta temporal y no se versiona.
 
@@ -55,10 +58,10 @@ No existe publicación automática desde CI en esta fase.
 
 ## Promoción de la web oficial
 
-`astro-intl@2.2.2` fue publicado el 15 de julio de 2026 (zona horaria de Bolivia) desde el commit `b3d036a454b516300ba7e4e31d034c21cc89290d`. Después de leer de vuelta npm, la web `docs/astro-intl-i18n` se promueve a:
+`astro-intl@2.2.2` continúa publicado mientras se revisa el candidato 2.3.0. Solo después de publicar y leer de vuelta npm, la web `docs/astro-intl-i18n` se promoverá a:
 
-- `astro-intl@2.2.2` exacta;
-- Astro 7.0.9;
+- `astro-intl@2.3.0` exacta;
+- Astro 7.1.4;
 - `@astrojs/vercel@11.0.3`;
 - `@astrojs/sitemap@3.7.3`.
 

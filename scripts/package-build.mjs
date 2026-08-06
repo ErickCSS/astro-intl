@@ -33,7 +33,11 @@ if (command === "clean") {
     resolve(componentDir, "AutoRedirect.astro")
   );
 
-  const missing = exportedTargets(pkg.exports)
+  const packageTargets = [
+    ...exportedTargets(pkg.exports),
+    ...Object.values(pkg.bin ?? {}),
+  ];
+  const missing = packageTargets
     .filter((target) => target.startsWith("./"))
     .filter((target) => !existsSync(resolve(packageDir, target)));
   if (missing.length > 0) {
