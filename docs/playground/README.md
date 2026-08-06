@@ -1,6 +1,6 @@
 # Playground de astro-intl
 
-Este proyecto es el consumidor canary de la librería. Usa `astro-intl: workspace:*` para validar cambios del workspace antes de preparar un tarball o actualizar la web oficial. Para el candidato 2.2.2 corre sobre Astro 7.0.9, `@astrojs/vercel` 11.0.3 y `@astrojs/sitemap` 3.7.3.
+Este proyecto es el consumidor canary de la librería. Usa `astro-intl: workspace:*` para validar cambios del workspace antes de preparar un tarball o actualizar la web oficial. Actualmente corre sobre Astro 7.1.4, `@astrojs/vercel` 11.0.3 y `@astrojs/sitemap` 3.7.3.
 
 ## Uso
 

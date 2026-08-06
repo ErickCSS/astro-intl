@@ -37,10 +37,10 @@ La librería no promete SSR aislado en runtimes edge no compatibles. El render e
 
 ## Consumidores y promoción
 
-`docs/playground` es deliberadamente un canary de `workspace:*`. `docs/astro-intl-i18n` es la web oficial y usa exactamente `astro-intl@2.2.2` sobre Astro 7.0.9. Su middleware usa directamente el contexto aislado corregido de 2.2.2, sin el wrapper temporal requerido por 2.2.1.
+`docs/playground` es deliberadamente un canary de `workspace:*`. `docs/astro-intl-i18n` es la web oficial y usa exactamente `astro-intl@2.2.2` sobre Astro 7.1.4. Su middleware usa directamente el contexto aislado corregido de 2.2.2, sin el wrapper temporal requerido por 2.2.1.
 
 La librería ya fue probada, empacada y publicada. La web se actualizó a la versión exacta; los pasos restantes son crear/revisar el preview y aprobar el deploy. No existe un script que reescriba destructivamente el manifiesto.
 
 ## Build y paquete
 
-`tsconfig.build.json` excluye `src/__tests__`; Vitest solo incluye tests fuente (`vitest.config.ts:7-8`). El build limpia `dist`, copia `AutoRedirect.astro` y valida todos los exports. `pack:check` compara un inventario de 27 archivos, rechaza tests y tarballs anidados e importa cada subpath desde una instalación temporal.
+`tsconfig.build.json` excluye `src/__tests__`; Vitest solo incluye tests fuente (`vitest.config.ts:7-8`). El build limpia `dist`, copia `AutoRedirect.astro` y valida todos los exports y binarios. `pack:check` compara un inventario de 31 archivos, rechaza tests y tarballs anidados, importa cada subpath y ejecuta el validador desde una instalación temporal.

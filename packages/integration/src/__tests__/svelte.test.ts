@@ -216,16 +216,14 @@ describe("svelte adapter", () => {
     });
 
     it("should escape raw text segments", () => {
-      const html = renderRichText([
-        { type: "text", value: '<img src=x onerror=alert(1)>' },
-      ]);
+      const html = renderRichText([{ type: "text", value: "<img src=x onerror=alert(1)>" }]);
 
       expect(html).toBe("&lt;img src=x onerror=alert(1)&gt;");
     });
 
     it("should escape chunks passed to components and sanitize their output", () => {
       const html = renderRichText(
-        [{ type: "tag", tag: "link", chunks: '<svg onload=alert(1)></svg>' }],
+        [{ type: "tag", tag: "link", chunks: "<svg onload=alert(1)></svg>" }],
         { components: { link: (chunks) => `<a href=javascript:alert(2)>${chunks}</a>` } }
       );
 
@@ -235,7 +233,7 @@ describe("svelte adapter", () => {
 
     it("should preserve safe mapped tags while escaping their chunks", () => {
       const html = renderRichText(
-        [{ type: "tag", tag: "bold", chunks: '<img src=x onerror=alert(1)>' }],
+        [{ type: "tag", tag: "bold", chunks: "<img src=x onerror=alert(1)>" }],
         { tags: { bold: "strong" } }
       );
 
@@ -244,7 +242,7 @@ describe("svelte adapter", () => {
 
     it("should escape unknown tag chunks", () => {
       const html = renderRichText([
-        { type: "tag", tag: "unknown", chunks: '<img src=x onerror=alert(1)>' },
+        { type: "tag", tag: "unknown", chunks: "<img src=x onerror=alert(1)>" },
       ]);
 
       expect(html).toBe("&lt;img src=x onerror=alert(1)&gt;");

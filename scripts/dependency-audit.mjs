@@ -32,7 +32,7 @@ try {
         name: "astro-intl-production-audit",
         private: true,
         dependencies: {
-          astro: "7.0.9",
+          astro: "7.1.4",
           "astro-intl": `file:${resolve(tempDir, packed.filename).replace(/\\/g, "/")}`,
           react: "19.2.4",
           svelte: "5.56.5",
@@ -43,7 +43,7 @@ try {
     )
   );
   npm(["install", "--package-lock-only", "--ignore-scripts", "--no-audit", "--no-fund"], consumerDir);
-  npm(["audit", "--omit=dev", "--audit-level=high"], consumerDir);
+  npm(["audit", "--omit=dev", "--audit-level=moderate"], consumerDir);
 } finally {
   if (existsSync(tempDir)) rmSync(tempDir, { recursive: true, force: true });
 }

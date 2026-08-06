@@ -49,7 +49,7 @@ Simple and type-safe internationalization system for Astro.
 
 ### Astro compatibility
 
-`astro-intl@2.2.2` supports Astro 4, 5, 6 and 7:
+`astro-intl@2.3.0` supports Astro 4, 5, 6 and 7:
 
 ```json
 {
@@ -521,6 +521,32 @@ import { switchLocalePath } from "astro-intl/routing";
 <!-- On /es/tienda/ropa/42 → /en/shop/ropa/42 -->
 ```
 
+## ✅ Catalog validation
+
+Validate all JSON catalogs in a directory before deploying:
+
+```bash
+astro-intl validate --dir ./src/i18n/messages --reference en
+```
+
+The command reports missing and extra keys, incompatible value types and
+different placeholder sets. It exits with code `0` when catalogs are valid,
+`1` for catalog differences and `2` for usage, filesystem or JSON errors.
+
+For programmatic validation, import the pure API from the Node-focused subpath:
+
+```ts
+import { validateCatalogs } from "astro-intl/validate";
+
+const result = validateCatalogs(
+  {
+    en: { greeting: "Hello {name}" },
+    es: { greeting: "Hola {name}" },
+  },
+  { referenceLocale: "en" }
+);
+```
+
 ## 📚 API Reference
 
 ### `astroIntl(options?)`
@@ -683,6 +709,15 @@ Converts the current URL to its equivalent in another locale. Import from `astro
 - `nextLocale: string` - Target locale
 
 **Returns:** `string` - Equivalent URL in the new locale. Preserves query strings and hashes. If no template matches, falls back to swapping the locale prefix.
+
+### `validateCatalogs(catalogs, options)` — `astro-intl/validate`
+
+Compares every catalog with `options.referenceLocale` without modifying them.
+
+**Returns:** `{ valid: boolean, diagnostics: CatalogDiagnostic[] }`
+
+Diagnostic codes are `missing-key`, `extra-key`, `type-mismatch` and
+`placeholder-mismatch`.
 
 ---
 

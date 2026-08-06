@@ -254,9 +254,7 @@ describe("switchLocalePath()", () => {
 
   it("accepts BCP-47 locale segments without a configured allowlist", () => {
     __setIntlConfig({ defaultLocale: "en", locales: [] });
-    expect(switchLocalePath("/en/about?x=1#section", "pt-BR")).toBe(
-      "/pt-BR/about?x=1#section"
-    );
+    expect(switchLocalePath("/en/about?x=1#section", "pt-BR")).toBe("/pt-BR/about?x=1#section");
   });
 
   it("switches from es to en", () => {

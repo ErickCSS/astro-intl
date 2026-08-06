@@ -306,7 +306,7 @@ describe("core.ts", () => {
         await setRequestLocale(url, () => ({
           locale: "en",
           messages: {
-            text: '<svg onload=alert(1)><circle></circle></svg><img src=x onerror=alert(2)>',
+            text: "<svg onload=alert(1)><circle></circle></svg><img src=x onerror=alert(2)>",
           },
         }));
 
@@ -337,7 +337,7 @@ describe("core.ts", () => {
         }));
 
         const result = getTranslations().markup("text" as any, {
-          values: { name: '<img src=x onerror=alert(1)>' },
+          values: { name: "<img src=x onerror=alert(1)>" },
           tags: { link: (chunks) => `<a href=javascript:alert(2)>${chunks}</a>` },
         });
 

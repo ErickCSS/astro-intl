@@ -6,12 +6,14 @@
     "test": "pnpm --filter astro-intl test",
     "lint": "pnpm --filter astro-intl lint",
     "build": "pnpm --filter astro-intl build",
+    "format:check": "pnpm --filter astro-intl format:check",
+    "catalogs:check": "pnpm build && node packages/integration/dist/cli.js validate --dir docs/playground/src/i18n/messages --reference en && node packages/integration/dist/cli.js validate --dir docs/astro-intl-i18n/src/i18n/messages --reference en",
     "pack:check": "pnpm --filter astro-intl pack:check",
     "compat:check": "node scripts/compat-check.mjs",
     "audit:prod": "node scripts/dependency-audit.mjs",
     "consumers:check": "pnpm --dir docs/playground build && pnpm --dir docs/astro-intl-i18n build",
     "docs:check": "node scripts/docs-check.mjs",
-    "check": "pnpm lint && pnpm test && pnpm build && pnpm pack:check && pnpm docs:check && pnpm consumers:check"
+    "check": "pnpm format:check && pnpm lint && pnpm test && pnpm catalogs:check && pnpm pack:check && pnpm docs:check && pnpm consumers:check"
   },
   "pnpm": {
     "overrides": {

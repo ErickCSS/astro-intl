@@ -3,11 +3,7 @@ import { getMessages } from "./store.js";
 import { getNestedValue, interpolateValues, type DotPaths } from "./interpolation.js";
 import { sanitizeHtml } from "./sanitize.js";
 
-function replaceRichTag(
-  input: string,
-  tag: string,
-  render: (chunks: string) => string
-): string {
+function replaceRichTag(input: string, tag: string, render: (chunks: string) => string): string {
   if (!/^[A-Za-z][A-Za-z0-9_-]*$/.test(tag)) {
     throw new Error(`[astro-intl] Invalid markup tag name "${tag}".`);
   }

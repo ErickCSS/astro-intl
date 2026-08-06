@@ -1,6 +1,8 @@
 {
   "files": [
     "README.md",
+    "dist/cli.d.ts",
+    "dist/cli.js",
     "dist/adapters/react.d.ts",
     "dist/adapters/react.js",
     "dist/adapters/svelte.d.ts",
@@ -26,6 +28,8 @@
     "dist/translations.js",
     "dist/types/index.d.ts",
     "dist/types/index.js",
+    "dist/validate.d.ts",
+    "dist/validate.js",
     "package.json"
   ]
 }
