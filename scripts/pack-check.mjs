@@ -73,7 +73,7 @@ try {
         type: "module",
         dependencies: {
           "astro-intl": `file:${tarball.replace(/\\/g, "/")}`,
-          astro: "7.1.4",
+          astro: "7.2.8",
           react: "19.2.4",
           svelte: "5.56.5",
         },

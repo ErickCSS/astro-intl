@@ -13,7 +13,7 @@
     "@astrojs/vercel": "11.0.3",
     "@tailwindcss/vite": "^4.2.2",
     "@vercel/analytics": "^1.6.1",
-    "astro": "7.1.4",
+    "astro": "7.2.8",
     "astro-intl": "workspace:*",
     "flag-icons": "^7.5.0",
     "shiki": "^3.23.0",

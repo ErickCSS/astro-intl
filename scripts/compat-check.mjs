@@ -23,7 +23,7 @@ const versions = {
   4: { astro: "4.16.19", node: "8.3.4" },
   5: { astro: "5.18.2", node: "9.5.5" },
   6: { astro: "6.4.8", node: "10.1.4" },
-  7: { astro: "7.1.4", node: "11.0.2" },
+  7: { astro: "7.2.8", node: "11.1.6" },
 };
 const majors = requested ? [requested] : Object.keys(versions);
 
