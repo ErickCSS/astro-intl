@@ -96,21 +96,44 @@
       "installation": "Instalación",
       "fileStructure": "Estructura de Archivos",
       "configuration": "Configuración",
-      "usage": "Uso",
-      "api": "Referencia de API",
-      "examples": "Ejemplos"
+      "usageGroup": "Uso",
+      "usage": "Uso Básico",
+      "routing": "Routing",
+      "examples": "Ejemplos",
+      "frameworks": "Frameworks",
+      "autoRedirect": "Redirección Auto",
+      "react": "React",
+      "svelte": "Svelte",
+      "reference": "Referencia",
+      "api": "API Reference"
+    },
+    "cards": {
+      "installation": "Instala el paquete y configura tu proyecto en minutos.",
+      "configuration": "Configura locales, mensajes y opciones de middleware.",
+      "usage": "Aprende a usar traducciones, interpolación y markup.",
+      "routing": "Configura URLs localizadas y traducciones de rutas.",
+      "frameworks": "Usa astro-intl con React, Svelte y más.",
+      "api": "Referencia completa de API para todas las funciones y tipos exportados.",
+      "examples": "Ejemplos del mundo real y patrones comunes.",
+      "autoRedirect": "Detecta automáticamente el idioma del navegador y redirige sin páginas en blanco."
     },
     "hero": {
       "badge": "Documentación",
       "title": "Comienza con",
       "titleAccent": "astro-intl",
-      "description": "Una librería de internacionalización <bold>type-safe</bold> para Astro, inspirada en next-intl. Sin props drilling, carga dinámica y soporte completo de TypeScript."
+      "description": "Empieza con una página en dos idiomas y amplía tu configuración cuando lo necesites."
     },
     "installation": {
       "title": "Instalación",
       "description": "Instala astro-intl usando tu gestor de paquetes preferido.",
-      "addIntegration": "Opcionalmente registra la integración en tu astro.config.mjs:",
-      "integrationNote": "La integración es opcional — solo registra un mensaje de inicio. La API principal funciona sin ella."
+      "addIntegration": "Completa la integración creada por el asistente con los dos JSON de Inicio rápido, sin duplicarla. Si elegiste la instalación manual, añade la integración. Conserva las demás integraciones de tu proyecto.",
+      "integrationNote": "Instalar la integración no crea mensajes ni páginas. Sigue Inicio rápido para completar esos pasos.",
+      "astroSupportBadge": "✅ Compatible con Astro 4–7",
+      "astroSupportNote": "astro-intl <code>2.2.2</code> soporta oficialmente Astro 7 y mantiene compatibilidad con Astro 4–6. Astro 7 requiere Node.js <code>22.12.0</code> o superior; no hace falta una API nueva ni una migración de astro-intl.",
+      "quickTitle": "Instalación rápida",
+      "quickDescription": "El asistente de Astro instala el paquete y añade la integración a astro.config.mjs tras tu confirmación.",
+      "manualTitle": "Alternativa: instalación manual",
+      "manualDescription": "Usa esta opción si prefieres editar la configuración manualmente. Instala el paquete con tu gestor y después añade la integración; no necesitas ejecutar ambas opciones."
     },
     "fileStructure": {
       "title": "Estructura de Archivos",
@@ -124,12 +147,15 @@
       "messagesTitle": "1. Crear archivos de mensajes",
       "messagesDescription": "Crea un archivo JSON por locale dentro de <code>src/i18n/messages/</code>. Puedes organizar las claves en namespaces (objetos anidados).",
       "approachTitle": "2. Elige tu enfoque",
-      "approachDescription": "astro-intl ofrece dos formas de cargar mensajes. Elige la que mejor se adapte a tu proyecto.",
+      "approachDescription": "astro-intl ofrece tres formas de cargar mensajes. Elige la que mejor se adapte a tu proyecto.",
       "noMiddlewareNote": "Si <strong>no</strong> estás usando <code>createIntlMiddleware</code>, debes pasar <code>defaultLocale</code> y <code>locales</code> directamente en <code>astro.config.mjs</code> para que funciones como <code>getLocales()</code>, <code>getDefaultLocale()</code> e <code>isValidLocale()</code> funcionen correctamente.",
       "simpleTitle": "Opción A — Messages en config (recomendado)",
       "simpleDescription": "Pasa tus imports de mensajes junto con <code>defaultLocale</code> y <code>locales</code> directamente en <code>astro.config.mjs</code>. No se necesitan archivos extra.",
       "advancedTitle": "Opción B — Custom request.ts (avanzado)",
-      "advancedDescription": "Para control total, usa <code>defineRequestConfig</code> para crear un archivo request — similar a <code>next-intl</code>. Esto te permite agregar lógica personalizada como obtener mensajes desde un CMS. Aún necesitas pasar <code>defaultLocale</code> y <code>locales</code> en <code>astro.config.mjs</code>.",
+      "advancedDescription": "Para control total, usa <code>defineRequestConfig</code> para crear un archivo de request — similar a <code>next-intl</code>. Esto te permite agregar lógica personalizada como obtener mensajes desde un CMS. Todavía necesitas pasar <code>defaultLocale</code> y <code>locales</code> en <code>astro.config.mjs</code>.",
+      "messagesDirTitle": "Opción C — messagesDir (JSON simplificado)",
+      "messagesDirDescription": "Configura <code>messagesDir</code> con una ruta de directorio y la integración cargará automáticamente los archivos <code>{locale}.json</code>. No necesitas imports manuales — perfecto para flujos de trabajo basados en JSON.",
+      "messagesDirConfigLabel": "astro.config.mjs con messagesDir:",
       "advancedConfigLabel": "astro.config.mjs con locales:",
       "layoutTitle": "3. Configurar tu Layout",
       "layoutDescription": "<strong>Mejor práctica:</strong> Llama a <code>setRequestLocale</code> una sola vez en un layout compartido (ej: <code>src/layouts/Layout.astro</code>) en lugar de repetirlo en cada página. Esto inicializa el contexto global de i18n antes de que cualquier componente lea traducciones.",
@@ -146,22 +172,72 @@
     "usage": {
       "title": "Uso",
       "basicTitle": "Traducción Básica",
-      "basicDescription": "Una vez configurado tu layout, simplemente usa <code>getTranslations(namespace)</code> en cualquier página para obtener una función de traducción tipada para un namespace específico.",
+      "basicDescription": "Inicializa el idioma antes de getTranslations. Consulta Inicio rápido para ver una página completa.",
       "interpolationTitle": "Interpolación",
       "interpolationDescription": "Usa placeholders <code>{curlyOpen}varName{curlyClose}</code> en tus strings de traducción y pasa un objeto de valores como segundo argumento de <code>t()</code>. Tipos aceptados: <code>string</code>, <code>number</code>, <code>boolean</code>. Los valores faltantes o <code>null</code>/<code>undefined</code> mantienen el placeholder sin cambios.",
       "markupTitle": "Traducción con Markup",
-      "markupDescription": "Usa <code>t.markup(key, tags)</code> para interpolar etiquetas HTML dentro de un string de traducción. El objeto tags mapea nombres de etiquetas a funciones que reciben el contenido interno.",
+      "markupDescription": "Usa <code>t.markup(key, tags)</code> para interpolar etiquetas HTML dentro de un string de traducción. El objeto tags mapea nombres de etiquetas a funciones que reciben el contenido interno. En 2.2.2 el HTML final se sanitiza con un parser y una allowlist; los callbacks de tags siguen siendo código confiable de la aplicación.",
       "markupInterpolationTitle": "Markup + Interpolación",
       "markupInterpolationDescription": "Combina interpolación de variables con reemplazo de tags pasando <code>{curlyOpen} values, tags {curlyClose}</code> a <code>t.markup()</code>. La interpolación se ejecuta primero, luego se procesan los tags.",
       "reactTitle": "Componentes React",
-      "reactDescription": "Importa <code>getTranslations(namespace)</code> desde <code>astro-intl/react</code>, luego llama a <code>t.rich(key, tags)</code> para interpolar nodos React."
+      "reactDescription": "Importa <code>getTranslations(namespace)</code> desde <code>astro-intl/react</code>, luego llama a <code>t.rich(key, tags)</code> para interpolar nodos React.",
+      "reactDeprecated": "Los helpers de React están disponibles desde el subpath dedicado <code>astro-intl/react</code>.",
+      "reactDeprecatedLink": "Ver docs de React",
+      "rawTitle": "t.raw() — Valores Sin Coerción",
+      "rawDescription": "Usa <code>t.raw(key)</code> para acceder al valor de traducción sin coerción a string. Perfecto para arrays, objetos y números que necesitas en su tipo JavaScript nativo.",
+      "rawArraysTitle": "Accediendo a Arrays",
+      "rawArraysDescription": "Cuando tus traducciones contienen arrays, <code>t.raw()</code> los retorna como arrays JavaScript reales en lugar del string <code>[object Object]</code>.",
+      "rawObjectsTitle": "Accediendo a Objetos",
+      "rawObjectsDescription": "Los objetos se retornan tal cual, permitiéndote acceder a propiedades anidadas directamente sin parsing.",
+      "rawNumbersTitle": "Accediendo a Números",
+      "rawNumbersDescription": "Los números permanecen como números — útil para cálculos o pasar a componentes que esperan valores numéricos."
+    },
+    "react": {
+      "title": "Adaptador React",
+      "intro": "Usa <code>astro-intl/react</code> para acceder a traducciones dentro de componentes React con soporte completo de rich text.",
+      "importTitle": "Importar",
+      "importDescription": "Importa desde el subpath <code>astro-intl/react</code>. Disponible desde v2.0.0.",
+      "storeTitle": "Con Store (Astro Islands)",
+      "storeDescription": "Usa <code>getTranslations(namespace)</code> dentro de componentes React renderizados como Astro islands. El store se llena automáticamente por <code>setRequestLocale</code> o <code>createIntlMiddleware</code>. Antes de usar estos ejemplos, añade un objeto hero con title, subtitle y description a ambos JSON.",
+      "standaloneTitle": "Standalone (Sin Store)",
+      "standaloneDescription": "Usa <code>createGetTranslations(ui, defaultLocale)</code> cuando necesites traducciones sin el store global — por ejemplo en tests o fuera del ciclo de vida de Astro.",
+      "richTitle": "Rich Text con t.rich()",
+      "richDescription": "Usa <code>t.rich(key, tags)</code> para interpolar componentes React dentro de strings de traducción. Los tags reciben el texto interno como children y retornan un <code>ReactNode</code>.",
+      "tipHydrationTitle": "Tip de Hidratación",
+      "tipHydration": "Usa client:load o client:visible solo si necesitas interacción. El store del servidor no se transfiere al navegador: pasa textos traducidos como props o usa createGetTranslations con mensajes disponibles en el cliente.",
+      "tipStoreTitle": "Cuándo usar standalone vs store",
+      "tipStore": "Usa la versión <strong>con store</strong> (<code>getTranslations</code>) en Astro islands donde el contexto de locale ya está configurado. Usa <strong>standalone</strong> (<code>createGetTranslations</code>) en unit tests, Storybook, o cualquier contexto fuera del ciclo de vida de Astro.",
+      "breakingTitle": "Breaking Change (v2.0.0)",
+      "breakingDescription": "Los helpers de React se movieron del paquete raíz a <code>astro-intl/react</code>. Consulta la guía de migración v1→v2 para las firmas históricas."
+    },
+    "svelte": {
+      "title": "Adaptador Svelte",
+      "intro": "Usa <code>astro-intl/svelte</code> para acceder a traducciones dentro de componentes Svelte con soporte de rich text via segmentos o strings HTML.",
+      "importTitle": "Importar",
+      "importDescription": "Importa desde el subpath <code>astro-intl/svelte</code>. Requiere <code>svelte@^5</code> como peer dependency.",
+      "storeTitle": "Con Store (Astro Islands)",
+      "storeDescription": "Usa <code>getTranslations(namespace)</code> dentro de componentes Svelte renderizados como Astro islands. Funciona de la misma manera que el adaptador de React. Antes de usar estos ejemplos, añade un objeto hero con title, subtitle y description a ambos JSON.",
+      "standaloneTitle": "Standalone (Sin Store)",
+      "standaloneDescription": "Usa <code>createGetTranslations(ui, defaultLocale)</code> cuando necesites traducciones sin el store global.",
+      "richTitle": "Rich Text con t.rich()",
+      "richDescription": "<code>t.rich(key, tagNames?)</code> retorna un array de <code>RichSegment[]</code> — cada segmento es texto plano o un chunk con tag. Puedes renderizarlos de dos formas.",
+      "renderHtmlTitle": "Opción A: renderRichText() → string HTML",
+      "renderHtmlDescription": "Usa <code>renderRichText(segments, options)</code> para convertir segmentos en un string HTML. El texto y los chunks se escapan, los tags nativos se limitan a elementos seguros y el HTML final se sanitiza. Pasa <code>tags</code> para elementos nativos o <code>components</code> para renderizado personalizado confiable.",
+      "richTextComponentTitle": "Opción B: Componente RichText.svelte",
+      "richTextComponentDescription": "Importa el componente <code>RichText</code> para renderizado declarativo. Pasa <code>tags</code> para elementos HTML nativos y <code>components</code> para renderizado de componentes Svelte.",
+      "tipHydrationTitle": "Tip de Hidratación",
+      "tipHydration": "Usa client:load o client:visible solo si necesitas interacción. El store del servidor no se transfiere al navegador: pasa textos traducidos como props o usa createGetTranslations con mensajes disponibles en el cliente.",
+      "tipRichTextTitle": "RichText vs renderRichText",
+      "tipRichText": "Usa <strong>RichText.svelte</strong> cuando necesites interpolación de componentes Svelte (ej., tooltip personalizado o componentes de iconos). Usa <strong>renderRichText()</strong> cuando tags HTML simples como <code>&lt;strong&gt;</code> o <code>&lt;a&gt;</code> sean suficientes — es más ligero y funciona con <code>{@html}</code>.",
+      "tipSvelte5Title": "Svelte 5 Requerido",
+      "tipSvelte5": "El adaptador declara svelte@^5 como peer dependency. Usa Svelte 5 para los ejemplos de esta guía."
     },
     "api": {
       "title": "Referencia de API",
       "setRequestLocale": {
         "name": "setRequestLocale",
         "signature": "setRequestLocale(url: URL, getConfig?: GetRequestConfigFn): Promise<boolean>",
-        "description": "Extrae el locale del pathname de la URL (primer segmento) y llama a tu función <code>getConfig</code> para cargar los mensajes. Debe ser awaited antes de cualquier otra llamada."
+        "description": "Extrae y valida el locale del primer segmento del pathname, luego llama a tu función <code>getConfig</code> para cargar los mensajes. Debe ser awaited antes de cualquier otra llamada. En SSR, prefiere <code>createIntlMiddleware()</code> o <code>runWithLocale()</code> para mantener aislado todo el render."
       },
       "getLocale": {
         "name": "getLocale",
@@ -171,7 +247,7 @@
       "getTranslations": {
         "name": "getTranslations",
         "signature": "getTranslations<T>(namespace?: string)",
-        "description": "Retorna una función <code>t(key, values?)</code> tipada con scope al namespace dado. El objeto <code>values</code> opcional reemplaza placeholders <code>{curlyOpen}varName{curlyClose}</code>. También expone <code>t.markup(key, tags | {curlyOpen} values?, tags {curlyClose})</code> para interpolación HTML con sustitución de variables opcional."
+        "description": "Retorna una función <code>t(key, values?)</code> tipada con scope al namespace dado. El objeto <code>values</code> opcional reemplaza placeholders <code>{curlyOpen}varName{curlyClose}</code>. También expone <code>t.markup(key, tags | {curlyOpen} values?, tags {curlyClose})</code> con sanitización por parser para interpolación HTML y <code>t.raw(key)</code> para acceder a valores sin coerción."
       },
       "requestConfig": {
         "name": "RequestConfig",
@@ -184,16 +260,11 @@
       "runWithLocale": {
         "name": "runWithLocale",
         "signature": "runWithLocale<R>(url: URL, fn: () => R | Promise<R>, getConfig?: GetRequestConfigFn): Promise<R>",
-        "description": "Ejecuta una función dentro de un contexto aislado por request usando <code>AsyncLocalStorage</code> de Node.js. Los runtimes SSR sin almacenamiento seguro fallan explícitamente."
+        "description": "Ejecuta una función dentro de un contexto aislado por request usando <code>AsyncLocalStorage</code> de Node.js. Los runtimes SSR sin almacenamiento seguro fallan explícitamente en vez de compartir estado global."
       },
       "intlConfig": {
         "name": "IntlConfig",
-        "description": "Tipo de configuración para las opciones de la integración. Contiene <code>defaultLocale: string</code> — el locale usado cuando la URL no tiene prefijo de idioma."
-      },
-      "getDefaultLocale": {
-        "name": "getDefaultLocale",
-        "signature": "getDefaultLocale(): string",
-        "description": "Retorna el <code>defaultLocale</code> configurado via las opciones de la integración o <code>createIntlMiddleware</code>. Por defecto es <code>\"en\"</code> si no se establece."
+        "description": "Tipo de configuración para las opciones de la integración. Contiene <code>defaultLocale: string</code>, <code>locales: string[]</code>, <code>routes?: RoutesMap</code> y <code>fallbackRoutes?: FallbackRouteInfo[]</code>."
       },
       "getLocales": {
         "name": "getLocales",
@@ -203,7 +274,7 @@
       "isValidLocale": {
         "name": "isValidLocale",
         "signature": "isValidLocale(locale: string): boolean",
-        "description": "Verifica si un string de locale está en la lista de <code>locales</code> configurada. Retorna <code>true</code> para cualquier string si no se han configurado locales."
+        "description": "Verifica que el locale tenga una sintaxis válida estilo BCP-47 y, cuando existe una lista <code>locales</code>, que también esté incluido en ella."
       },
       "getMessages": {
         "name": "getMessages",
@@ -212,13 +283,124 @@
       },
       "createIntlMiddleware": {
         "name": "createIntlMiddleware",
-        "signature": "createIntlMiddleware(options: { locales: string[]; defaultLocale?: string })",
-        "description": "Crea un middleware de Astro que llama automáticamente a <code>setRequestLocale</code> en cada request. También establece <code>locales</code> y <code>defaultLocale</code> en el store de intl, por lo que no necesitas pasarlos en <code>astro.config.mjs</code>. Importar desde <code>astro-intl/middleware</code>."
+        "signature": "createIntlMiddleware(options: { locales: string[]; defaultLocale?: string; routes?: RoutesMap })",
+        "description": "Crea middleware de Astro que valida y carga el locale del request, y mantiene todo el render o rewrite dentro de un contexto <code>AsyncLocalStorage</code> de Node.js. También configura <code>locales</code>, <code>defaultLocale</code> y <code>routes</code> en el store. Importar desde <code>astro-intl/middleware</code>."
+      },
+      "path": {
+        "name": "path",
+        "signature": "path(routeKey: string, options?: { locale?: string; params?: Record<string, string>; encode?: boolean }): string",
+        "description": "Genera una URL localizada para una ruta nombrada. Usa el locale actual si no se especifica uno, rechaza segmentos de locale inválidos y sustituye los placeholders <code>[param]</code> con los params proporcionados. Importar desde <code>astro-intl/routing</code>."
+      },
+      "switchLocalePath": {
+        "name": "switchLocalePath",
+        "signature": "switchLocalePath(currentPath: string | URL, nextLocale: string): string",
+        "description": "Convierte la URL actual a su equivalente en otro locale validado. Matchea la ruta contra los templates, extrae los params dinámicos y reconstruye la URL con el template del locale destino. Preserva query strings y hashes. Importar desde <code>astro-intl/routing</code>."
       },
       "dotPaths": {
         "name": "DotPaths<T>",
         "description": "Tipo utilitario que genera todos los paths válidos en notación de puntos para un objeto de mensajes dado. Se usa internamente para proveer autocompletado en las claves de traducción."
+      },
+      "routesMap": {
+        "name": "RoutesMap",
+        "description": "Tipo para el objeto de configuración de rutas. Mapea claves de ruta a un objeto de locale → template de URL. Ejemplo: <code>{ about: { en: \"/about\", es: \"/sobre-nosotros\" } }</code>."
+      },
+      "createGetTranslationsReact": {
+        "name": "createGetTranslations (React)",
+        "signature": "createGetTranslations<UI, DefaultLocale>(ui: UI, defaultLocale: DefaultLocale)",
+        "description": "Crea una función de traducción standalone para React sin depender del store global. Retorna <code>getTranslations(lang, namespace)</code> con soporte de <code>t.rich()</code> retornando <code>ReactNode[]</code>. Importar desde <code>astro-intl/react</code>."
+      },
+      "createGetTranslationsSvelte": {
+        "name": "createGetTranslations (Svelte)",
+        "signature": "createGetTranslations<UI, DefaultLocale>(ui: UI, defaultLocale: DefaultLocale)",
+        "description": "Crea una función de traducción standalone para Svelte sin depender del store global. Retorna <code>getTranslations(lang, namespace)</code> con soporte de <code>t.rich()</code> retornando <code>RichSegment[]</code>. Importar desde <code>astro-intl/svelte</code>."
+      },
+      "renderRichText": {
+        "name": "renderRichText",
+        "signature": "renderRichText(segments: RichSegment[], options?: { tags?: Record<string, string>; components?: Record<string, (chunks: string) => string> }): string",
+        "description": "Convierte un array de <code>RichSegment[]</code> en un string HTML sanitizado. El texto y los chunks se escapan, los tags nativos inseguros se rechazan y los callbacks de componentes se tratan como código confiable antes de la sanitización final. Importar desde <code>astro-intl/svelte</code>."
+      },
+      "getFallbackRoutes": {
+        "name": "getFallbackRoutes",
+        "signature": "getFallbackRoutes(): FallbackRouteInfo[]",
+        "description": "Retorna las rutas fallback de i18n recopiladas del hook <code>astro:routes:resolved</code> de Astro 6.1. Retorna un array vacío en Astro < 6.1 o cuando no hay rutas fallback configuradas. Cada entrada contiene el <code>pattern</code> de la ruta, el <code>pathname</code> opcional y el <code>locale</code>."
+      },
+      "fallbackRouteInfo": {
+        "name": "FallbackRouteInfo",
+        "description": "Tipo para las entradas de rutas fallback. Contiene <code>pattern: string</code> (el patrón de ruta), <code>pathname?: string</code> (el pathname estático si está disponible) y <code>locale: string</code> (el locale al que sirve este fallback)."
+      },
+      "tRaw": {
+        "name": "t.raw()",
+        "signature": "t.raw(key: string): unknown",
+        "description": "Retorna el valor de traducción sin coerción a string. Usa esto para acceder a arrays, objetos y números en su tipo JavaScript nativo en lugar de obtener <code>[object Object]</code>."
+      },
+      "messagesDirConfig": {
+        "name": "MessagesDirConfig",
+        "description": "Tipo exportado con la forma <code>{curlyOpen} dir: string {curlyClose}</code>. La opción de integración <code>messagesDir</code> recibe directamente un string, no este objeto. Consulta las limitaciones en Opciones de configuración."
+      },
+      "autoRedirect": {
+        "name": "Componente AutoRedirect",
+        "signature": "<AutoRedirect locales={string[]} defaultLocale={string} />",
+        "description": "Componente de Astro que valida sus props de locale, detecta el idioma del navegador y redirige a la ruta localizada codificada apropiada. <code>defaultLocale</code> debe estar incluido en <code>locales</code>. Importa desde <code>astro-intl/components</code>."
+      },
+      "autoDetectLocale": {
+        "name": "Auto-detección de Locale (Modo Estático)",
+        "description": "Solo en el navegador, <code>getLocale()</code> puede leer el idioma de <code>window.location.pathname</code> si no hay contexto. Esto no carga mensajes ni sustituye la inicialización al compilar una página estática o renderizar en el servidor."
+      },
+      "defineRequestConfig": {
+        "name": "defineRequestConfig",
+        "signature": "defineRequestConfig(fn: GetRequestConfigFn): GetRequestConfigFn",
+        "description": "Registra y devuelve un cargador de mensajes. Importa el módulo que lo declara antes de inicializar el idioma. Consulta Carga personalizada para ver los archivos completos."
       }
+    },
+    "routing": {
+      "title": "Routing",
+      "intro": "astro-intl provee un sistema de routing que te permite definir <code>rutas URL traducidas</code> para cada locale. Esto permite URLs localizadas como <code>/es/sobre-nosotros</code> en lugar de <code>/es/about</code>.",
+      "defineRoutesTitle": "1. Define tus rutas",
+      "defineRoutesDescription": "Agrega un mapa de <code>routes</code> a tu configuración de routing. Cada clave es un nombre de ruta, y cada valor mapea locales a sus templates de URL. Usa <code>[param]</code> para segmentos dinámicos.",
+      "withMiddlewareTitle": "2a. Con Middleware (recomendado)",
+      "withMiddlewareDescription": "Cuando usas <code>createIntlMiddleware</code>, pasa tus rutas en la config. El middleware automáticamente <code>reescribirá</code> las URLs traducidas a sus rutas canónicas del filesystem — sin archivos de página extra.",
+      "withMiddlewareStep1": "Pasa las rutas al middleware:",
+      "withMiddlewareStep2": "Tu filesystem solo necesita las rutas del locale por defecto:",
+      "withMiddlewareHow": "Cómo funciona",
+      "withMiddlewareHowDescription": "Cuando un usuario visita <code>/es/sobre-nosotros</code>, el middleware lo matchea contra el mapa de <code>routes</code>, encuentra el template canónico (<code>/about</code>) y reescribe la petición a <code>/es/about</code> — que mapea a tu archivo <code>[lang]/about.astro</code>. Sin páginas duplicadas.",
+      "withoutMiddlewareTitle": "2b. Sin Middleware",
+      "withoutMiddlewareDescription": "Si prefieres no usar middleware, aún puedes usar <code>path()</code> y <code>switchLocalePath()</code> para generación de URLs. Configura las rutas via las opciones de la integración.",
+      "withoutMiddlewareNote": "Sin middleware, <strong>no hay rewrites automáticos</strong>. Necesitas crear archivos de página para cada ruta traducida. Lo más simple es crear páginas wrapper que re-exporten la canónica.",
+      "withoutMiddlewareExampleTitle": "Ejemplo: Routing nativo de Astro para rutas traducidas",
+      "withoutMiddlewareExampleDescription": "Parte del inicio estático: conserva messages en la integración y añade un objeto about con title, heading y description a ambos JSON. La página canónica inicializa el idioma antes de traducir; la página localizada la renderiza como componente.",
+      "withoutMiddlewareExampleStep1": "Tu página canónica (rutas del locale por defecto):",
+      "withoutMiddlewareExampleStep2": "Crea una página que renderiza el componente canónico:",
+      "withoutMiddlewareExampleStep3": "Estructura de archivos resultante:",
+      "withoutMiddlewareExampleNote": "Astro genera las rutas de cada archivo y getStaticPaths. Las páginas localizadas renderizan el componente canónico; no se crean automáticamente a partir del mapa routes.",
+      "pathTitle": "3. Generando URLs con path()",
+      "pathDescription": "Usa <code>path(routeKey, options?)</code> para generar URLs localizadas. Escoge el template correcto para el locale destino y sustituye cualquier param.",
+      "switchTitle": "4. Cambiando locale con switchLocalePath()",
+      "switchDescription": "Usa <code>switchLocalePath(currentPath, nextLocale)</code> para convertir la URL actual a su equivalente en otro locale. Matchea la ruta contra los templates, extrae los params y reconstruye la URL con el template del locale destino.",
+      "switchNote": "Si la ruta actual no matchea ningún template de ruta, <code>switchLocalePath</code> hace fallback a simplemente intercambiar el prefijo del locale.",
+      "paramsTitle": "Parámetros Dinámicos",
+      "paramsDescription": "Los templates de rutas soportan segmentos dinámicos con sintaxis <code>[param]</code>. Puedes tener múltiples params por ruta — se extraen y sustituyen automáticamente.",
+      "fallbackTitle": "Rutas Fallback (Astro 6.1+)",
+      "fallbackDescription": "A partir de Astro 6.1, la integración detecta automáticamente las <code>fallbackRoutes</code> del hook <code>astro:routes:resolved</code>. Cuando configuras <code>i18n.fallbackType: 'rewrite'</code> en tu config de Astro, Astro genera rutas fallback para locales que no tienen su propio contenido. astro-intl las recopila y las hace disponibles via <code>getFallbackRoutes()</code>.",
+      "fallbackNote": "En Astro < 6.1, <code>getFallbackRoutes()</code> retorna un array vacío — sin errores, totalmente compatible hacia atrás.",
+      "fallbackExampleLabel": "Consulta las rutas fallback en tiempo de ejecución:",
+      "astro7Title": "Advanced Routing de Astro 7",
+      "astro7Description": "astro-intl 2.2.2 funciona con el pipeline completo de requests de Astro 7 y con pipelines compuestos explícitamente en <code>src/fetch.ts</code>. No requiere una API específica de astro-intl para Astro 7.",
+      "astro7FullPipelineLabel": "Conserva el pipeline completo de Astro, incluido src/middleware.ts:",
+      "astro7ComposedPipelineLabel": "O compón únicamente middleware y renderizado de páginas:",
+      "astro7Note": "Un pipeline personalizado de Astro 7 debe incluir <code>middleware()</code> para que <code>createIntlMiddleware()</code> inicialice el locale y los mensajes del request. Sessions, Actions, cache y otros handlers también deben añadirse explícitamente cuando tu aplicación los necesite."
+    },
+    "autoRedirect": {
+      "title": "Redirección Automática",
+      "description": "El componente <code>AutoRedirect</code> detecta el idioma del navegador del usuario y redirige automáticamente a la ruta localizada apropiada. Esto resuelve el problema de la página en blanco que ocurre al usar <code>Astro.redirect()</code> en modo estático.",
+      "basicTitle": "Uso Básico",
+      "basicDescription": "Importa el componente desde <code>astro-intl/components</code> y úsalo en tu página raíz (ej: <code>src/pages/index.astro</code>). El componente renderiza un script del lado del cliente que detecta el idioma del navegador y redirige en consecuencia.",
+      "staticModeTitle": "¿Por qué no Astro.redirect()?",
+      "staticModeDescription": "En modo estático (<code>output: 'static'</code>), <code>Astro.redirect()</code> causa que una página en blanco parpadee antes de la redirección. El componente <code>AutoRedirect</code> evita esto usando JavaScript del lado del cliente para realizar la redirección instantáneamente sin recargar la página.",
+      "propsTitle": "Props",
+      "localesProp": "<code>locales</code>: Array de códigos de locale soportados (ej: <code>['en', 'es', 'fr']</code>)",
+      "defaultLocaleProp": "<code>defaultLocale</code>: Locale de fallback cuando el idioma del navegador no coincide con ningún locale soportado",
+      "exampleTitle": "Ejemplo Completo",
+      "exampleDescription": "Crea una página raíz que redirija a los usuarios a su idioma preferido:"
     },
     "examples": {
       "title": "Ejemplos",
@@ -230,6 +412,9 @@
       "typeDescription": "Pasa el tipo de tus mensajes como genérico a <code>getTranslations</code> para obtener autocompletado completo y verificación de tipos en las claves de traducción.",
       "localeTitle": "Leyendo el Locale Actual",
       "localeDescription": "Usa <code>getLocale()</code> en cualquier lugar después de que <code>setRequestLocale</code> haya sido llamado — por ejemplo para construir URLs con locale."
+    },
+    "learning": {
+      "richText": "Contenido enriquecido"
     }
   },
   "playground": {

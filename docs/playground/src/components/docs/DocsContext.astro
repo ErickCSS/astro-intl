@@ -1,0 +1,32 @@
+---
+import { getLocale } from "astro-intl";
+import { guideLabels } from "../../../../shared/doc-guides.mjs";
+const locale = getLocale() === "es" ? "es" : "en";
+const slug = Astro.url.pathname.replace(/\/$/, "").split("/").pop()!;
+const notes = {
+  es: {
+    routing: "Usa esta guía para traducir también las URLs, por ejemplo /es/sobre-nosotros. Primero completa el inicio rápido y Middleware y SSR. Cambiar solo el prefijo /es/ no requiere un mapa de rutas. Los rewrites de middleware requieren renderizado bajo demanda; para una web estática genera cada URL localizada al compilar.",
+    "auto-redirect": "Usa esta guía si quieres que la raíz / elija un idioma según el navegador. Primero crea y comprueba /es/ y /en/. Esta redirección es opcional y no sustituye la configuración de mensajes.",
+    react: "Para proyectos que ya tienen la integración React de Astro. Primero completa el inicio rápido; para leer el store durante SSR, configura Middleware y SSR. Un componente hidratado necesita sus propios mensajes o textos como props: el contexto del servidor no se transfiere al navegador.",
+    svelte: "Para proyectos que ya tienen la integración Svelte de Astro y Svelte 5. Primero completa el inicio rápido; para leer el store durante SSR, configura Middleware y SSR. Al hidratar, pasa mensajes o textos como props; el contexto del servidor no se transfiere al navegador.",
+    "rich-text": "Usa esta guía cuando una traducción contenga enlaces, énfasis o valores estructurados. Completa primero Traducciones y variables. Los fragmentos amplían una página cuyo idioma ya está inicializado; añade las mismas claves y etiquetas a ambos JSON.",
+    installation: "Esta página es una consulta de instalación. Para configurar los mensajes y ver una traducción funcionando, sigue la guía completa Inicio rápido.",
+    api: "Referencia para consultar funciones después de completar el inicio. Los fragmentos de uso presuponen que el idioma está inicializado; para SSR consulta Middleware y SSR.",
+  },
+  en: {
+    routing: "Use this guide to translate URLs too, such as /es/sobre-nosotros. Complete Quick start and Middleware and SSR first. Changing only the /es/ prefix does not need a route map. Middleware rewrites require on-demand rendering; for static sites generate each localized URL at build time.",
+    "auto-redirect": "Use this guide if you want the root / to choose a language from the browser. Create and verify /es/ and /en/ first. This redirect is optional and does not replace message configuration.",
+    react: "For projects with Astro’s React integration already installed. Complete Quick start first; to read the store during SSR, configure Middleware and SSR. A hydrated component needs its own messages or translated text as props: server context is not transferred to the browser.",
+    svelte: "For projects with Astro’s Svelte integration and Svelte 5 already installed. Complete Quick start first; to read the store during SSR, configure Middleware and SSR. Pass messages or translated text as props when hydrating; server context is not transferred to the browser.",
+    "rich-text": "Use this guide for translations containing links, emphasis or structured values. Complete Translations and variables first. Snippets extend a page whose language is already initialized; add matching keys and tags to both JSON files.",
+    installation: "This page is an installation reference. To configure messages and see a working translation, follow the complete Quick start guide.",
+    api: "Look up functions here after completing the tutorial. Usage snippets assume the language is initialized; for SSR see Middleware and SSR.",
+  },
+};
+const note = notes[locale][slug as keyof typeof notes.en];
+---
+{note && <aside class="mb-8 p-5 rounded-xl leading-relaxed text-sm" style="background: var(--color-bg-card); border: 1px solid var(--color-border); color: var(--color-text-secondary);">
+  <p class="font-semibold mb-2" style="color: var(--color-text);">{guideLabels[locale].prerequisite}</p>
+  <p>{note}</p>
+  <a class="inline-block mt-3 underline" style="color: var(--color-accent);" href={`/${locale}/docs/${["routing", "react", "svelte"].includes(slug) ? "middleware" : slug === "rich-text" ? "usage" : "quick-start"}`}>{guideLabels[locale][["routing", "react", "svelte"].includes(slug) ? "middleware" : slug === "rich-text" ? "usage" : "quick-start"]}</a>
+</aside>}

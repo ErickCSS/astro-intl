@@ -1,0 +1,12 @@
+---
+import DocsLayout from "@/layouts/DocsLayout.astro";
+import DocsRouting from "@/components/docs/DocsRouting.astro";
+
+export function getStaticPaths() {
+  return [{ params: { lang: "en" } }, { params: { lang: "es" } }];
+}
+---
+
+<DocsLayout title="Routing">
+  <DocsRouting />
+</DocsLayout>

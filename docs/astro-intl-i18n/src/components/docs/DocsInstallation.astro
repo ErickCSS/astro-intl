@@ -1,5 +1,6 @@
 ---
 import { getTranslations } from "astro-intl";
+import { quickStartFiles } from "../../../../shared/quick-start.mjs";
 import InstallTabs from "@/components/InstallTabs.astro";
 
 const t = getTranslations("docs");
@@ -8,7 +9,7 @@ const t = getTranslations("docs");
 <section id="installation" class="mb-14 scroll-mt-24">
   <div class="flex items-center gap-3 mb-2">
     <span class="w-1 h-5 rounded-full" style="background: var(--color-accent);"></span>
-    <h2 class="text-xl font-bold" style="color: var(--color-text);">{t("installation.title")}</h2>
+    <h1 class="text-xl font-bold" style="color: var(--color-text);">{t("installation.title")}</h1>
   </div>
   <p class="text-sm mb-6 ml-4" style="color: var(--color-text-tertiary);">{t("installation.description")}</p>
 
@@ -43,7 +44,14 @@ const t = getTranslations("docs");
   </div>
 
   <div class="mb-8">
+    <h2 class="text-lg font-semibold mb-3">{t("installation.quickTitle")}</h2>
+    <p class="text-sm mb-4">{t("installation.quickDescription")}</p>
     <InstallTabs pkg="astro-intl" />
+    <details class="mt-6">
+      <summary class="cursor-pointer text-sm">{t("installation.manualTitle")}</summary>
+      <p class="text-sm my-4">{t("installation.manualDescription")}</p>
+      <InstallTabs pkg="astro-intl" mode="manual" />
+    </details>
   </div>
 
   <p class="text-sm mb-4" style="color: var(--color-text-secondary);">{t("installation.addIntegration")}</p>
@@ -56,12 +64,7 @@ const t = getTranslations("docs");
       <span class="text-xs font-medium" style="color: var(--color-text-tertiary);">astro.config.mjs</span>
     </div>
     <pre
-      class="rounded-none! border-0! m-0!"><code>{`import { defineConfig } from 'astro/config';
-import astroIntl from 'astro-intl';
-
-export default defineConfig({
-  integrations: [astroIntl()],
-});`}</code></pre>
+      class="rounded-none! border-0! m-0!"><code>{quickStartFiles["astro.config.mjs"]}</code></pre>
   </div>
 
   <div

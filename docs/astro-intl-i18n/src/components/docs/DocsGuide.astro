@@ -1,0 +1,40 @@
+---
+import { getLocale } from "astro-intl";
+import InstallTabs from "../InstallTabs.astro";
+import CodeBlock from "../CodeBlock.astro";
+import { getGuide, guideLabels } from "../../../../shared/doc-guides.mjs";
+
+interface Props { slug: string; }
+const { slug } = Astro.props;
+const locale = getLocale() === "es" ? "es" : "en";
+const guide = getGuide(slug, locale);
+const labels = guideLabels[locale];
+---
+
+<article id={slug} class="guide">
+  <h1>{labels[slug as keyof typeof labels]}</h1>
+  <p class="intro">{guide.intro}</p>
+  <nav aria-label={locale === "es" ? "En esta página" : "On this page"} class="guide-toc mt-6 p-5 rounded-xl" style="border: 1px solid var(--color-border); background: var(--color-bg-card);">
+    <ol>
+      {guide.sections.map((section, index) => <li><a href={`#${section.id ?? `${slug}-${index + 1}`}`}>{section.title}</a></li>)}
+    </ol>
+  </nav>
+  {guide.sections.map((section, index) => (
+    <section id={section.id ?? `${slug}-${index + 1}`}>
+      <h2>{section.title}</h2>
+      <p>{section.description}</p>
+      {section.blocks.map(block => <div class="example">{"commands" in block ? <InstallTabs commands={block.commands} /> : <CodeBlock title={block.file} lang={block.lang} code={block.code} />}</div>)}
+    </section>
+  ))}
+</article>
+
+<style>
+  .guide { color: var(--color-text-secondary); line-height: 1.8; }
+  h1 { color: var(--color-text); font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 700; line-height: 1.2; margin-bottom: 1.25rem; }
+  h2 { color: var(--color-text); font-size: 1.25rem; font-weight: 600; margin-bottom: .75rem; }
+  section { margin-top: 2.75rem; scroll-margin-top: 6rem; }
+  .intro { font-size: 1.05rem; }
+  .guide-toc { margin-top: 1.5rem; padding: 1.25rem; border: 1px solid var(--color-border); border-radius: .75rem; background: var(--color-bg-card); }
+  a { color: var(--color-accent); text-decoration: underline; text-underline-offset: .2em; }
+  .example { margin-top: 1rem; }
+</style>

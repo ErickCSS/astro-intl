@@ -132,15 +132,19 @@
       "badge": "Documentación",
       "title": "Comienza con",
       "titleAccent": "astro-intl",
-      "description": "Una librería de internacionalización <bold>type-safe</bold> para Astro, inspirada en next-intl. Sin props drilling, carga dinámica y soporte completo de TypeScript."
+      "description": "Empieza con una página en dos idiomas y amplía tu configuración cuando lo necesites."
     },
     "installation": {
       "title": "Instalación",
       "description": "Instala astro-intl usando tu gestor de paquetes preferido.",
-      "addIntegration": "Opcionalmente registra la integración en tu astro.config.mjs:",
-      "integrationNote": "La integración es opcional — solo registra un mensaje de inicio. La API principal funciona sin ella.",
+      "addIntegration": "Completa la integración creada por el asistente con los dos JSON de Inicio rápido, sin duplicarla. Si elegiste la instalación manual, añade la integración. Conserva las demás integraciones de tu proyecto.",
+      "integrationNote": "Instalar la integración no crea mensajes ni páginas. Sigue Inicio rápido para completar esos pasos.",
       "astroSupportBadge": "✅ Compatible con Astro 4–7",
-      "astroSupportNote": "astro-intl <code>2.2.2</code> soporta oficialmente Astro 7 y mantiene compatibilidad con Astro 4–6. Astro 7 requiere Node.js <code>22.12.0</code> o superior; no hace falta una API nueva ni una migración de astro-intl."
+      "astroSupportNote": "astro-intl <code>2.2.2</code> soporta oficialmente Astro 7 y mantiene compatibilidad con Astro 4–6. Astro 7 requiere Node.js <code>22.12.0</code> o superior; no hace falta una API nueva ni una migración de astro-intl.",
+      "quickTitle": "Instalación rápida",
+      "quickDescription": "El asistente de Astro instala el paquete y añade la integración a astro.config.mjs tras tu confirmación.",
+      "manualTitle": "Alternativa: instalación manual",
+      "manualDescription": "Usa esta opción si prefieres editar la configuración manualmente. Instala el paquete con tu gestor y después añade la integración; no necesitas ejecutar ambas opciones."
     },
     "fileStructure": {
       "title": "Estructura de Archivos",
@@ -179,7 +183,7 @@
     "usage": {
       "title": "Uso",
       "basicTitle": "Traducción Básica",
-      "basicDescription": "Una vez configurado tu layout, simplemente usa <code>getTranslations(namespace)</code> en cualquier página para obtener una función de traducción tipada para un namespace específico.",
+      "basicDescription": "Inicializa el idioma antes de getTranslations. Consulta Inicio rápido para ver una página completa.",
       "interpolationTitle": "Interpolación",
       "interpolationDescription": "Usa placeholders <code>{curlyOpen}varName{curlyClose}</code> en tus strings de traducción y pasa un objeto de valores como segundo argumento de <code>t()</code>. Tipos aceptados: <code>string</code>, <code>number</code>, <code>boolean</code>. Los valores faltantes o <code>null</code>/<code>undefined</code> mantienen el placeholder sin cambios.",
       "markupTitle": "Traducción con Markup",
@@ -205,13 +209,13 @@
       "importTitle": "Importar",
       "importDescription": "Importa desde el subpath <code>astro-intl/react</code>. Disponible desde v2.0.0.",
       "storeTitle": "Con Store (Astro Islands)",
-      "storeDescription": "Usa <code>getTranslations(namespace)</code> dentro de componentes React renderizados como Astro islands. El store se llena automáticamente por <code>setRequestLocale</code> o <code>createIntlMiddleware</code>.",
+      "storeDescription": "Usa <code>getTranslations(namespace)</code> dentro de componentes React renderizados como Astro islands. El store se llena automáticamente por <code>setRequestLocale</code> o <code>createIntlMiddleware</code>. Antes de usar estos ejemplos, añade un objeto hero con title, subtitle y description a ambos JSON.",
       "standaloneTitle": "Standalone (Sin Store)",
       "standaloneDescription": "Usa <code>createGetTranslations(ui, defaultLocale)</code> cuando necesites traducciones sin el store global — por ejemplo en tests o fuera del ciclo de vida de Astro.",
       "richTitle": "Rich Text con t.rich()",
       "richDescription": "Usa <code>t.rich(key, tags)</code> para interpolar componentes React dentro de strings de traducción. Los tags reciben el texto interno como children y retornan un <code>ReactNode</code>.",
       "tipHydrationTitle": "Tip de Hidratación",
-      "tipHydration": "Los islands de React deben usar <code>client:load</code> o <code>client:visible</code> para hidratarse. Las traducciones se resuelven en el servidor, así que el componente recibe los strings finales — sin fetching del lado del cliente.",
+      "tipHydration": "Usa client:load o client:visible solo si necesitas interacción. El store del servidor no se transfiere al navegador: pasa textos traducidos como props o usa createGetTranslations con mensajes disponibles en el cliente.",
       "tipStoreTitle": "Cuándo usar standalone vs store",
       "tipStore": "Usa la versión <strong>con store</strong> (<code>getTranslations</code>) en Astro islands donde el contexto de locale ya está configurado. Usa <strong>standalone</strong> (<code>createGetTranslations</code>) en unit tests, Storybook, o cualquier contexto fuera del ciclo de vida de Astro.",
       "breakingTitle": "Breaking Change (v2.0.0)",
@@ -223,7 +227,7 @@
       "importTitle": "Importar",
       "importDescription": "Importa desde el subpath <code>astro-intl/svelte</code>. Requiere <code>svelte@^5</code> como peer dependency.",
       "storeTitle": "Con Store (Astro Islands)",
-      "storeDescription": "Usa <code>getTranslations(namespace)</code> dentro de componentes Svelte renderizados como Astro islands. Funciona de la misma manera que el adaptador de React.",
+      "storeDescription": "Usa <code>getTranslations(namespace)</code> dentro de componentes Svelte renderizados como Astro islands. Funciona de la misma manera que el adaptador de React. Antes de usar estos ejemplos, añade un objeto hero con title, subtitle y description a ambos JSON.",
       "standaloneTitle": "Standalone (Sin Store)",
       "standaloneDescription": "Usa <code>createGetTranslations(ui, defaultLocale)</code> cuando necesites traducciones sin el store global.",
       "richTitle": "Rich Text con t.rich()",
@@ -233,11 +237,11 @@
       "richTextComponentTitle": "Opción B: Componente RichText.svelte",
       "richTextComponentDescription": "Importa el componente <code>RichText</code> para renderizado declarativo. Pasa <code>tags</code> para elementos HTML nativos y <code>components</code> para renderizado de componentes Svelte.",
       "tipHydrationTitle": "Tip de Hidratación",
-      "tipHydration": "Los islands de Svelte funcionan con <code>client:load</code> o <code>client:visible</code>. Como React, las traducciones se resuelven en el servidor.",
+      "tipHydration": "Usa client:load o client:visible solo si necesitas interacción. El store del servidor no se transfiere al navegador: pasa textos traducidos como props o usa createGetTranslations con mensajes disponibles en el cliente.",
       "tipRichTextTitle": "RichText vs renderRichText",
       "tipRichText": "Usa <strong>RichText.svelte</strong> cuando necesites interpolación de componentes Svelte (ej., tooltip personalizado o componentes de iconos). Usa <strong>renderRichText()</strong> cuando tags HTML simples como <code>&lt;strong&gt;</code> o <code>&lt;a&gt;</code> sean suficientes — es más ligero y funciona con <code>{@html}</code>.",
       "tipSvelte5Title": "Svelte 5 Requerido",
-      "tipSvelte5": "El adaptador de Svelte requiere <code>svelte@^5</code>. Si estás usando Svelte 4, aún puedes usar <code>renderRichText()</code> con <code>{@html}</code>, pero el componente <code>RichText</code> es solo para Svelte 5."
+      "tipSvelte5": "El adaptador declara svelte@^5 como peer dependency. Usa Svelte 5 para los ejemplos de esta guía."
     },
     "api": {
       "title": "Referencia de API",
@@ -272,11 +276,6 @@
       "intlConfig": {
         "name": "IntlConfig",
         "description": "Tipo de configuración para las opciones de la integración. Contiene <code>defaultLocale: string</code>, <code>locales: string[]</code>, <code>routes?: RoutesMap</code> y <code>fallbackRoutes?: FallbackRouteInfo[]</code>."
-      },
-      "getDefaultLocale": {
-        "name": "getDefaultLocale",
-        "signature": "getDefaultLocale(): string",
-        "description": "Retorna el <code>defaultLocale</code> configurado via las opciones de la integración o <code>createIntlMiddleware</code>. Por defecto es <code>\"en\"</code> si no se establece."
       },
       "getLocales": {
         "name": "getLocales",
@@ -347,7 +346,7 @@
       },
       "messagesDirConfig": {
         "name": "MessagesDirConfig",
-        "description": "Tipo de configuración para la opción <code>messagesDir</code>. Configúralo con una ruta de directorio (ej. <code>\"./src/i18n/messages\"</code>) y la integración cargará automáticamente los archivos <code>{locale}.json</code> con los import attributes correctos."
+        "description": "Tipo exportado con la forma <code>{curlyOpen} dir: string {curlyClose}</code>. La opción de integración <code>messagesDir</code> recibe directamente un string, no este objeto. Consulta las limitaciones en Opciones de configuración."
       },
       "autoRedirect": {
         "name": "Componente AutoRedirect",
@@ -356,7 +355,12 @@
       },
       "autoDetectLocale": {
         "name": "Auto-detección de Locale (Modo Estático)",
-        "description": "Cuando se ejecuta en modo estático sin llamadas explícitas a <code>setRequestLocale()</code>, <code>getLocale()</code> detecta automáticamente el locale desde <code>window.location.pathname</code>. Hace fallback a <code>defaultLocale</code> si no se encuentra un locale válido. Solo del lado del cliente."
+        "description": "Solo en el navegador, <code>getLocale()</code> puede leer el idioma de <code>window.location.pathname</code> si no hay contexto. Esto no carga mensajes ni sustituye la inicialización al compilar una página estática o renderizar en el servidor."
+      },
+      "defineRequestConfig": {
+        "name": "defineRequestConfig",
+        "signature": "defineRequestConfig(fn: GetRequestConfigFn): GetRequestConfigFn",
+        "description": "Registra y devuelve un cargador de mensajes. Importa el módulo que lo declara antes de inicializar el idioma. Consulta Carga personalizada para ver los archivos completos."
       }
     },
     "routing": {
@@ -374,11 +378,11 @@
       "withoutMiddlewareDescription": "Si prefieres no usar middleware, aún puedes usar <code>path()</code> y <code>switchLocalePath()</code> para generación de URLs. Configura las rutas via las opciones de la integración.",
       "withoutMiddlewareNote": "Sin middleware, <strong>no hay rewrites automáticos</strong>. Necesitas crear archivos de página para cada ruta traducida. Lo más simple es crear páginas wrapper que re-exporten la canónica.",
       "withoutMiddlewareExampleTitle": "Ejemplo: Routing nativo de Astro para rutas traducidas",
-      "withoutMiddlewareExampleDescription": "Crea un archivo de página para cada URL traducida. Estas páginas \"wrapper\" simplemente re-exportan todo desde la página canónica (locale por defecto) — cero duplicación.",
+      "withoutMiddlewareExampleDescription": "Parte del inicio estático: conserva messages en la integración y añade un objeto about con title, heading y description a ambos JSON. La página canónica inicializa el idioma antes de traducir; la página localizada la renderiza como componente.",
       "withoutMiddlewareExampleStep1": "Tu página canónica (rutas del locale por defecto):",
-      "withoutMiddlewareExampleStep2": "Crea la ruta traducida como un wrapper ligero:",
+      "withoutMiddlewareExampleStep2": "Crea una página que renderiza el componente canónico:",
       "withoutMiddlewareExampleStep3": "Estructura de archivos resultante:",
-      "withoutMiddlewareExampleNote": "Cada archivo wrapper son solo <strong>2 líneas</strong>. La página canónica contiene toda la lógica. Cuando Astro construye <code>/es/sobre-nosotros</code>, renderiza el mismo componente que <code>/es/about</code> — la URL traducida funciona sin middleware.",
+      "withoutMiddlewareExampleNote": "Astro genera las rutas de cada archivo y getStaticPaths. Las páginas localizadas renderizan el componente canónico; no se crean automáticamente a partir del mapa routes.",
       "pathTitle": "3. Generando URLs con path()",
       "pathDescription": "Usa <code>path(routeKey, options?)</code> para generar URLs localizadas. Escoge el template correcto para el locale destino y sustituye cualquier param.",
       "switchTitle": "4. Cambiando locale con switchLocalePath()",
@@ -419,6 +423,9 @@
       "typeDescription": "Pasa el tipo de tus mensajes como genérico a <code>getTranslations</code> para obtener autocompletado completo y verificación de tipos en las claves de traducción.",
       "localeTitle": "Leyendo el Locale Actual",
       "localeDescription": "Usa <code>getLocale()</code> en cualquier lugar después de que <code>setRequestLocale</code> haya sido llamado — por ejemplo para construir URLs con locale."
+    },
+    "learning": {
+      "richText": "Contenido enriquecido"
     }
   },
   "frameworks": {

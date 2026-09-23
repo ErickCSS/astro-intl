@@ -1,23 +1,198 @@
 # astro-intl
 
-Simple and type-safe internationalization system for Astro.
+Simple and type-safe internationalization for Astro.
+
+## Quick start
+
+Start with an existing, working static Astro project. You will display **Hola** at `/es/` and **Hello** at `/en/`.
+The complete example is verified with Astro 7 and Node.js 22.12 or newer. You do not need middleware, a shared layout or Astro’s built-in i18n configuration.
+
+### 1. Install
+
+Run in your project directory. The Astro wizard asks you to confirm installation and adding the integration to astro.config.mjs:
+
+**npm**
+
+```sh
+npx astro add astro-intl
+```
+
+**pnpm**
+
+```sh
+pnpm astro add astro-intl
+```
+
+**yarn**
+
+```sh
+yarn astro add astro-intl
+```
+
+### 2. Create both message files
+
+Use the same key in each language; only the value changes.
+
+**src/i18n/messages/en.json**
+
+```json
+{
+  "greeting": "Hello"
+}
+```
+
+**src/i18n/messages/es.json**
+
+```json
+{
+  "greeting": "Hola"
+}
+```
+
+### 3. Connect the integration
+
+Add the message imports and complete the integration created by the wizard with the options below. Keep your other integrations; do not add a second astroIntl entry.
+`locales` lists the languages, `messages` maps each to its JSON, and `defaultLocale` defines the default language. It does not create pages or redirect `/`.
+The `with` attribute allows Node to load JSON in this configuration file.
+
+**astro.config.mjs**
+
+```js
+import { defineConfig } from "astro/config";
+import astroIntl from "astro-intl";
+import en from "./src/i18n/messages/en.json" with { type: "json" };
+import es from "./src/i18n/messages/es.json" with { type: "json" };
+
+export default defineConfig({
+  integrations: [
+    astroIntl({
+      defaultLocale: "en",
+      locales: ["en", "es"],
+      messages: { en, es },
+    }),
+  ],
+});
+```
+
+### 4. Create the page
+
+Name the folder literally `[lang]`. `getStaticPaths` generates both URLs.
+Await `setRequestLocale` before `getTranslations` so the page loads the correct messages before reading them.
+
+**src/pages/[lang]/index.astro**
+
+```astro
+---
+import { setRequestLocale, getTranslations } from "astro-intl";
+
+export function getStaticPaths() {
+  return [{ params: { lang: "en" } }, { params: { lang: "es" } }];
+}
+
+await setRequestLocale(Astro.url);
+const t = getTranslations();
+---
+
+<!doctype html>
+<html lang={Astro.params.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{t("greeting")}</title>
+  </head>
+  <body>
+    <h1>{t("greeting")}</h1>
+    <nav aria-label="Language">
+      <a href="/es/" lang="es">Español</a>
+      <a href="/en/" lang="en">English</a>
+    </nav>
+  </body>
+</html>
+```
+
+### 5. Check both languages
+
+**npm**
+
+```sh
+npm run dev
+```
+
+**pnpm**
+
+```sh
+pnpm dev
+```
+
+**yarn**
+
+```sh
+yarn dev
+```
+
+Open the address printed in your terminal with `/es/` and `/en/`. Check the greetings and language links.
+Your existing root page stays unchanged. Restart the server after editing `astro.config.mjs`.
+
+### 6. Add another translation
+
+Add `"farewell": "Goodbye"` to the English JSON and `"farewell": "Adiós"` to the Spanish JSON, keeping `greeting`.
+Then add `<p>{t("farewell")}</p>` below the page heading.
+
+A 404 usually means the localized page or `getStaticPaths` is missing. A visible key means its message is missing. A missing request context means initialization did not run before translation.
+
+## Continue learning
+
+- [Translations, variables and namespaces](https://astro-intl.dev/en/docs/usage)
+- [File structure](https://astro-intl.dev/en/docs/file-structure)
+- [Examples](https://astro-intl.dev/en/docs/examples)
+- [Custom message loading](https://astro-intl.dev/en/docs/message-loading)
+- [Middleware and Node SSR](https://astro-intl.dev/en/docs/middleware)
+- [Translated routes](https://astro-intl.dev/en/docs/routing)
+- [Rich text](https://astro-intl.dev/en/docs/rich-text)
+- [React](https://astro-intl.dev/en/docs/react) and [Svelte](https://astro-intl.dev/en/docs/svelte)
+- [Configuration reference](https://astro-intl.dev/en/docs/configuration) and [API](https://astro-intl.dev/en/docs/api)
+- [Guía completa en español](https://astro-intl.dev/es/docs/quick-start)
 
 ## ✨ Features
 
-- 🔒 **Type-safe**: Autocompletion and validation of translation keys with TypeScript
-- 🎯 **Simple API**: Inspired by next-intl, easy to use
-- ⚛️ **React support**: Dedicated adapter with `t.rich()` for rich text with React components. Import from `astro-intl/react`
-- 🧡 **Svelte support**: Dedicated adapter with `t.rich()` that returns segments and `RichText` component. Import from `astro-intl/svelte`
-- 🎨 **Markup in translations**: Insert HTML in strings with `t.markup()`
-- 📁 **Namespaces**: Organize translations by sections
-- 🌐 **Automatic locale detection**: Extracts the language from the URL
-- 🛡️ **Concurrency-safe**: Uses `AsyncLocalStorage` in SSR to isolate concurrent requests
-- 🌍 **Explicit runtime guarantees**: Request isolation is supported in Node SSR; static and client usage remain available without shared SSR state
-- ⚙️ **Configurable default locale**: Define your default locale from options
-- 🗺️ **Localized routing**: Define translated URLs per locale (`/es/sobre-nosotros` instead of `/es/about`)
-- 🔄 **Automatic rewrites**: Middleware rewrites translated URLs to canonical filesystem routes
-- 🔗 **URL generation**: `path()` and `switchLocalePath()` to build and transform localized URLs
-- 📦 **Sub-path imports**: `astro-intl/react`, `astro-intl/svelte`, `astro-intl/routing`, `astro-intl/middleware`
+- 🔒 **Type-safe** - Autocompletion and type validation for your translations
+- 🚀 **Simple** - Intuitive API inspired by next-intl
+- 🎯 **Native integration** - Designed specifically for Astro
+- ⚛️ **React support** - Dedicated adapter with `t.rich()` for rich text. Import from `astro-intl/react`
+- 🧡 **Svelte support** - Dedicated adapter with `t.rich()` and `renderRichText()`. Import from `astro-intl/svelte`
+- 🌍 **Flexible** - Supports multiple languages and translation structures
+- ⚡ **Performance** - Loads only the necessary translations
+- 🛠️ **TypeScript first** - Written entirely in TypeScript
+- 🛡️ **Concurrency-safe** - Uses `AsyncLocalStorage` in Node SSR to isolate concurrent requests
+- 🌍 **Explicit runtime guarantees** - Static and client usage remain available; unsupported SSR runtimes fail explicitly instead of sharing request state
+- 🗺️ **Localized routing** - Translated URLs per locale with automatic rewrites via middleware
+- 🔗 **URL generation** - `path()` and `switchLocalePath()` to build localized URLs
+- ✅ **Catalog validation** - Detect missing keys, extra keys, type differences and incompatible placeholders before deployment
+- 📦 **Sub-path imports** - `astro-intl/react`, `astro-intl/svelte`, `astro-intl/routing`, `astro-intl/middleware`, `astro-intl/validate`
+
+## Catalog validation (2.3.0+)
+
+This optional advanced check requires astro-intl 2.3.0 or newer; it is not required for the tutorial.
+
+**npm**
+
+```sh
+npm exec -- astro-intl validate --dir ./src/i18n/messages --reference en
+```
+
+**pnpm**
+
+```sh
+pnpm exec astro-intl validate --dir ./src/i18n/messages --reference en
+```
+
+**yarn**
+
+```sh
+yarn exec astro-intl validate --dir ./src/i18n/messages --reference en
+```
+
+Exit codes: 0 for matching catalogs, 1 for missing or extra keys, type differences or incompatible placeholders, and 2 for configuration, file or JSON errors.
 
 ## 🔄 Migration from v1 to v2
 
@@ -45,681 +220,9 @@ Simple and type-safe internationalization system for Astro.
 - **`createGetTranslations` factory** in both adapters (React and Svelte) for standalone use without global store
 - **`parseRichSegments()`** shared framework-agnostic base
 
-## 📦 Installation
+## Maintainer documentation
 
-### Astro compatibility
-
-`astro-intl@2.3.0` supports Astro 4, 5, 6 and 7:
-
-```json
-{
-  "peerDependencies": {
-    "astro": "^4 || ^5 || ^6 || ^7"
-  }
-}
-```
-
-Astro 7 itself requires Node.js 22.12.0 or newer. `astro-intl` does not raise its own
-Node.js requirement so that existing Astro 4–6 consumers can keep using the Node.js
-versions supported by their Astro release. See the
-[Astro 7 upgrade guide](https://docs.astro.build/en/guides/upgrade-to/v7/).
-
-### Automatic installation (Recommended)
-
-Use the Astro CLI to install and configure automatically:
-
-```bash
-npx astro add astro-intl
-```
-
-This command:
-
-- ✅ Installs the package
-- ✅ Adds the integration to your `astro.config.mjs`
-- ✅ Configures necessary dependencies
-
-### Manual installation
-
-If you prefer to install manually:
-
-```bash
-npm install astro-intl
-# o
-pnpm add astro-intl
-# o
-yarn add astro-intl
-```
-
-Then add the integration in your `astro.config.mjs`:
-
-```js
-import { defineConfig } from "astro/config";
-import astroIntl from "astro-intl";
-
-export default defineConfig({
-  integrations: [
-    astroIntl({
-      defaultLocale: "en", // optional, defaults to "en"
-    }),
-  ],
-});
-```
-
-## 🎯 Usage
-
-### Translation file structure
-
-First, create your translation files:
-
-```ts
-// src/i18n/es.json
-{
-  "welcome": "Bienvenido",
-  "nav": {
-    "home": "Inicio",
-    "about": "Acerca de"
-  }
-}
-
-// src/i18n/en.json
-{
-  "welcome": "Welcome",
-  "nav": {
-    "home": "Home",
-    "about": "About"
-  }
-}
-
-// src/i18n/index.ts
-import es from './es.json';
-import en from './en.json';
-
-export const ui = { es, en };
-export type Messages = typeof es;
-```
-
-### In Astro components
-
-```astro
----
-import { setRequestLocale, getTranslations } from 'astro-intl';
-import { ui } from '../i18n';
-
-// Configure the locale for this request
-await setRequestLocale(Astro.url, async (locale) => ({
-  locale,
-  messages: ui[locale as keyof typeof ui]
-}));
-
-// Get translation function
-const t = getTranslations();
----
-
-<h1>{t('welcome')}</h1>
-<nav>
-  <a href="/">{t('nav.home')}</a>
-  <a href="/about">{t('nav.about')}</a>
-</nav>
-```
-
-### Variable interpolation
-
-Use `{varName}` in your translation strings and pass an object of values:
-
-```json
-// src/i18n/en.json
-{
-  "greeting": "Hello, {name}!",
-  "info": "You have {count} items"
-}
-```
-
-```astro
----
-const t = getTranslations();
----
-
-<p>{t('greeting', { name: 'John' })}</p>   <!-- "Hello, John!" -->
-<p>{t('info', { count: 5 })}</p>             <!-- "You have 5 items" -->
-<p>{t('greeting')}</p>                       <!-- "Hello, {name}!" (without values, placeholder remains) -->
-```
-
-Accepted values are `string | number | boolean`. If a variable is not passed or is `null`/`undefined`, the placeholder `{varName}` remains unchanged.
-
-### Translations with markup (HTML in strings)
-
-```astro
----
-// src/i18n/es.json
-// { "terms": "Acepto los <link>términos y condiciones</link>" }
-
-const t = getTranslations();
----
-
-<p set:html={t.markup('terms', {
-  link: (chunks) => `<a href="/terms">${chunks}</a>`
-})} />
-```
-
-### Markup with interpolation
-
-You can combine variables and tag interpolation using the `{ values, tags }` format:
-
-```astro
----
-// src/i18n/en.json
-// { "welcome": "Hello {name}, click <link>here</link> to continue" }
-
-const t = getTranslations();
----
-
-<p set:html={t.markup('welcome', {
-  values: { name: 'John' },
-  tags: {
-    link: (chunks) => `<a href="/home">${chunks}</a>`
-  }
-})} />
-<!-- "Hello John, click <a href="/home">here</a> to continue" -->
-```
-
-### In React components
-
-> **v2**: Import from `astro-intl/react` instead of `astro-intl`.
-
-```tsx
-import { getTranslations } from "astro-intl/react";
-
-export function MyComponent() {
-  const t = getTranslations();
-
-  return (
-    <div>
-      <h1>{t("welcome")}</h1>
-      <nav>
-        <a href="/">{t("nav.home")}</a>
-      </nav>
-    </div>
-  );
-}
-```
-
-#### Standalone factory (without store)
-
-If you prefer to pass messages directly without depending on the global store:
-
-```tsx
-import { createGetTranslations } from "astro-intl/react";
-import { ui } from "../i18n";
-
-const getT = createGetTranslations(ui, "en");
-
-export function MyComponent({ lang }: { lang: string }) {
-  const t = getT(lang, "nav");
-  return <a href="/">{t("home")}</a>;
-}
-```
-
-### Translations with React components (rich text)
-
-```tsx
-import { getTranslations } from "astro-intl/react";
-
-export function MyComponent() {
-  const t = getTranslations();
-
-  // src/i18n/es.json
-  // { "terms": "Acepto los <link>términos y condiciones</link>" }
-
-  return (
-    <p>
-      {t.rich("terms", {
-        link: (chunks) => <a href="/terms">{chunks}</a>,
-      })}
-    </p>
-  );
-}
-```
-
-### In Svelte components
-
-> **v2**: New adapter. Import from `astro-intl/svelte`.
-
-```svelte
-<script>
-  import { getTranslations } from 'astro-intl/svelte';
-
-  const t = getTranslations();
-</script>
-
-<h1>{t('welcome')}</h1>
-<nav>
-  <a href="/">{t('nav.home')}</a>
-</nav>
-```
-
-#### Rich text in Svelte
-
-`t.rich()` returns an array of `RichSegment[]` that you can render with `renderRichText()`:
-
-```svelte
-<script>
-  import { getTranslations, renderRichText } from 'astro-intl/svelte';
-
-  // { "terms": "Acepto los <link>términos y condiciones</link>" }
-  const t = getTranslations();
-  const segments = t.rich('terms', ['link']);
-
-  const html = renderRichText(segments, {
-    tags: { link: 'a' },       // renders as <a>...</a>
-  });
-</script>
-
-<p>{@html html}</p>
-```
-
-You can also use custom functions with `components`:
-
-```svelte
-<script>
-  import { getTranslations, renderRichText } from 'astro-intl/svelte';
-
-  const t = getTranslations();
-  const segments = t.rich('terms', ['link']);
-
-  const html = renderRichText(segments, {
-    components: {
-      link: (chunks) => `<a href="/terms" class="underline">${chunks}</a>`,
-    },
-  });
-</script>
-
-<p>{@html html}</p>
-```
-
-#### Standalone factory in Svelte (without store)
-
-```svelte
-<script>
-  import { createGetTranslations } from 'astro-intl/svelte';
-  import { ui } from '../i18n';
-
-  const getT = createGetTranslations(ui, 'en');
-
-  export let lang;
-  const t = getT(lang, 'nav');
-</script>
-
-<a href="/">{t('home')}</a>
-```
-
-### Type-safety with TypeScript
-
-```astro
----
-import { setRequestLocale, getTranslations } from 'astro-intl';
-import { ui, type Messages } from '../i18n';
-
-await setRequestLocale(Astro.url, async (locale) => ({
-  locale,
-  messages: ui[locale as keyof typeof ui]
-}));
-
-// Strong typing with autocompletion
-const t = getTranslations<Messages>();
-
-// TypeScript will autocomplete valid paths:
-// t('nav.home')     ✓
-// t('nav.invalid')  ✗ TypeScript error
----
-```
-
-### Using namespaces
-
-```astro
----
-// Get only a specific namespace
-const t = getTranslations<Messages>('nav');
----
-
-<nav>
-  <a href="/">{t('home')}</a>  <!-- Instead of t('nav.home') -->
-  <a href="/about">{t('about')}</a>
-</nav>
-```
-
-## 🗺️ Localized Routing
-
-### Define translated routes
-
-Create a route map with translated URLs per locale:
-
-```ts
-// src/i18n/routing.ts
-export const routing = {
-  locales: ["en", "es"],
-  defaultLocale: "en",
-  routes: {
-    home: { en: "/", es: "/" },
-    about: { en: "/about", es: "/sobre-nosotros" },
-    blog: { en: "/blog/[slug]", es: "/blog/[slug]" },
-    shop: { en: "/shop/[category]/[id]", es: "/tienda/[category]/[id]" },
-  },
-} as const;
-```
-
-### With Middleware (recommended)
-
-Pass the routes to the middleware. It automatically rewrites translated URLs to canonical filesystem routes:
-
-```ts
-// src/middleware.ts
-import "@/i18n/request";
-import { createIntlMiddleware } from "astro-intl/middleware";
-import { routing } from "@/i18n/routing";
-
-export const onRequest = createIntlMiddleware(routing);
-```
-
-When a user visits `/es/sobre-nosotros`, the middleware rewrites it to `/es/about` — which maps to your `[lang]/about.astro` file. No duplicate pages.
-
-### Astro 7 Advanced Routing
-
-No Astro 7-specific `astro-intl` API is required. The default request pipeline and a
-custom `src/fetch.ts` both use the existing middleware. To keep Astro's complete
-pipeline, including `src/middleware.ts`, forward the request through `astro(state)`:
-
-```ts
-// src/fetch.ts
-import { astro, FetchState } from "astro/fetch";
-
-export default {
-  fetch(request: Request) {
-    return astro(new FetchState(request));
-  },
-};
-```
-
-You can also compose only the handlers your application needs:
-
-```ts
-// src/fetch.ts
-import { FetchState, middleware, pages } from "astro/fetch";
-
-export default {
-  fetch(request: Request) {
-    const state = new FetchState(request);
-    return middleware(state, (nextState) => pages(nextState));
-  },
-};
-```
-
-The second example intentionally runs only Astro middleware and page rendering.
-Sessions, Actions, cache and other handlers must be added explicitly when the
-application needs them. If `middleware()` is omitted, `src/middleware.ts` is not run,
-so `createIntlMiddleware()` cannot initialize the request locale or messages.
-`astro-intl` does not export or require an `astro-intl/fetch` subpath.
-
-### Without Middleware
-
-Configure routes via integration options:
-
-```js
-// astro.config.mjs
-import { defineConfig } from "astro/config";
-import astroIntl from "astro-intl";
-
-export default defineConfig({
-  integrations: [
-    astroIntl({
-      defaultLocale: "en",
-      locales: ["en", "es"],
-      routes: {
-        about: { en: "/about", es: "/sobre-nosotros" },
-      },
-    }),
-  ],
-});
-```
-
-Without middleware there are no automatic rewrites. Create lightweight wrappers for each translated route:
-
-```astro
----
-// src/pages/[lang]/sobre-nosotros.astro
-export { default } from "./about.astro";
-export { getStaticPaths } from "./about.astro";
----
-```
-
-### Generate URLs with `path()`
-
-```astro
----
-import { path } from "astro-intl/routing";
----
-
-<a href={path("about")}>About</a>
-<!-- locale "en" → /en/about -->
-<!-- locale "es" → /es/sobre-nosotros -->
-
-<a href={path("shop", { locale: "es", params: { category: "ropa", id: "42" } })}>
-  View product
-</a>
-<!-- → /es/tienda/ropa/42 -->
-```
-
-### Switch locale with `switchLocalePath()`
-
-```astro
----
-import { switchLocalePath } from "astro-intl/routing";
----
-
-<a href={switchLocalePath(Astro.url.pathname, "en")}>English</a>
-<a href={switchLocalePath(Astro.url.pathname, "es")}>Español</a>
-<!-- On /en/about → /es/sobre-nosotros -->
-<!-- On /es/tienda/ropa/42 → /en/shop/ropa/42 -->
-```
-
-## ✅ Catalog validation
-
-Validate all JSON catalogs in a directory before deploying:
-
-```bash
-astro-intl validate --dir ./src/i18n/messages --reference en
-```
-
-The command reports missing and extra keys, incompatible value types and
-different placeholder sets. It exits with code `0` when catalogs are valid,
-`1` for catalog differences and `2` for usage, filesystem or JSON errors.
-
-For programmatic validation, import the pure API from the Node-focused subpath:
-
-```ts
-import { validateCatalogs } from "astro-intl/validate";
-
-const result = validateCatalogs(
-  {
-    en: { greeting: "Hello {name}" },
-    es: { greeting: "Hola {name}" },
-  },
-  { referenceLocale: "en" }
-);
-```
-
-## 📚 API Reference
-
-### `astroIntl(options?)`
-
-Configures the integration in `astro.config.mjs`.
-
-**Options:**
-
-- `defaultLocale?: string` - Default locale when the URL has no language prefix (default: `"en"`)
-- `enabled?: boolean` - Enable/disable the integration (default: `true`)
-- `messages?: MessagesConfig` - Static or dynamic translation messages
-- `locales?: string[]` - List of supported locales
-- `routes?: RoutesMap` - Map of translated routes per locale
-
-### `setRequestLocale(url, getConfig?)`
-
-Configures the locale for the current request.
-
-**Parameters:**
-
-- `url: URL` - The Astro URL object (`Astro.url`)
-- `getConfig?: (locale: string) => RequestConfig | Promise<RequestConfig>` - Function that returns the configuration
-
-**Example:**
-
-```ts
-await setRequestLocale(Astro.url, async (locale) => ({
-  locale,
-  messages: ui[locale],
-}));
-```
-
-### `runWithLocale(url, fn, getConfig?)`
-
-Executes a function within a request-isolated context. Uses Node.js `AsyncLocalStorage`
-to avoid race conditions in SSR with concurrent requests. An SSR runtime without this
-isolation fails explicitly instead of reusing process-global locale or messages.
-
-**Parameters:**
-
-- `url: URL` - The Astro URL object (`Astro.url`)
-- `fn: () => R | Promise<R>` - Function to execute within the isolated context
-- `getConfig?: GetRequestConfigFn` - Optional configuration function
-
-**Example in middleware:**
-
-```ts
-// src/middleware.ts
-import { runWithLocale } from "astro-intl";
-
-export const onRequest = async (context, next) => {
-  return runWithLocale(
-    context.url,
-    () => next(),
-    (locale) => ({
-      locale,
-      messages: ui[locale],
-    })
-  );
-};
-```
-
-### `getTranslations<T>(namespace?)`
-
-Gets the translation function for Astro components.
-
-**Parameters:**
-
-- `namespace?: string` - Optional namespace to get only a subset of translations
-
-**Returns:** Function `t(key, values?)` with method `t.markup(key, tags | { values?, tags })`
-
-#### `t(key, values?)`
-
-- `key: string` - Translation key (supports dot notation)
-- `values?: Record<string, Primitive>` - Values for `{varName}` interpolation (optional)
-
-#### `t.markup(key, options)`
-
-- `key: string` - Translation key
-- `options` - Can be:
-  - `Record<string, (chunks: string) => string>` - Tags only (backward compatible)
-  - `{ values?: Record<string, Primitive>, tags: Record<string, (chunks: string) => string> }` - Tags with interpolation
-
-### `getTranslations()` — `astro-intl/react`
-
-Gets the translation function for React components (uses the global store).
-
-**Returns:** Function `t(key)` with method `t.rich(key, tags)` that returns `ReactNode[]`
-
-### `createGetTranslations(ui, defaultLocale)` — `astro-intl/react`
-
-Standalone factory that doesn't depend on the global store. Useful for passing messages directly.
-
-**Parameters:**
-
-- `ui: Record<string, Record<string, unknown>>` - Object with all messages per locale
-- `defaultLocale: string` - Default locale
-
-**Returns:** `(lang, namespace) => t` — function that returns `t(key)` with `t.rich(key, tags)`
-
-### `getTranslations()` — `astro-intl/svelte`
-
-Gets the translation function for Svelte components (uses the global store).
-
-**Returns:** Function `t(key)` with method `t.rich(key, tagNames?)` that returns `RichSegment[]`
-
-### `createGetTranslations(ui, defaultLocale)` — `astro-intl/svelte`
-
-Standalone factory for Svelte. Same signature as React but `t.rich()` returns `RichSegment[]`.
-
-### `renderRichText(segments, options?)` — `astro-intl/svelte`
-
-Resolves an array of `RichSegment[]` into an HTML string.
-
-**Parameters:**
-
-- `segments: RichSegment[]` - Segments returned by `t.rich()`
-- `options.tags?: Record<string, string>` - Maps tag name to HTML element (e.g., `{ link: 'a' }`)
-- `options.components?: Record<string, (chunks: string) => string>` - Custom functions per tag
-
-**Returns:** `string` - HTML ready to render with `{@html}`
-
-### `getLocale()`
-
-Gets the currently configured locale.
-
-**Returns:** `string` - The locale code (e.g., `'es'`, `'en'`)
-
-### `createIntlMiddleware(options)`
-
-Creates an Astro middleware that automatically calls `setRequestLocale` on each request. Import from `astro-intl/middleware`.
-
-**Options:**
-
-- `locales: string[]` - List of supported locales
-- `defaultLocale?: string` - Default locale (default: `"en"`)
-- `routes?: RoutesMap` - Map of translated routes. When provided, the middleware rewrites translated URLs to their canonical filesystem routes
-
-### `path(routeKey, options?)`
-
-Generates a localized URL for a named route. Import from `astro-intl/routing`.
-
-**Parameters:**
-
-- `routeKey: string` - Route name (key from the `routes` map)
-- `options?.locale` - Target locale (default: current locale)
-- `options?.params` - `Record<string, string>` to substitute `[param]` in the template
-- `options?.encode` - Encode params with `encodeURIComponent` (default: `true`)
-
-**Returns:** `string` - Localized URL (e.g., `"/es/sobre-nosotros"`)
-
-### `switchLocalePath(currentPath, nextLocale)`
-
-Converts the current URL to its equivalent in another locale. Import from `astro-intl/routing`.
-
-**Parameters:**
-
-- `currentPath: string | URL` - Current path (pathname, URL string or URL object)
-- `nextLocale: string` - Target locale
-
-**Returns:** `string` - Equivalent URL in the new locale. Preserves query strings and hashes. If no template matches, falls back to swapping the locale prefix.
-
-### `validateCatalogs(catalogs, options)` — `astro-intl/validate`
-
-Compares every catalog with `options.referenceLocale` without modifying them.
-
-**Returns:** `{ valid: boolean, diagnostics: CatalogDiagnostic[] }`
-
-Diagnostic codes are `missing-key`, `extra-key`, `type-mismatch` and
-`placeholder-mismatch`.
-
----
+The following sections are for contributors, not application setup. See [manual publication](./PUBLICACION_NPM.md) for release steps.
 
 ## 🚀 Development (for contributors)
 
@@ -727,8 +230,22 @@ Diagnostic codes are `missing-key`, `extra-key`, `type-mismatch` and
 
 Before using the package in the playground or any project, you must build it:
 
-```bash
+**npm**
+
+```sh
 npm run build
+```
+
+**pnpm**
+
+```sh
+pnpm build
+```
+
+**yarn**
+
+```sh
+yarn build
 ```
 
 This will generate the JavaScript files and type declarations (`.d.ts`) in the `dist/` folder.
@@ -737,8 +254,22 @@ This will generate the JavaScript files and type declarations (`.d.ts`) in the `
 
 To automatically compile when you make changes:
 
-```bash
+**npm**
+
+```sh
 npm run dev
+```
+
+**pnpm**
+
+```sh
+pnpm dev
+```
+
+**yarn**
+
+```sh
+yarn dev
 ```
 
 ### After building
@@ -776,17 +307,3 @@ packages/integration/
 ├── package.json
 └── tsconfig.json
 ```
-
-## 🔧 TypeScript Configuration
-
-The package uses:
-
-- `module: "Node16"` for full ESM support
-- `declaration: true` to generate `.d.ts` files
-- Imports with `.js` extension for ESM compatibility
-
-## 📝 Important Notes
-
-1. **Always build before testing**: Changes in `src/` are not reflected until you run `npm run build`
-2. **dist/ files in .gitignore**: Compiled files are not uploaded to git, they are generated on each installation
-3. **.js extensions in imports**: Although the source code is TypeScript, imports must use `.js` for Node16/ESM compatibility
