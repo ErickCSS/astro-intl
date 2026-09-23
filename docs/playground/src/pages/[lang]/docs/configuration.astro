@@ -1,0 +1,12 @@
+---
+import DocsLayout from "@/layouts/DocsLayout.astro";
+import DocsConfiguration from "@/components/docs/DocsConfiguration.astro";
+
+export function getStaticPaths() {
+  return [{ params: { lang: "en" } }, { params: { lang: "es" } }];
+}
+---
+
+<DocsLayout title="Configuration">
+  <DocsConfiguration />
+</DocsLayout>

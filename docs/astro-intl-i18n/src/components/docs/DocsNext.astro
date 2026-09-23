@@ -1,0 +1,12 @@
+---
+import { getLocale } from "astro-intl";
+import { guideLabels, nextPages } from "../../../../shared/doc-guides.mjs";
+const locale = getLocale() === "es" ? "es" : "en";
+const labels = guideLabels[locale];
+const slug = Astro.url.pathname.replace(/\/$/, "").split("/").pop()!;
+const next = nextPages[slug as keyof typeof nextPages];
+---
+{next && <nav class="mt-12 pt-6" style="border-top: 1px solid var(--color-border);" aria-label={labels.next}>
+  <p class="text-sm mb-2" style="color: var(--color-text-tertiary);">{labels.next}</p>
+  <a class="font-semibold underline" style="color: var(--color-accent);" href={`/${locale}/docs/${next}`}>{labels[next as keyof typeof labels]} →</a>
+</nav>}

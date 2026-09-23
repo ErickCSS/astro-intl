@@ -1,0 +1,11 @@
+---
+import DocsLayout from "@/layouts/DocsLayout.astro";
+import DocsGuide from "@/components/docs/DocsGuide.astro";
+
+export function getStaticPaths() {
+  return [{ params: { lang: "en" } }, { params: { lang: "es" } }];
+}
+---
+<DocsLayout>
+  <DocsGuide slug="message-loading" />
+</DocsLayout>

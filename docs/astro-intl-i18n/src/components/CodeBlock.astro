@@ -1,4 +1,5 @@
 ---
+import { getLocale } from "astro-intl";
 import { codeToHtml } from "shiki";
 
 interface Props {
@@ -6,6 +7,10 @@ interface Props {
   lang?: string;
   title?: string;
 }
+
+const es = getLocale() === "es";
+const copyLabel = es ? "Copiar" : "Copy";
+const copiedLabel = es ? "¡Copiado!" : "Copied!";
 
 const { code, lang = "typescript", title } = Astro.props;
 
@@ -31,7 +36,9 @@ const html = await codeToHtml(code.trim(), {
     }
     <button
       class="copy-btn ml-auto flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs transition-all"
-      aria-label="Copy code"
+      aria-label={es ? "Copiar código" : "Copy code"}
+      data-copy-label={copyLabel}
+      data-copied-label={copiedLabel}
     >
       <svg class="copy-icon w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
@@ -44,7 +51,7 @@ const html = await codeToHtml(code.trim(), {
       <svg class="check-icon w-3.5 h-3.5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
       </svg>
-      <span class="copy-label">Copy</span>
+      <span class="copy-label">{copyLabel}</span>
     </button>
   </div>
   <div class="shiki-wrapper" data-code={code.trim()} set:html={html} />
@@ -91,11 +98,12 @@ const html = await codeToHtml(code.trim(), {
 </style>
 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
+  function initializeCopyButtons() {
     document.querySelectorAll(".code-block").forEach((block) => {
       const copyBtn = block.querySelector(".copy-btn");
       const shikiWrapper = block.querySelector(".shiki-wrapper");
-      if (!copyBtn || !shikiWrapper) return;
+      if (!copyBtn || !shikiWrapper || copyBtn.hasAttribute("data-copy-ready")) return;
+      copyBtn.setAttribute("data-copy-ready", "true");
 
       copyBtn.addEventListener("click", () => {
         const code = shikiWrapper.getAttribute("data-code") ?? "";
@@ -107,16 +115,23 @@ const html = await codeToHtml(code.trim(), {
           copyBtn.classList.add("copied");
           copyIcon?.classList.add("hidden");
           checkIcon?.classList.remove("hidden");
-          if (label) label.textContent = "Copied!";
+          if (label) label.textContent = copyBtn.getAttribute("data-copied-label");
 
           setTimeout(() => {
             copyBtn.classList.remove("copied");
             copyIcon?.classList.remove("hidden");
             checkIcon?.classList.add("hidden");
-            if (label) label.textContent = "Copy";
+            if (label) label.textContent = copyBtn.getAttribute("data-copy-label");
           }, 2000);
         });
       });
     });
-  });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initializeCopyButtons, { once: true });
+  } else {
+    initializeCopyButtons();
+  }
+  document.addEventListener("astro:page-load", initializeCopyButtons);
 </script>

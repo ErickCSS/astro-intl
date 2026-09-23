@@ -16,12 +16,13 @@
 
 - npm expone `astro-intl@2.2.2` desde el commit aprobado `b3d036a454b516300ba7e4e31d034c21cc89290d`.
 - La metadata, integridad y contenido del paquete se leen de vuelta desde npm.
-- La web oficial consume 2.2.2 exacta sobre Astro 7.1.4.
+- La web oficial consume 2.2.2 exacta sobre Astro 7.2.8.
 - El changelog y las guías públicas documentan compatibilidad, requisitos y hardening de 2.2.2.
 
 ## Completado después de 2.2.2
 
 - Astro 7 actualizado a 7.1.4 en desarrollo, compatibilidad y documentación para corregir `GHSA-4g3v-8h47-v7g6`.
+- Astro 7 actualizado después a 7.2.8 para corregir `GHSA-26w7-cxv4-gfx2` y `GHSA-376h-93r7-7g6f`.
 - Validación de catálogos para claves faltantes o sobrantes, tipos incompatibles y placeholders diferentes.
 - Auditoría de producción endurecida para fallar ante vulnerabilidades moderadas o superiores.
 

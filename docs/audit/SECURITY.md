@@ -45,7 +45,7 @@ Cuando no había lista configurada, `path()`, `switchLocalePath()` y `AutoRedire
 
 ## Dependencias
 
-La auditoría del consumidor empacado con Astro 7.1.4, React 19.2.4 y Svelte 5.56.5 reporta cero vulnerabilidades moderadas o superiores. Astro 7.0.9 se retiró de desarrollo, documentación y compatibilidad por `GHSA-4g3v-8h47-v7g6`; el audit ahora falla desde severidad moderada. La matriz conserva Astro 4–6 para compatibilidad, pero el escaneo de producción se ejecuta sobre la línea actual.
+La auditoría del consumidor empacado con Astro 7.2.8, React 19.2.4 y Svelte 5.56.5 reporta cero vulnerabilidades moderadas o superiores. Astro 7.1.4 se reemplazó en desarrollo, documentación y compatibilidad tras `GHSA-26w7-cxv4-gfx2` y `GHSA-376h-93r7-7g6f`. El audit falla desde severidad moderada. La matriz conserva Astro 4–6 para compatibilidad, pero el escaneo de producción se ejecuta sobre la línea actual.
 
 ## Limitaciones conocidas
 
@@ -65,9 +65,9 @@ La auditoría del consumidor empacado con Astro 7.1.4, React 19.2.4 y Svelte 5.5
 | Build | 29 archivos; sin tests y con exports/binarios validados |
 | Tarball | 31 archivos; sin tests, fuentes ni `.tgz` anidados |
 | Subpaths | raíz, middleware, routing, React, Svelte y componente importables |
-| Compatibilidad | Astro 4.16.19, 5.18.2, 6.4.8 y 7.1.4: estático y SSR aprobados |
+| Compatibilidad | Astro 4.16.19, 5.18.2, 6.4.8 y 7.2.8: estático y SSR aprobados |
 | Astro 7 | Advanced Routing completo/compuesto, cache por locale y renderizado anidado concurrente aprobados; assets cliente sin `AsyncLocalStorage` ni `node:async_hooks` |
-| Consumidores | playground workspace y web oficial 2.2.2 sobre Astro 7.1.4 compilan |
-| Dependencias | cero vulnerabilidades moderadas o superiores en el consumidor empacado con Astro 7.1.4 |
+| Consumidores | playground workspace y web oficial 2.2.2 sobre Astro 7.2.8 compilan |
+| Dependencias | cero vulnerabilidades moderadas o superiores en el consumidor empacado con Astro 7.2.8 |
 
 No se afirma que la librería sea invulnerable. La conclusión es que los hallazgos críticos, altos y medios confirmados en el alcance revisado fueron corregidos o descartados con evidencia, y que las limitaciones restantes están explícitas.

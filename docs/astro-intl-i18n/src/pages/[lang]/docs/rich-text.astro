@@ -1,0 +1,11 @@
+---
+import DocsLayout from "@/layouts/DocsLayout.astro";
+import DocsRichText from "@/components/docs/DocsRichText.astro";
+
+export function getStaticPaths() {
+  return [{ params: { lang: "en" } }, { params: { lang: "es" } }];
+}
+---
+<DocsLayout>
+  <DocsRichText />
+</DocsLayout>

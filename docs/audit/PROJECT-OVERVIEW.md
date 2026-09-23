@@ -37,7 +37,7 @@ La librería no promete SSR aislado en runtimes edge no compatibles. El render e
 
 ## Consumidores y promoción
 
-`docs/playground` es deliberadamente un canary de `workspace:*`. `docs/astro-intl-i18n` es la web oficial y usa exactamente `astro-intl@2.2.2` sobre Astro 7.1.4. Su middleware usa directamente el contexto aislado corregido de 2.2.2, sin el wrapper temporal requerido por 2.2.1.
+`docs/playground` es deliberadamente un canary de `workspace:*`. `docs/astro-intl-i18n` es la web oficial y usa exactamente `astro-intl@2.2.2` sobre Astro 7.2.8. Su middleware usa directamente el contexto aislado corregido de 2.2.2, sin el wrapper temporal requerido por 2.2.1.
 
 La librería ya fue probada, empacada y publicada. La web se actualizó a la versión exacta; los pasos restantes son crear/revisar el preview y aprobar el deploy. No existe un script que reescriba destructivamente el manifiesto.
 

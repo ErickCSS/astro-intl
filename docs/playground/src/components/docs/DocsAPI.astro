@@ -21,7 +21,7 @@ const functions = [
     type: "function",
   },
   {
-    key: "getDefaultLocale",
+    key: "defineRequestConfig",
     type: "function",
   },
   {
@@ -41,6 +41,14 @@ const functions = [
     type: "function",
   },
   {
+    key: "path",
+    type: "function",
+  },
+  {
+    key: "switchLocalePath",
+    type: "function",
+  },
+  {
     key: "requestConfig",
     type: "type",
   },
@@ -56,13 +64,53 @@ const functions = [
     key: "dotPaths",
     type: "type",
   },
+  {
+    key: "routesMap",
+    type: "type",
+  },
+  {
+    key: "createGetTranslationsReact",
+    type: "function",
+  },
+  {
+    key: "createGetTranslationsSvelte",
+    type: "function",
+  },
+  {
+    key: "renderRichText",
+    type: "function",
+  },
+  {
+    key: "getFallbackRoutes",
+    type: "function",
+  },
+  {
+    key: "fallbackRouteInfo",
+    type: "type",
+  },
+  {
+    key: "tRaw",
+    type: "type",
+  },
+  {
+    key: "messagesDirConfig",
+    type: "type",
+  },
+  {
+    key: "autoRedirect",
+    type: "function",
+  },
+  {
+    key: "autoDetectLocale",
+    type: "type",
+  },
 ] as const;
 ---
 
 <section id="api" class="mb-14 scroll-mt-24">
   <div class="flex items-center gap-3 mb-8">
     <span class="w-1 h-5 rounded-full" style="background: var(--color-accent);"></span>
-    <h2 class="text-xl font-bold" style="color: var(--color-text);">{t("api.title")}</h2>
+    <h1 class="text-xl font-bold" style="color: var(--color-text);">{t("api.title")}</h1>
   </div>
 
   <div class="space-y-4">
@@ -89,6 +137,14 @@ const functions = [
             >
               {t(`api.${fn.key}.name` as any)}
             </code>
+            {(fn as any).deprecated && (
+              <span
+                class="text-xs px-2 py-0.5 rounded-full font-medium"
+                style="background: rgba(251,191,36,0.15); color: #fbbf24;"
+              >
+                Deprecated
+              </span>
+            )}
           </div>
 
           <div class="px-5 py-4" style="background: var(--color-bg-secondary);">

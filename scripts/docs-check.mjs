@@ -3,10 +3,47 @@
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { dirname, extname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { renderInlineMarkdown, serializeJsonLd } from "../docs/shared/security.mjs";
+import {
+  renderInlineMarkdown,
+  serializeJsonLd,
+} from "../docs/shared/security.mjs";
+import { quickStartFiles } from "../docs/shared/quick-start.mjs";
+import {
+  getGuide,
+  guideGroups,
+  guideLabels,
+} from "../docs/shared/doc-guides.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const errors = [];
+
+// Catch drift between the copyable entrypoints and the runnable tutorial.
+for (const path of ["README.md", "packages/integration/README.md"]) {
+  const content = readFileSync(resolve(root, path), "utf8");
+  for (const [filename, code] of Object.entries(quickStartFiles)) {
+    if (!content.replaceAll("\r\n", "\n").includes(code)) {
+      errors.push(
+        `${path} no longer matches the runnable tutorial: ${filename}`,
+      );
+    }
+  }
+}
+for (const { pages } of guideGroups) {
+  for (const slug of pages) {
+    for (const locale of ["en", "es"]) {
+      if (!guideLabels[locale][slug])
+        errors.push(`Missing ${locale} navigation label: ${slug}`);
+    }
+    const en = getGuide(slug, "en");
+    const es = getGuide(slug, "es");
+    if (
+      Boolean(en) !== Boolean(es) ||
+      (en && en.sections.length !== es.sections.length)
+    ) {
+      errors.push(`Guide structure differs between languages: ${slug}`);
+    }
+  }
+}
 
 function readJson(path) {
   return JSON.parse(readFileSync(path, "utf8"));
@@ -17,17 +54,26 @@ function filesUnder(dir, extensions) {
   for (const entry of readdirSync(dir)) {
     const path = resolve(dir, entry);
     if (["node_modules", "dist", ".astro"].includes(entry)) continue;
-    if (statSync(path).isDirectory()) files.push(...filesUnder(path, extensions));
+    if (statSync(path).isDirectory())
+      files.push(...filesUnder(path, extensions));
     else if (extensions.includes(extname(entry))) files.push(path);
   }
   return files;
 }
 
-const officialPackage = readJson(resolve(root, "docs/astro-intl-i18n/package.json"));
-const playgroundPackage = readJson(resolve(root, "docs/playground/package.json"));
-const integrationPackage = readJson(resolve(root, "packages/integration/package.json"));
+const officialPackage = readJson(
+  resolve(root, "docs/astro-intl-i18n/package.json"),
+);
+const playgroundPackage = readJson(
+  resolve(root, "docs/playground/package.json"),
+);
+const integrationPackage = readJson(
+  resolve(root, "packages/integration/package.json"),
+);
 if (officialPackage.dependencies["astro-intl"] !== "2.2.2") {
-  errors.push("The official docs must consume exact stable astro-intl 2.2.2 after publication.");
+  errors.push(
+    "The official docs must consume exact stable astro-intl 2.2.2 after publication.",
+  );
 }
 if (playgroundPackage.dependencies["astro-intl"] !== "workspace:*") {
   errors.push("The playground must consume astro-intl through workspace:*.");
@@ -48,7 +94,7 @@ for (const path of ["README.md", "packages/integration/README.md"]) {
   }
 }
 const astro7Dependencies = [
-  ["astro", "7.1.4"],
+  ["astro", "7.2.8"],
   ["@astrojs/vercel", "11.0.3"],
   ["@astrojs/sitemap", "3.7.3"],
 ];
@@ -88,19 +134,26 @@ for (const project of ["astro-intl-i18n", "playground"]) {
     delete messages.changelog;
     const active = JSON.stringify(messages);
     if (active.includes("getTranslationsReact")) {
-      errors.push(`Legacy React symbol in active ${project}/${locale} messages.`);
+      errors.push(
+        `Legacy React symbol in active ${project}/${locale} messages.`,
+      );
     }
     if (/setRequestLocale\([^)]*\).*Promise<void>/.test(active)) {
-      errors.push(`Legacy setRequestLocale return type in ${project}/${locale} messages.`);
+      errors.push(
+        `Legacy setRequestLocale return type in ${project}/${locale} messages.`,
+      );
     }
   }
 }
 
-const serialized = serializeJsonLd({ title: "</script><script>unexpected()</script>" });
-if (serialized.includes("</script>")) errors.push("JSON-LD serializer permits script termination.");
+const serialized = serializeJsonLd({
+  title: "</script><script>unexpected()</script>",
+});
+if (serialized.includes("</script>"))
+  errors.push("JSON-LD serializer permits script termination.");
 
 const markdown = renderInlineMarkdown(
-  '<img src=x onerror=unexpected()> [bad](javascript:unexpected()) [ok](https://example.com)'
+  "<img src=x onerror=unexpected()> [bad](javascript:unexpected()) [ok](https://example.com)",
 );
 if (markdown.includes("<img") || markdown.includes('href="javascript:')) {
   errors.push("Changelog renderer permits active HTML or an unsafe URI.");
@@ -113,7 +166,8 @@ for (const file of filesUnder(resolve(root, "docs"), [".md"])) {
   const content = readFileSync(file, "utf8");
   for (const match of content.matchAll(/\[[^\]]+\]\(([^)]+)\)/g)) {
     const target = match[1].split("#")[0];
-    if (!target || /^(https?:|mailto:)/.test(target) || target.startsWith("#")) continue;
+    if (!target || /^(https?:|mailto:)/.test(target) || target.startsWith("#"))
+      continue;
     if (!existsSync(resolve(dirname(file), target))) {
       errors.push(`Broken Markdown link in ${file}: ${match[1]}`);
     }
