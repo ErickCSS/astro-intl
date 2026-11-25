@@ -86,12 +86,9 @@ describe("react.ts", () => {
       const getT = createGetTranslations(ui, "en");
       const t = getT("en", "home");
 
-      const result = t.rich(
-        "withTags" as any,
-        {
-          link: (chunks: string) => `<a>${chunks}</a>`,
-        } as any
-      );
+      const result = t.rich("withTags", {
+        link: (chunks: string) => `<a>${chunks}</a>`,
+      } as any);
 
       expect(result).toEqual(["Click ", "<a>here</a>", " to continue"]);
     });
@@ -100,13 +97,10 @@ describe("react.ts", () => {
       const getT = createGetTranslations(ui, "en");
       const t = getT("en", "home");
 
-      const result = t.rich(
-        "multipleTags" as any,
-        {
-          bold: (chunks: string) => `<strong>${chunks}</strong>`,
-          italic: (chunks: string) => `<em>${chunks}</em>`,
-        } as any
-      );
+      const result = t.rich("multipleTags", {
+        bold: (chunks: string) => `<strong>${chunks}</strong>`,
+        italic: (chunks: string) => `<em>${chunks}</em>`,
+      } as any);
 
       expect(result).toEqual(["Text with ", "<strong>bold</strong>", " and ", "<em>italic</em>"]);
     });
@@ -115,7 +109,7 @@ describe("react.ts", () => {
       const getT = createGetTranslations(ui, "en");
       const t = getT("en", "common");
 
-      const result = t.rich("greeting" as any, {});
+      const result = t.rich("greeting", {});
 
       expect(result).toEqual(["Hello"]);
     });
@@ -124,12 +118,9 @@ describe("react.ts", () => {
       const getT = createGetTranslations(ui, "en");
       const t = getT("es", "home");
 
-      const result = t.rich(
-        "withTags" as any,
-        {
-          link: (chunks: string) => `<a>${chunks}</a>`,
-        } as any
-      );
+      const result = t.rich("withTags", {
+        link: (chunks: string) => `<a>${chunks}</a>`,
+      } as any);
 
       expect(result).toEqual(["Haz clic ", "<a>aquí</a>", " para continuar"]);
     });
@@ -146,13 +137,10 @@ describe("react.ts", () => {
       const getT = createGetTranslations(customUi, "en");
       const t = getT("en", "test");
 
-      const result = t.rich(
-        "nested" as any,
-        {
-          outer: (chunks: any) => ({ wrapper: "outer", children: chunks }),
-          inner: (chunks: any) => ({ wrapper: "inner", children: chunks }),
-        } as any
-      );
+      const result = t.rich("nested", {
+        outer: (chunks: any) => ({ wrapper: "outer", children: chunks }),
+        inner: (chunks: any) => ({ wrapper: "inner", children: chunks }),
+      } as any);
 
       // outer receives a ReactNode[] because inner was processed recursively
       expect(result).toEqual([
@@ -177,13 +165,10 @@ describe("react.ts", () => {
       const getT = createGetTranslations(customUi, "en");
       const t = getT("en", "test");
 
-      const result = t.rich(
-        "adjacent" as any,
-        {
-          tag1: (chunks: string) => `[${chunks}]`,
-          tag2: (chunks: string) => `{${chunks}}`,
-        } as any
-      );
+      const result = t.rich("adjacent", {
+        tag1: (chunks: string) => `[${chunks}]`,
+        tag2: (chunks: string) => `{${chunks}}`,
+      } as any);
 
       expect(result).toEqual(["[First]", "{Second}"]);
     });
@@ -200,12 +185,9 @@ describe("react.ts", () => {
       const getT = createGetTranslations(customUi, "en");
       const t = getT("en", "test");
 
-      const result = t.rich(
-        "empty" as any,
-        {
-          tag: (chunks: string) => `[${chunks}]`,
-        } as any
-      );
+      const result = t.rich("empty", {
+        tag: (chunks: string) => `[${chunks}]`,
+      } as any);
 
       expect(result).toEqual(["Text ", "[]", " more text"]);
     });

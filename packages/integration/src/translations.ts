@@ -43,13 +43,13 @@ export function getTranslations<T extends Record<string, unknown> = Record<strin
   const messages = getMessages<T>(namespace);
 
   function t(key: DotPaths<T>, values?: Record<string, Primitive>): string {
-    const value = getNestedValue(messages as Record<string, unknown>, key);
+    const value = getNestedValue(messages, key);
     const str = typeof value === "string" ? value : (key as string);
     return interpolateValues(str, values);
   }
 
   function raw<K extends DotPaths<T>>(key: K): unknown {
-    return getNestedValue(messages as Record<string, unknown>, key);
+    return getNestedValue(messages, key);
   }
 
   const markup = function (
@@ -70,7 +70,7 @@ export function getTranslations<T extends Record<string, unknown> = Record<strin
       ? (options as { values?: Record<string, Primitive> }).values
       : undefined;
 
-    const raw = getNestedValue(messages as Record<string, unknown>, key);
+    const raw = getNestedValue(messages, key);
     let str = typeof raw === "string" ? raw : (key as string);
     str = interpolateValues(str, values);
 

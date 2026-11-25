@@ -77,7 +77,7 @@ describe("svelte adapter", () => {
       const getT = createGetTranslations(ui, "en");
       const t = getT("en", "home");
 
-      const result = t.rich("withTags" as any, ["link"]);
+      const result = t.rich("withTags", ["link"]);
       expect(result).toEqual([
         { type: "text", value: "Click " },
         { type: "tag", tag: "link", chunks: "here" },
@@ -89,7 +89,7 @@ describe("svelte adapter", () => {
       const getT = createGetTranslations(ui, "en");
       const t = getT("en", "home");
 
-      const result = t.rich("multipleTags" as any, ["bold", "italic"]);
+      const result = t.rich("multipleTags", ["bold", "italic"]);
       expect(result).toEqual([
         { type: "text", value: "Text with " },
         { type: "tag", tag: "bold", chunks: "bold" },
@@ -102,7 +102,7 @@ describe("svelte adapter", () => {
       const getT = createGetTranslations(ui, "en");
       const t = getT("en", "common");
 
-      const result = t.rich("greeting" as any);
+      const result = t.rich("greeting");
       expect(result).toEqual([{ type: "text", value: "Hello" }]);
     });
 
@@ -110,7 +110,7 @@ describe("svelte adapter", () => {
       const getT = createGetTranslations(ui, "en");
       const t = getT("es", "home");
 
-      const result = t.rich("withTags" as any, ["link"]);
+      const result = t.rich("withTags", ["link"]);
       expect(result).toEqual([
         { type: "text", value: "Haz clic " },
         { type: "tag", tag: "link", chunks: "aquí" },
@@ -130,7 +130,7 @@ describe("svelte adapter", () => {
       const getT = createGetTranslations(customUi, "en");
       const t = getT("en", "test");
 
-      const result = t.rich("adjacent" as any, ["tag1", "tag2"]);
+      const result = t.rich("adjacent", ["tag1", "tag2"]);
       expect(result).toEqual([
         { type: "tag", tag: "tag1", chunks: "First" },
         { type: "tag", tag: "tag2", chunks: "Second" },
@@ -149,7 +149,7 @@ describe("svelte adapter", () => {
       const getT = createGetTranslations(customUi, "en");
       const t = getT("en", "test");
 
-      const result = t.rich("empty" as any, ["tag"]);
+      const result = t.rich("empty", ["tag"]);
       expect(result).toEqual([
         { type: "text", value: "Text " },
         { type: "tag", tag: "tag", chunks: "" },
@@ -163,7 +163,7 @@ describe("svelte adapter", () => {
       const getT = createGetTranslations(ui, "en");
       const t = getT("en", "home");
 
-      const segments = t.rich("multipleTags" as any, ["bold", "italic"]);
+      const segments = t.rich("multipleTags", ["bold", "italic"]);
       const html = renderRichText(segments, {
         tags: { bold: "strong", italic: "em" },
       });
@@ -175,7 +175,7 @@ describe("svelte adapter", () => {
       const getT = createGetTranslations(ui, "en");
       const t = getT("en", "home");
 
-      const segments = t.rich("withTags" as any, ["link"]);
+      const segments = t.rich("withTags", ["link"]);
       const html = renderRichText(segments, {
         components: {
           link: (chunks) => `<a href="/target">${chunks}</a>`,
@@ -189,7 +189,7 @@ describe("svelte adapter", () => {
       const getT = createGetTranslations(ui, "en");
       const t = getT("en", "home");
 
-      const segments = t.rich("multipleTags" as any, ["bold", "italic"]);
+      const segments = t.rich("multipleTags", ["bold", "italic"]);
       const html = renderRichText(segments, {
         tags: { bold: "strong" },
         components: {
@@ -204,7 +204,7 @@ describe("svelte adapter", () => {
       const getT = createGetTranslations(ui, "en");
       const t = getT("en", "home");
 
-      const segments = t.rich("withTags" as any, ["link"]);
+      const segments = t.rich("withTags", ["link"]);
       const html = renderRichText(segments);
 
       expect(html).toBe("Click here to continue");

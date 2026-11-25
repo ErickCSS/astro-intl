@@ -230,7 +230,7 @@ describe("core.ts", () => {
         }));
 
         const t = getTranslations();
-        const result = t.markup("text" as any, {
+        const result = t.markup("text", {
           link: (chunks) => `<a href="/test">${chunks}</a>`,
         });
 
@@ -247,7 +247,7 @@ describe("core.ts", () => {
         }));
 
         const t = getTranslations();
-        const result = t.markup("text" as any, {
+        const result = t.markup("text", {
           bold: (chunks) => `<strong>${chunks}</strong>`,
           italic: (chunks) => `<em>${chunks}</em>`,
         });
@@ -265,7 +265,7 @@ describe("core.ts", () => {
         }));
 
         const t = getTranslations();
-        const result = t.markup("dangerous" as any, {});
+        const result = t.markup("dangerous", {});
 
         expect(result).not.toContain("<script>");
         expect(result).toContain("Safe text");
@@ -281,7 +281,7 @@ describe("core.ts", () => {
         }));
 
         const t = getTranslations();
-        const result = t.markup("text" as any, {});
+        const result = t.markup("text", {});
 
         expect(result).not.toContain("onclick");
       });
@@ -296,7 +296,7 @@ describe("core.ts", () => {
         }));
 
         const t = getTranslations();
-        const result = t.markup("text" as any, {});
+        const result = t.markup("text", {});
 
         expect(result).not.toContain("javascript:");
       });
@@ -310,7 +310,7 @@ describe("core.ts", () => {
           },
         }));
 
-        const result = getTranslations().markup("text" as any, {});
+        const result = getTranslations().markup("text", {});
         expect(result).not.toMatch(/svg|onload|img|onerror/i);
       });
 
@@ -323,7 +323,7 @@ describe("core.ts", () => {
           },
         }));
 
-        const result = getTranslations().markup("text" as any, {});
+        const result = getTranslations().markup("text", {});
         expect(result).not.toMatch(/javascript:|evil\.test/i);
         expect(result).toContain("one");
         expect(result).toContain("two");
@@ -336,7 +336,7 @@ describe("core.ts", () => {
           messages: { text: "Hello {name}, <link>continue</link>" },
         }));
 
-        const result = getTranslations().markup("text" as any, {
+        const result = getTranslations().markup("text", {
           values: { name: "<img src=x onerror=alert(1)>" },
           tags: { link: (chunks) => `<a href=javascript:alert(2)>${chunks}</a>` },
         });
@@ -355,7 +355,7 @@ describe("core.ts", () => {
         }));
 
         const t = getTranslations();
-        const result = t.markup("welcome" as any, {
+        const result = t.markup("welcome", {
           values: { name: "Erick" },
           tags: {
             link: (chunks) => `<a href="/home">${chunks}</a>`,
@@ -375,7 +375,7 @@ describe("core.ts", () => {
         }));
 
         const t = getTranslations();
-        const result = t.markup("text" as any, {
+        const result = t.markup("text", {
           link: (chunks) => `<a href="/go">${chunks}</a>`,
         });
 

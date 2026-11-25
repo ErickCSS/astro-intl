@@ -123,7 +123,7 @@ describe("Integration Tests", () => {
       }));
 
       const t = getTranslations();
-      const result = t.markup("legal" as any, {
+      const result = t.markup("legal", {
         terms: (chunks) => `<a href="/terms" class="link">${chunks}</a>`,
         privacy: (chunks) => `<a href="/privacy" class="link">${chunks}</a>`,
       });
@@ -143,12 +143,9 @@ describe("Integration Tests", () => {
       }));
 
       const t = getTranslationsReact();
-      const result = t.rich(
-        "notification" as any,
-        {
-          count: (chunks: string) => `<span class="badge">${chunks}</span>`,
-        } as any
-      );
+      const result = t.rich("notification", {
+        count: (chunks: string) => `<span class="badge">${chunks}</span>`,
+      } as any);
 
       expect(result).toEqual(["You have ", '<span class="badge">5</span>', " new messages"]);
     });
@@ -200,7 +197,7 @@ describe("Integration Tests", () => {
       }));
 
       const t = getTranslations();
-      const result = t.markup("malicious" as any, {});
+      const result = t.markup("malicious", {});
 
       expect(result).not.toContain("<script>");
       expect(result).not.toContain("onerror");
@@ -234,7 +231,7 @@ describe("Integration Tests", () => {
       }));
 
       const t = getTranslations();
-      const result = t.markup("link" as any, {});
+      const result = t.markup("link", {});
 
       expect(result).not.toContain("javascript:");
     });
@@ -250,7 +247,7 @@ describe("Integration Tests", () => {
       }));
 
       const t = getTranslations();
-      const result = t.markup("image" as any, {});
+      const result = t.markup("image", {});
 
       expect(result).not.toContain("data:");
     });
