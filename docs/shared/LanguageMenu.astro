@@ -8,7 +8,8 @@ const { current, links } = Astro.props;
 <details class="language-menu">
   <summary aria-label={current === "es" ? "Idioma del sitio" : "Site language"}>
     <span class={current === "es" ? "fi fi-do" : "fi fi-us"}></span>
-    {current.toUpperCase()} <span aria-hidden="true">⌄</span>
+    {current.toUpperCase()}
+    <svg class="chevron" aria-hidden="true" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 4 4 4-4" /></svg>
   </summary>
   <ul>
     {links.map(({ code, href, label }) => <li><a href={href} lang={code} hreflang={code} aria-current={code === current ? "true" : undefined}>{label}</a></li>)}
@@ -18,6 +19,9 @@ const { current, links } = Astro.props;
   details { position:relative; font-size:.85rem; }
   summary { display:flex; align-items:center; gap:.45rem; list-style:none; cursor:pointer; padding:.4rem .65rem; color:var(--color-text-secondary); border:1px solid var(--color-border); border-radius:.4rem; }
   summary::-webkit-details-marker { display:none; }
+  .chevron { display:block; flex:none; }
+  details[open] .chevron { transform:rotate(180deg); }
+  @media (prefers-reduced-motion:no-preference) { .chevron { transition:transform .16s ease-out; } }
   ul { position:absolute; z-index:50; right:0; top:calc(100% + .45rem); padding:.25rem; min-width:8rem; border:1px solid var(--color-border); border-radius:.4rem; background:var(--color-bg-card); box-shadow:0 .5rem 1.5rem #0005; }
   a { display:block; padding:.45rem .6rem; color:var(--color-text-secondary); border-radius:.25rem; }
   a:hover { background:var(--color-bg-hover); }
@@ -25,14 +29,18 @@ const { current, links } = Astro.props;
 </style>
 <script>
   document.addEventListener("click", event => {
-    const menu = document.querySelector<HTMLDetailsElement>(".language-menu[open]");
-    if (!menu) return;
-    if (!menu.contains(event.target as Node)) menu.open = false;
+    document.querySelectorAll<HTMLDetailsElement>(".language-menu[open]").forEach(menu => {
+      if (!menu.contains(event.target as Node)) menu.open = false;
+    });
     const link = (event.target as Element).closest<HTMLAnchorElement>(".language-menu a");
     if (link) { link.search = location.search; link.hash = location.hash; }
   }, { capture: true });
   document.addEventListener("keydown", event => {
     const menu = document.querySelector<HTMLDetailsElement>(".language-menu[open]");
-    if (event.key === "Escape" && menu) { menu.open = false; menu.querySelector("summary")?.focus(); }
+    if (event.key === "Escape" && menu) {
+      event.preventDefault();
+      menu.open = false;
+      menu.querySelector("summary")?.focus();
+    }
   });
 </script>

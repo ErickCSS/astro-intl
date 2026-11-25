@@ -5,7 +5,7 @@ document.addEventListener("astro:page-load", () => {
   if (!intro) return;
   const media = gsap.matchMedia();
   media.add("(prefers-reduced-motion: no-preference)", () => {
-    gsap.from(intro.children, {
+    gsap.from(intro.querySelectorAll(":scope > :not(.actions), .actions > a"), {
       y: 8,
       opacity: 0.8,
       duration: 0.4,
@@ -21,6 +21,10 @@ document.addEventListener("astro:page-load", () => {
           duration: 0.42,
           clearProps: "transform,opacity",
         });
+        const actions = entry.target.querySelectorAll("[data-landing-action]");
+        if (actions.length) {
+          gsap.from(actions, { y: 6, opacity: .7, stagger: .06, duration: .25, clearProps: "transform,opacity" });
+        }
         observer.unobserve(entry.target);
       }
     });
