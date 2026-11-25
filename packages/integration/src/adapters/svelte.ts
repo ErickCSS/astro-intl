@@ -18,11 +18,11 @@ export function createGetTranslations<
     type Messages = UI[DefaultLocale][N];
 
     const resolvedLang = lang && lang in ui ? lang : defaultLocale;
-    const messages = (ui[resolvedLang] as UI[DefaultLocale])[namespace] as Messages;
+    const messages = (ui[resolvedLang] as UI[DefaultLocale])[namespace];
 
     function t(key: DotPaths<Messages>): string {
       const value = getNestedValue(messages as Record<string, unknown>, key);
-      return typeof value === "string" ? value : (key as string);
+      return typeof value === "string" ? value : key;
     }
 
     const rich = function (key: DotPaths<Messages>, tagNames?: string[]): RichSegment[] {

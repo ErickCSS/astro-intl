@@ -2,13 +2,13 @@
 
 Esta guía describe la promoción controlada de `astro-intl`. Preparar un candidato no autoriza publicarlo. La publicación npm y el despliegue de la web oficial requieren aprobaciones explícitas y separadas.
 
-## Compatibilidad del candidato 2.3.0
+## Compatibilidad del candidato 2.3.1
 
-- Astro 4.16.19, 5.18.2, 6.4.8 y 7.1.4.
-- Astro 7 requiere Node.js 22.12.0 o superior por requisito del propio Astro.
+- Astro 4.16.19, 5.18.2, 6.4.8 y 7.4.13.
+- Astro 7 requiere Node.js 22.23.4 o superior por requisito del propio Astro.
 - React y Svelte continúan como peers opcionales.
-- Se añade el subpath público `astro-intl/validate` con `validateCatalogs()` y diagnósticos tipados.
-- Se añade el binario público `astro-intl` con el comando `validate`.
+- El parche eleva el mínimo de `sanitize-html` a 2.18.2.
+- La CLI y los exports conservan sus interfaces de la versión 2.3.0.
 - No se elimina ni modifica de forma incompatible ninguna API existente.
 
 ## Preparación
@@ -19,6 +19,7 @@ Desde la raíz del repositorio:
 pnpm install --frozen-lockfile
 pnpm check
 pnpm compat:check
+pnpm audit
 pnpm audit:prod
 ```
 
@@ -39,7 +40,7 @@ La validación debe confirmar:
 - presencia de `AutoRedirect.astro` después de un build desde cero;
 - imports funcionales de `.`, `/middleware`, `/routing`, `/react`, `/svelte`, `/validate` y `/components` desde una instalación temporal;
 - ejecución válida e inválida del comando de catálogos desde una instalación temporal;
-- SHA-1, integridad SHA-512, tamaño y commit de origen registrados en `docs/audit/RELEASE-CANDIDATE-2.3.0.md`.
+- SHA-1, integridad SHA-512, tamaño y commit de origen registrados en `docs/audit/RELEASE-CANDIDATE-2.3.1.md`.
 
 El `.tgz` de revisión se genera en una carpeta temporal y no se versiona.
 
@@ -47,22 +48,22 @@ El `.tgz` de revisión se genera en una carpeta temporal y no se versiona.
 
 Solo después de revisar el diff, el changelog, la auditoría de seguridad y la identidad del tarball:
 
-1. Crear el commit y tag aprobados.
+1. Fusionar la PR aprobada y verificar el commit resultante de main.
 2. Repetir `pnpm check`, `pnpm compat:check` y `pnpm audit:prod` desde ese commit.
 3. Generar nuevamente el tarball y comparar su identidad con el registro aprobado.
 4. Solicitar aprobación explícita para publicar.
-5. Publicar manualmente el paquete revisado.
+5. Publicar el tarball verificado y etiquetar el commit de la versión aprobada.
 6. Leer de vuelta metadata, integridad y archivos desde npm.
 
 No existe publicación automática desde CI en esta fase.
 
 ## Promoción de la web oficial
 
-`astro-intl@2.2.2` continúa publicado mientras se revisa el candidato 2.3.0. Solo después de publicar y leer de vuelta npm, la web `docs/astro-intl-i18n` se promoverá a:
+La web `docs/astro-intl-i18n` usa la versión publicada en npm con estas dependencias exactas.
 
 - `astro-intl@2.3.0` exacta;
-- Astro 7.1.4;
-- `@astrojs/vercel@11.0.3`;
+- Astro 7.4.13;
+- `@astrojs/vercel@11.0.22`;
 - `@astrojs/sitemap@3.7.3`.
 
 La instalación debe conservar un lockfile reproducible. Después se crea y revisa un preview; el despliegue de producción requiere una aprobación distinta.

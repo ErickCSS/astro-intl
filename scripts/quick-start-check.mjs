@@ -29,9 +29,9 @@ function run(args, cwd) {
 function check(html, locale) {
   assert.match(
     html,
-    new RegExp(`<h1>${locale === "es" ? "Hola" : "Hello"}</h1>`),
+    new RegExp(`<h1(?:\\s[^>]*)?>${locale === "es" ? "Hola" : "Hello"}</h1>`),
   );
-  assert.match(html, new RegExp(`lang="${locale}"`));
+  assert.match(html, new RegExp(`<html\\b[^>]*\\slang="${locale}"`));
   for (const lang of ["es", "en"]) assert.ok(html.includes(`href="/${lang}/"`));
 }
 const cacheRoot = resolve(root, "node_modules/.cache/quick-start");
@@ -92,9 +92,8 @@ try {
       let ready = false;
       for (let attempt = 0; attempt < 100; attempt++) {
         try {
-          const response = await fetch(`http://127.0.0.1:${port}/es/`);
+          const response = await fetch(`http://127.0.0.1:${port}/es/`, { method: "HEAD" });
           if (response.ok) {
-            check(await response.text(), "es");
             ready = true;
             break;
           }

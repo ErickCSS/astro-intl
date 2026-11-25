@@ -1,8 +1,8 @@
 # Documentation example findings
 
 The new first-translation guide is verified against the installed official-site
-dependency (2.2.2) and the local integration, in Astro 7 development and static
-production builds. This work does not change library APIs or dependencies.
+dependency (2.3.0) and the local integration, in Astro 7 development and static
+production builds.
 
 ## JSON loading from astro.config.mjs
 

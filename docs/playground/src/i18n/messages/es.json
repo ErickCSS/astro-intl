@@ -129,7 +129,7 @@
       "addIntegration": "Completa la integración creada por el asistente con los dos JSON de Inicio rápido, sin duplicarla. Si elegiste la instalación manual, añade la integración. Conserva las demás integraciones de tu proyecto.",
       "integrationNote": "Instalar la integración no crea mensajes ni páginas. Sigue Inicio rápido para completar esos pasos.",
       "astroSupportBadge": "✅ Compatible con Astro 4–7",
-      "astroSupportNote": "astro-intl <code>2.2.2</code> soporta oficialmente Astro 7 y mantiene compatibilidad con Astro 4–6. Astro 7 requiere Node.js <code>22.12.0</code> o superior; no hace falta una API nueva ni una migración de astro-intl.",
+      "astroSupportNote": "astro-intl <code>2.2.2</code> soporta oficialmente Astro 7 y mantiene compatibilidad con Astro 4–6. Astro 7 requiere Node.js <code>22.23.4</code> o superior; no hace falta una API nueva ni una migración de astro-intl.",
       "quickTitle": "Instalación rápida",
       "quickDescription": "El asistente de Astro instala el paquete y añade la integración a astro.config.mjs tras tu confirmación.",
       "manualTitle": "Alternativa: instalación manual",

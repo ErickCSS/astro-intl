@@ -70,9 +70,9 @@ const playgroundPackage = readJson(
 const integrationPackage = readJson(
   resolve(root, "packages/integration/package.json"),
 );
-if (officialPackage.dependencies["astro-intl"] !== "2.2.2") {
+if (officialPackage.dependencies["astro-intl"] !== "2.3.0") {
   errors.push(
-    "The official docs must consume exact stable astro-intl 2.2.2 after publication.",
+    "The official docs must consume exact stable astro-intl 2.3.0 after publication.",
   );
 }
 if (playgroundPackage.dependencies["astro-intl"] !== "workspace:*") {
@@ -94,8 +94,8 @@ for (const path of ["README.md", "packages/integration/README.md"]) {
   }
 }
 const astro7Dependencies = [
-  ["astro", "7.2.8"],
-  ["@astrojs/vercel", "11.0.3"],
+  ["astro", "7.4.13"],
+  ["@astrojs/vercel", "11.0.22"],
   ["@astrojs/sitemap", "3.7.3"],
 ];
 for (const [name, pkg] of [

@@ -217,10 +217,7 @@ async function resolveMessages(
   }
   if (typeof entry === "function") {
     const result = await entry();
-    return (
-      (result as { default?: Record<string, unknown> }).default ??
-      (result as Record<string, unknown>)
-    );
+    return (result as { default?: Record<string, unknown> }).default ?? result;
   }
   return entry;
 }
