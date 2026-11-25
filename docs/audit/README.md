@@ -9,6 +9,7 @@ Esta carpeta documenta el saneamiento de `astro-intl` realizado para preparar la
 - [Seguridad](./SECURITY.md)
 - [Oportunidades de mejora](./IMPROVEMENT-OPPORTUNITIES.md)
 - [Roadmap](./ROADMAP.md)
+- [Candidato 2.3.1](./RELEASE-CANDIDATE-2.3.1.md)
 - [Candidato 2.3.0](./RELEASE-CANDIDATE-2.3.0.md)
 - [Candidato 2.2.2](./RELEASE-CANDIDATE-2.2.2.md)
 
