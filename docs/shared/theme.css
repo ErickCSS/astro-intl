@@ -120,6 +120,12 @@ a:hover {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
+@media (prefers-reduced-motion: no-preference) {
+  [data-landing-action] { transition: translate .16s ease-out, scale .16s ease-out, background-color .16s; }
+  [data-landing-action]:focus-visible { translate: 0 -2px; }
+  @media (hover: hover) { [data-landing-action]:hover { translate: 0 -2px; } }
+  [data-landing-action]:active { scale: .97; }
+}
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

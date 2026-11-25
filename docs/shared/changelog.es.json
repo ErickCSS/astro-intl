@@ -1,0 +1,9 @@
+{
+  "Added a five-language globe to the documentation landing page and playground, starting with Dominican Spanish.": "La portada de la documentación y el playground incorporan un globo con cinco idiomas. El recorrido comienza con el español dominicano.",
+  "Updated the sites with a charcoal theme, page transitions and code examples with keyboard-accessible tabs and copy controls.": "Ambos sitios estrenan un tema carbón, transiciones entre páginas y ejemplos de código con pestañas accesibles por teclado y botones de copia.",
+  "The mobile navigation now opens full screen, with animated links and action buttons that respect reduced-motion preferences.": "El menú móvil se abre a pantalla completa. Las animaciones de los enlaces y botones de acción respetan la preferencia de movimiento reducido.",
+  "The site language selector now shows a centered chevron that follows its open and closed states.": "La flecha del selector de idioma queda centrada y cambia de orientación al abrir o cerrar el menú.",
+  "Reorganized the documentation around a bilingual quick start, with copyable commands for npm, pnpm and Yarn.": "La documentación incluye una guía bilingüe de inicio rápido con comandos que puedes copiar para npm, pnpm y Yarn.",
+  "Raised the minimum `sanitize-html` version to 2.18.2 for translated markup and Svelte rich text.": "La versión mínima de `sanitize-html` pasa a 2.18.2 para el marcado traducido y el texto enriquecido de Svelte.",
+  "Updated the documentation and development environments to Astro 7.4.13 and Node.js 22.23.4, and refreshed vulnerable build and test dependencies. The library retains its Astro 4–7 peer range.": "Los entornos de documentación y desarrollo usan Astro 7.4.13 y Node.js 22.23.4. Se actualizaron dependencias vulnerables de compilación y pruebas. La biblioteca sigue siendo compatible con Astro 4–7."
+}

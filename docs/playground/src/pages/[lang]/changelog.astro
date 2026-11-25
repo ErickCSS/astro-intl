@@ -2,57 +2,27 @@
 import Layout from "@/layouts/Layout.astro";
 import Navigation from "@/components/Navigation.astro";
 import { getTranslations, getLocale } from "astro-intl";
-import { parseChangelog } from "@/utils/parse-changelog";
-import type { ChangelogVersion } from "@/utils/parse-changelog";
+import { parseChangelog } from "@astro-intl/docs-ui/changelog";
 import "@/styles/global.css";
 
 const t = getTranslations("changelog");
 const tFooter = getTranslations("footer");
 const locale = getLocale();
 
-// Parse CHANGELOG.md (English canonical source)
-const mdVersions = parseChangelog();
-
-// For non-EN locales, override items from JSON translations
-function getVersions(): ChangelogVersion[] {
-  if (locale === "en") return mdVersions;
-
-  return mdVersions.map((v) => {
-    const key = v.id === "unreleased" ? "unreleased" : `v${v.id}`;
-    let overrideItems: { type: string; text: string }[] | undefined;
-    try {
-      overrideItems = (t as any)(`${key}.items`);
-    } catch {
-      // no override — use English from CHANGELOG.md
-    }
-
-    let overrideTitle: string | undefined;
-    try {
-      overrideTitle = (t as any)(`${key}.title`);
-    } catch {
-      // no override
-    }
-
-    return {
-      ...v,
-      title: overrideTitle && overrideTitle !== `${key}.title` ? overrideTitle : v.title,
-      items: Array.isArray(overrideItems) ? (overrideItems as ChangelogVersion["items"]) : v.items,
-    };
-  });
-}
-
-const versions = getVersions();
+const versions = parseChangelog(locale);
 
 const badgeColors: Record<string, { bg: string; text: string }> = {
   next: { bg: "rgba(111,207,151,0.15)", text: "var(--color-accent)" },
   latest: { bg: "rgba(59,130,246,0.15)", text: "#60a5fa" },
-  initial: { bg: "rgba(156,163,175,0.12)", text: "var(--color-text-tertiary)" },
+  previous: { bg: "rgba(156,163,175,0.12)", text: "var(--color-text-tertiary)" },
 };
 
 const typeColors: Record<string, { bg: string; text: string; label: string }> = {
   added: { bg: "rgba(111,207,151,0.12)", text: "var(--color-accent)", label: t("labels.added" as any) },
   changed: { bg: "rgba(251,191,36,0.12)", text: "#fbbf24", label: t("labels.changed" as any) },
   fixed: { bg: "rgba(248,113,113,0.12)", text: "#f87171", label: t("labels.fixed" as any) },
+  breaking: { bg: "rgba(248,113,113,0.12)", text: "#f87171", label: locale === "es" ? "Incompatible" : "Breaking" },
+  security: { bg: "rgba(168,85,247,0.12)", text: "#a855f7", label: t("labels.security" as any) },
 };
 
 export function getStaticPaths() {
@@ -97,7 +67,7 @@ export function getStaticPaths() {
 
       {
         versions.map((v) => {
-          const badgeStyle = badgeColors[v.badge] || badgeColors.initial;
+          const badgeStyle = badgeColors[v.badge];
 
           return (
             <div class="relative mb-12 last:mb-0 md:pl-16">
@@ -110,18 +80,19 @@ export function getStaticPaths() {
 
               <div class="rounded-xl overflow-hidden" style="border: 1px solid var(--color-border);">
                 <div
-                  class="flex items-center gap-3 px-5 py-4"
+                  class="flex flex-wrap items-center gap-3 px-5 py-4"
                   style="background: var(--color-bg-card); border-bottom: 1px solid var(--color-border);"
                 >
                   <h2 class="text-lg font-bold" style="color: var(--color-text);">
                     {v.title}
                   </h2>
-                  <span
+                  {v.badge === "latest" && <span
                     class="text-xs font-semibold px-2.5 py-0.5 rounded-full"
                     style={`background: ${badgeStyle.bg}; color: ${badgeStyle.text};`}
                   >
-                    {v.badge}
-                  </span>
+                    {locale === "es" ? "Última versión" : "Latest release"}
+                  </span>}
+                  {v.date && <time datetime={v.date} class="ml-auto text-xs" style="color:var(--color-text-tertiary)">{v.date}</time>}
                 </div>
 
                 <div class="px-5 py-4 space-y-2.5" style="background: var(--color-bg-secondary);">

@@ -1,0 +1,89 @@
+---
+interface Props {
+  locale: string;
+  links: { key: string; href: string; label: string }[];
+  activePage: string;
+  action: string;
+}
+const { locale, links, activePage, action } = Astro.props;
+const label = locale === "es" ? "Menú principal" : "Main menu";
+---
+<mobile-navigation>
+  <button id="nav-mobile-toggle" type="button" class="icon-button" aria-label={label} aria-controls="nav-mobile-menu" aria-expanded="false" aria-haspopup="dialog">
+    <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+  <dialog id="nav-mobile-menu" aria-label={label}>
+    <div class="menu-shell">
+      <div class="menu-head">
+        <a class="brand" href={`/${locale}`}>astro<span>-intl</span></a>
+        <slot />
+        <button type="button" class="icon-button" data-close autofocus aria-label={locale === "es" ? "Cerrar menú" : "Close menu"}>
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <nav aria-label={label} class="menu-links">
+        {links.map((link, i) => <a href={link.href} aria-current={link.key === activePage ? "page" : undefined} style={`--order:${i}`}>{link.label}<span aria-hidden="true">→</span></a>)}
+      </nav>
+      <div class="menu-actions">
+        <a class="start" href={`/${locale}/docs/quick-start`}>{action}<span aria-hidden="true">→</span></a>
+        <a href="https://github.com/ErickCSS/astro-intl" target="_blank" rel="noopener noreferrer">GitHub<span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </dialog>
+</mobile-navigation>
+<style>
+  mobile-navigation { display:block; }
+  @media (min-width:48rem) { mobile-navigation { display:none; } }
+  .icon-button { width:2.75rem; height:2.75rem; display:grid; place-items:center; border:1px solid var(--color-border); border-radius:.5rem; color:var(--color-text); cursor:pointer; }
+  .icon-button svg { width:1.25rem; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; }
+  dialog { position:fixed; inset:0; margin:0; width:100%; max-width:none; height:100%; height:100dvh; max-height:none; border:0; padding:0; overflow:auto; overscroll-behavior:contain; background:var(--color-bg); color:var(--color-text); }
+  dialog::backdrop { background:var(--color-bg); }
+  :global(html:has(#nav-mobile-menu[open])) { overflow:hidden; }
+  .menu-shell { min-height:100%; display:flex; flex-direction:column; padding:max(.7rem, env(safe-area-inset-top)) max(1.25rem, env(safe-area-inset-right)) max(1.25rem, env(safe-area-inset-bottom)) max(1.25rem, env(safe-area-inset-left)); }
+  .menu-head { display:flex; align-items:center; gap:.75rem; padding-bottom:.75rem; border-bottom:1px solid var(--color-border); }
+  .brand { margin-right:auto; color:var(--color-text); font-size:1.1rem; font-weight:650; }
+  .brand span, .menu-links a[aria-current] { color:var(--color-accent); }
+  .menu-links { flex:1; padding-block:clamp(1rem,6vh,3rem); }
+  .menu-links a { display:flex; justify-content:space-between; align-items:center; padding:.65rem 0; border-bottom:1px solid var(--color-border); color:var(--color-text); font-size:clamp(1.6rem,6vw,2.6rem); line-height:1.25; letter-spacing:-.04em; }
+  .menu-links span { font-size:1rem; color:var(--color-text-tertiary); }
+  .menu-actions { display:flex; flex-wrap:wrap; gap:.65rem; }
+  .menu-actions a { display:flex; flex:1; align-items:center; justify-content:space-between; gap:.5rem; min-height:3rem; padding:.6rem 1rem; border:1px solid var(--color-border); border-radius:.5rem; color:var(--color-text); font-weight:600; }
+  .menu-actions .start { color:#12251a; background:var(--color-accent); border-color:transparent; }
+  @media (prefers-reduced-motion:no-preference) {
+    dialog[open] .menu-shell { animation:enter .2s ease-out; }
+    dialog[open] .menu-links a { animation:enter .26s ease-out backwards; animation-delay:calc(var(--order) * 30ms); }
+    dialog[open] .menu-actions a { animation:enter .28s .12s ease-out backwards; }
+    dialog[open] .menu-actions a:nth-child(2) { animation-delay:.17s; }
+    .menu-actions a:active { scale:.97; }
+    @keyframes enter { from { opacity:0; transform:translateY(.65rem); } }
+  }
+</style>
+<script>
+  class MobileNavigation extends HTMLElement {
+    connectedCallback() {
+      const toggle = this.querySelector<HTMLButtonElement>("#nav-mobile-toggle")!;
+      const dialog = this.querySelector("dialog")!;
+      const desktop = matchMedia("(min-width:48rem)");
+      const controller = new AbortController();
+      const options = { signal:controller.signal };
+      const close = () => { if (dialog.open) dialog.close(); };
+      toggle.addEventListener("click", () => {
+        dialog.showModal();
+        toggle.setAttribute("aria-expanded", "true");
+      }, options);
+      dialog.addEventListener("close", () => {
+        toggle.setAttribute("aria-expanded", "false");
+        dialog.querySelector("details")?.removeAttribute("open");
+      }, options);
+      dialog.addEventListener("click", event => {
+        if ((event.target as Element).closest("[data-close], a[href]")) close();
+      }, options);
+      desktop.addEventListener("change", () => { if (desktop.matches) close(); }, options);
+      document.addEventListener("astro:before-swap", close, options);
+      this.cleanup = () => { controller.abort(); close(); };
+    }
+    private cleanup?: () => void;
+    disconnectedCallback() { this.cleanup?.(); }
+  }
+  if (!customElements.get("mobile-navigation")) customElements.define("mobile-navigation", MobileNavigation);
+</script>

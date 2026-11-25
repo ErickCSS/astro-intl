@@ -7,7 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-Target version: 2.3.1.
+### Added
+
+- Added a five-language globe to the documentation landing page and playground, starting with Dominican Spanish.
+
+### Changed
+
+- Updated the sites with a charcoal theme, page transitions and code examples with keyboard-accessible tabs and copy controls.
+- The mobile navigation now opens full screen, with animated links and action buttons that respect reduced-motion preferences.
+
+### Fixed
+
+- The site language selector now shows a centered chevron that follows its open and closed states.
+
+## [2.3.1] - 2026-11-24
+
+### Changed
+
+- Reorganized the documentation around a bilingual quick start, with copyable commands for npm, pnpm and Yarn.
 
 ### Security
 

@@ -15,8 +15,8 @@ const files = [
     <p class="subtitle">{subtitle}</p>
     <p class="description" set:html={description} />
     <div class="actions">
-      <a class="primary" href={`/${locale}/docs/quick-start`}>{action} <span aria-hidden="true">→</span></a>
-      <a class="secondary" href="https://github.com/ErickCSS/astro-intl" rel="noopener noreferrer" target="_blank">GitHub <span aria-hidden="true">↗</span></a>
+      <a data-landing-action class="primary" href={`/${locale}/docs/quick-start`}>{action} <span aria-hidden="true">→</span></a>
+      <a data-landing-action class="secondary" href="https://github.com/ErickCSS/astro-intl" rel="noopener noreferrer" target="_blank">GitHub <span aria-hidden="true">↗</span></a>
     </div>
     <slot />
   </div>
