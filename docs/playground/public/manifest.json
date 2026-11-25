@@ -4,8 +4,8 @@
   "description": "Type-safe internationalization library for Astro. No props drilling, dynamic loading, namespaces support, and rich text formatting.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#3d8b5e",
+  "background_color": "#1c1c1c",
+  "theme_color": "#1c1c1c",
   "orientation": "portrait-primary",
   "icons": [
     {

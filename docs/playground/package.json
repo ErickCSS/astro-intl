@@ -9,6 +9,7 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astro-intl/docs-ui": "workspace:*",
     "@astrojs/sitemap": "3.7.3",
     "@astrojs/vercel": "11.0.22",
     "@tailwindcss/vite": "^4.2.2",

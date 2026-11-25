@@ -28,6 +28,7 @@ const groups = guideGroups.map(group => ({
               <li>
                 <a
                   href={item.href}
+                  aria-current={isActive ? "page" : undefined}
                   class="sidebar-link flex items-center gap-2 py-2 px-3 text-sm transition-all duration-150 relative"
                   style={`color: ${isActive ? "var(--color-accent)" : "var(--color-text-tertiary)"}; border-left: 2px solid ${isActive ? "var(--color-accent)" : "transparent"}; margin-left: -1px; font-weight: ${isActive ? "500" : "400"};`}
                 >

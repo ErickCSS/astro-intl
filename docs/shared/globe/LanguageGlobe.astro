@@ -1,0 +1,67 @@
+---
+import { countries, countryClass, globeProjection, grid, pathGenerator, stops } from "./geography.mjs";
+const es = Astro.props.locale === "es";
+const language = es ? 0 : 1;
+const first = stops[0];
+const path = pathGenerator(globeProjection(first.point));
+---
+
+<language-globe class="atlas" data-language={language}>
+  <div class="map-stage">
+    <svg class="world" viewBox="0 0 460 348" aria-hidden="true">
+      <defs>
+        <radialGradient id="sea" cx="38%" cy="30%" r="78%">
+          <stop stop-color="#303c38" /><stop offset="1" stop-color="#171d1b" />
+        </radialGradient>
+      </defs>
+      <circle cx="230" cy="174" r="165" class="orbit" />
+      <circle cx="230" cy="174" r="158" fill="url(#sea)" stroke="#53615a" />
+      <path data-grid d={path(grid)} fill="none" stroke="#626c65" stroke-opacity=".45" stroke-width=".65" />
+      {countries.map(country => <path data-country class={countryClass(country, first)} d={path(country) ?? ""} />)}
+      <g data-pin transform="translate(230 174)">
+        <circle r="8" fill="none" stroke="#effff4" stroke-opacity=".8" />
+        <circle r="3.5" fill="#f6fff8" stroke="#13271c" />
+      </g>
+    </svg>
+    <div class="place"><span aria-hidden="true">⌖</span> <span data-city>{first.city[language]}</span></div>
+  </div>
+  <div class="atlas-caption">
+    <div class="atlas-meta"><span data-name>{first.name[language]}</span><span data-tag>{first.code}</span></div>
+    <p class="greeting" data-greeting lang={first.code}>{first.greeting}</p>
+    <p class="legend"><i aria-hidden="true"></i>{es ? "Países donde el idioma es oficial o mayoritario" : "Countries where the language is official or spoken by a majority"}</p>
+    <div class="atlas-controls" role="group" aria-label={es ? "Ejemplos de idiomas" : "Language examples"}>
+      {stops.map((stop, index) => <button type="button" data-stop={index} aria-label={stop.name[language]} aria-pressed={index === 0 ? "true" : "false"}>{stop.code.slice(0, 2).toUpperCase()}</button>)}
+      <button type="button" class="playback" data-playback aria-label={es ? "Pausar recorrido" : "Pause tour"}><span aria-hidden="true">Ⅱ</span></button>
+    </div>
+  </div>
+</language-globe>
+
+<script>
+  import "./tour.js";
+</script>
+
+<style>
+  .atlas { display:block; width:100%; max-width:32rem; justify-self:center; overflow:hidden; border:1px solid #40433f; border-radius:1.4rem; background:#222422; box-shadow:0 24px 64px -48px #000; }
+  .map-stage { position:relative; background-color:#202220; background-image:radial-gradient(#474a45 .7px, transparent .8px); background-size:10px 10px; }
+  .world { width:100%; display:block; }
+  .orbit { fill:none; stroke:#677169; stroke-dasharray:1 5; opacity:.65; }
+  [data-country] { stroke:#202b24; stroke-width:.55; stroke-linejoin:round; }
+  .land { fill:#59635b; }
+  .spoken { fill:#6eb88c; }
+  .selected { fill:#a5f1bc; stroke:#e5ffec; stroke-width:1.2; }
+  .place, .atlas-meta, .atlas-controls { font: .74rem/1.35 "JetBrains Mono",monospace; }
+  .place { position:absolute; bottom:.7rem; left:1rem; padding:.3rem .55rem; color:#d4d9d4; background:#202220ef; border:1px solid #414741; border-radius:.35rem; }
+  .place span:first-child { color:var(--color-accent); }
+  .atlas-caption { padding:1.15rem 1.35rem; border-top:1px solid var(--color-border); }
+  .atlas-meta { display:flex; justify-content:space-between; gap:.5rem; color:var(--color-text-secondary); }
+  [data-tag] { color:var(--color-accent); }
+  .greeting { margin:.4rem 0 .75rem; font-weight:600; font-size:clamp(1.75rem,4vw,2.5rem); letter-spacing:-.055em; line-height:1.2; }
+  .legend { display:flex; align-items:center; gap:.45rem; color:var(--color-text-tertiary); font-size:.75rem; line-height:1.4; }
+  .legend i { width:.55rem; height:.55rem; background:#6eb88c; border-radius:2px; flex:none; }
+  .atlas-controls { display:flex; gap:.3rem; align-items:center; margin-top:1rem; }
+  .atlas-controls button { min-height:2.4rem; flex:1; color:var(--color-text-secondary); border:1px solid var(--color-border); border-radius:.4rem; cursor:pointer; }
+  .atlas-controls button:hover { background:var(--color-bg-hover); }
+  .atlas-controls button[aria-pressed="true"] { border-color:var(--color-accent); color:var(--color-accent); background:var(--color-accent-dim); }
+  .atlas-controls .playback { flex:none; width:2.4rem; margin-left:.3rem; }
+  @media (prefers-reduced-motion: reduce) { .playback { display:none; } }
+</style>
