@@ -2,7 +2,7 @@
 
 ## Producto
 
-`astro-intl` es una librería de internacionalización tipada para Astro. La versión publicada actual es 2.2.2 y conserva la compatibilidad pública de la serie 2.x. Soporta Astro 4, 5, 6 y 7 mediante el peer `^4 || ^5 || ^6 || ^7`. Sus consumidores principales son sitios Astro multilingües; React y Svelte se soportan mediante subpaths opcionales.
+`astro-intl` es una librería de internacionalización tipada para Astro. La versión publicada actual es 2.3.0 y conserva la compatibilidad pública de la serie 2.x. Soporta Astro 4, 5, 6 y 7 mediante el peer `^4 || ^5 || ^6 || ^7`. Sus consumidores principales son sitios Astro multilingües; React y Svelte se soportan mediante subpaths opcionales.
 
 Las capacidades vigentes incluyen carga de mensajes, namespaces, interpolación, `t.raw()`, `t.markup()`, rich text para React y Svelte, middleware localizado, rutas traducidas, cambio de locale y `AutoRedirect`.
 
@@ -37,7 +37,7 @@ La librería no promete SSR aislado en runtimes edge no compatibles. El render e
 
 ## Consumidores y promoción
 
-`docs/playground` es deliberadamente un canary de `workspace:*`. `docs/astro-intl-i18n` es la web oficial y usa exactamente `astro-intl@2.2.2` sobre Astro 7.2.8. Su middleware usa directamente el contexto aislado corregido de 2.2.2, sin el wrapper temporal requerido por 2.2.1.
+`docs/playground` es deliberadamente un canary de `workspace:*`. `docs/astro-intl-i18n` es la web oficial y usa exactamente `astro-intl@2.3.0` sobre Astro 7.2.8. Su middleware usa directamente el contexto aislado corregido de 2.2.2, sin el wrapper temporal requerido por 2.2.1.
 
 La librería ya fue probada, empacada y publicada. La web se actualizó a la versión exacta; los pasos restantes son crear/revisar el preview y aprobar el deploy. No existe un script que reescriba destructivamente el manifiesto.
 

@@ -70,9 +70,9 @@ const playgroundPackage = readJson(
 const integrationPackage = readJson(
   resolve(root, "packages/integration/package.json"),
 );
-if (officialPackage.dependencies["astro-intl"] !== "2.2.2") {
+if (officialPackage.dependencies["astro-intl"] !== "2.3.0") {
   errors.push(
-    "The official docs must consume exact stable astro-intl 2.2.2 after publication.",
+    "The official docs must consume exact stable astro-intl 2.3.0 after publication.",
   );
 }
 if (playgroundPackage.dependencies["astro-intl"] !== "workspace:*") {

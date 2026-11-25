@@ -58,10 +58,10 @@ No existe publicación automática desde CI en esta fase.
 
 ## Promoción de la web oficial
 
-`astro-intl@2.2.2` continúa publicado mientras se revisa el candidato 2.3.0. Solo después de publicar y leer de vuelta npm, la web `docs/astro-intl-i18n` se promoverá a:
+La web `docs/astro-intl-i18n` usa la versión publicada en npm con estas dependencias exactas.
 
 - `astro-intl@2.3.0` exacta;
-- Astro 7.1.4;
+- Astro 7.2.8;
 - `@astrojs/vercel@11.0.3`;
 - `@astrojs/sitemap@3.7.3`.
 
