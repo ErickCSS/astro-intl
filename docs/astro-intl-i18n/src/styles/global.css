@@ -18,6 +18,8 @@
   --color-stone: #8faa97;
 }
 
+:root{color-scheme:dark;--color-bg-hover:var(--color-accent-dim);--site-mono:'JetBrains Mono',monospace}
+.shell{width:min(1216px,90%);margin-inline:auto}button,a{touch-action:manipulation}button{cursor:pointer}:focus-visible{outline:3px solid var(--color-accent);outline-offset:3px}h1,h2,h3{scroll-margin-top:110px}.shiki-wrapper{background:#22272e}.docs-main{width:100%}.docs-main h1,.docs-main h2{letter-spacing:-.045em}.docs-main .shiki-wrapper code{counter-reset:ln}.docs-main .shiki-wrapper .line:before{counter-increment:ln;content:counter(ln);display:inline-block;width:2.7em;color:#9aa6b8;user-select:none;font-size:.8em}.docs-main .code-block{margin-block:1rem}.docs-main p{line-height:1.7}.code-block .shiki-wrapper code{color:#e7edf5}html{scroll-padding-top:6rem}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 @layer utilities {
   .bg-bg {
     background-color: var(--color-bg);

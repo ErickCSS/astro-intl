@@ -22,7 +22,9 @@ export default defineConfig({
     }),
   ],
 
+  devToolbar: { enabled: false },
   vite: {
+    server: { allowedHosts: ['redesign-astro-intl-astro-intl-e4b1fc102234e750.v0.build'] },
     plugins: [tailwindcss()],
   },
 

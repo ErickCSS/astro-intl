@@ -16,6 +16,7 @@
     "astro": "7.4.13",
     "astro-intl": "2.3.0",
     "flag-icons": "^7.5.0",
+    "gsap": "^3.15.1",
     "shiki": "^3.23.0",
     "tailwindcss": "^4.2.2"
   }

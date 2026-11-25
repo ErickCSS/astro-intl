@@ -31,7 +31,7 @@ const html = await codeToHtml(code.trim(), {
           {title}
         </span>
       ) : (
-        <span />
+        <span class="font-mono text-xs">{lang.toUpperCase()}</span>
       )
     }
     <button

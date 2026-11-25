@@ -104,6 +104,8 @@ const pageTitle = labels[slug as keyof typeof labels] || title || tDocs("pageTit
 
       <!-- Main content -->
       <main class="docs-main">
+        <nav class="mb-5 text-sm" aria-label={locale==='es'?'Ruta de navegación':'Breadcrumb'}><a href={`/${locale}/docs`}>{locale==='es'?'Documentación':'Documentation'}</a> <span aria-hidden="true"> / </span> {pageTitle}</nav>
+        <details id="guide-outline" hidden class="mb-6 rounded-lg border border-forest p-3"><summary class="cursor-pointer font-semibold">{locale==='es'?'En esta página':'On this page'}</summary><ol class="mt-3 grid gap-2"></ol></details>
         <DocsContext />
         <slot />
         <DocsNext />
@@ -186,6 +188,9 @@ const pageTitle = labels[slug as keyof typeof labels] || title || tDocs("pageTit
   const overlay = document.getElementById("sidebar-overlay")!;
   const openBtn = document.getElementById("sidebar-open")!;
   const closeBtn = document.getElementById("sidebar-close")!;
+
+  const outline=document.querySelector<HTMLDetailsElement>('#guide-outline')!;
+  document.querySelectorAll<HTMLElement>('.docs-main h2, .docs-main h3').forEach((heading,index)=>{heading.id ||= `section-${index+1}`;const a=document.createElement('a');a.href=`#${heading.id}`;a.textContent=heading.textContent;const li=document.createElement('li');li.append(a);outline.querySelector('ol')!.append(li);outline.hidden=false;});
 
   function openSidebar() {
     drawer.inert = false;
