@@ -1,0 +1,104 @@
+---
+import { codeToHtml } from "shiki";
+interface Props {
+  files: { label: string; code: string; lang: string }[];
+  locale: string;
+  commands?: boolean;
+}
+const { files, locale, commands = false } = Astro.props;
+const es = locale === "es";
+const id = "example-" + crypto.randomUUID();
+const multi = files.length > 1;
+const html = await Promise.all(files.map(file => codeToHtml(file.code.trim(), { lang: file.lang, theme: "github-dark" })));
+const copy = es ? "Copiar" : "Copy";
+---
+<code-example class:list={["example-frame", { "install-tabs": commands }]} data-copy={copy} data-done={es ? "¡Copiado!" : "Copied!"} data-error={es ? "Error al copiar" : "Copy failed"}>
+  <div class="example-bar">
+    {multi ? (
+      <div class="example-tabs" role="tablist" aria-label={commands ? (es ? "Gestor de paquetes" : "Package manager") : (es ? "Archivos" : "Files")}>
+        {files.map((file, i) => <button type="button" role="tab" id={id+"-tab-"+i} aria-controls={id+"-panel-"+i} aria-selected={i === 0 ? "true" : "false"} tabindex={i === 0 ? 0 : -1}>{file.label}</button>)}
+      </div>
+    ) : <span class="filename">{files[0].label}</span>}
+    <button type="button" class="copy-action" aria-label={commands ? (es ? "Copiar comando" : "Copy command") : (es ? "Copiar código" : "Copy code")}>
+      <svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor"><path d="M5.5 5.5V2.75h7.75v8H11"/><rect x="2.75" y="5.75" width="7.75" height="8" rx="1.4"/></svg>
+      <span data-feedback aria-live="polite">{copy}</span>
+    </button>
+  </div>
+  {files.map((_, i) => <div data-panel id={id+"-panel-"+i} role={multi ? "tabpanel" : undefined} aria-labelledby={multi ? id+"-tab-"+i : undefined} hidden={i !== 0} set:html={html[i]} />)}
+</code-example>
+
+<style>
+  .example-frame { display:block; min-width:0; max-width:100%; overflow:hidden; border:1px solid var(--color-border); border-radius:.75rem; background:#191a19; }
+  .example-bar { display:flex; align-items:center; justify-content:space-between; min-height:2.7rem; gap:.6rem; padding:0 .7rem; background:var(--color-bg-card); border-bottom:1px solid var(--color-border); }
+  .example-tabs { display:flex; align-self:stretch; min-width:0; overflow-x:auto; }
+  .example-tabs button, .filename { padding:.55rem .65rem; font: .78rem/1.4 "JetBrains Mono",monospace; color:var(--color-text-tertiary); white-space:nowrap; }
+  .example-tabs button { cursor:pointer; border-bottom:2px solid transparent; transition:color .15s,border-color .15s; }
+  .example-tabs button[aria-selected="true"] { color:var(--color-text); border-color:var(--color-accent); }
+  .filename { overflow-wrap:anywhere; white-space:normal; }
+  .copy-action { display:flex; flex:none; gap:.3rem; align-items:center; padding:.35rem .45rem; font-size:.75rem; color:var(--color-text-secondary); cursor:pointer; border-radius:.3rem; }
+  .copy-action:hover { background:var(--color-bg-hover); }
+  .copy-action[data-success] { color:var(--color-accent); }
+  .copy-action svg { width:1rem; height:1rem; }
+  [data-panel] :global(pre) { margin:0; padding:1rem 1.2rem; overflow-x:auto; background:transparent!important; border:0; border-radius:0; }
+  [data-panel] :global(code) { font: .89rem/1.7 "JetBrains Mono",ui-monospace,monospace; color:inherit; background:none; border:0; padding:0; }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+
+  class CodeExample extends HTMLElement {
+    connectedCallback() {
+      const tabs = [...this.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+      const panels = [...this.querySelectorAll<HTMLElement>("[data-panel]")];
+      const copy = this.querySelector<HTMLButtonElement>(".copy-action")!;
+      const feedback = copy.querySelector<HTMLElement>("[data-feedback]")!;
+      const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+      let revision = 0;
+      let timer: ReturnType<typeof setTimeout>;
+      let current = 0;
+      const reset = () => {
+        revision++;
+        clearTimeout(timer);
+        feedback.textContent = this.dataset.copy!;
+        delete copy.dataset.success;
+      };
+      const select = (index: number) => {
+        current = index;
+        reset();
+        tabs.forEach((tab, i) => {
+          tab.setAttribute("aria-selected", String(index === i));
+          tab.tabIndex = index === i ? 0 : -1;
+          panels[i].hidden = i !== index;
+        });
+        if (!reduced.matches) gsap.fromTo(tabs[index], { opacity: .65 }, { opacity: 1, duration: .16, clearProps: "opacity", overwrite: true });
+      };
+      tabs.forEach((tab, i) => {
+        tab.onclick = () => select(i);
+        tab.onkeydown = event => {
+          const moves: Record<string, number> = { ArrowRight:(i+1)%tabs.length, ArrowLeft:(i+tabs.length-1)%tabs.length, Home:0, End:tabs.length-1 };
+          const next = moves[event.key];
+          if (next === undefined) return;
+          event.preventDefault();
+          select(next);
+          tabs[next].focus();
+        };
+      });
+      copy.onclick = async () => {
+        reset();
+        const request = revision;
+        try {
+          await navigator.clipboard.writeText(panels[current].querySelector("code")!.textContent ?? "");
+          if (revision !== request || !this.isConnected) return;
+          copy.dataset.success = "";
+          feedback.textContent = this.dataset.done!;
+          if (!reduced.matches) gsap.fromTo(copy.querySelector("svg"), { scale: .8 }, { scale: 1, duration: .22, clearProps: "transform", overwrite: true });
+        } catch {
+          if (revision !== request || !this.isConnected) return;
+          feedback.textContent = this.dataset.error!;
+        }
+        timer = setTimeout(reset, 1800);
+      };
+    }
+  }
+  if (!customElements.get("code-example")) customElements.define("code-example", CodeExample);
+</script>

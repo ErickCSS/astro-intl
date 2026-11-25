@@ -1,4 +1,5 @@
 ---
+import CodeBlock from "../CodeBlock.astro";
 import { getTranslations } from "astro-intl";
 
 const t = getTranslations("docs");
@@ -150,11 +151,7 @@ const functions = [
           <div class="px-5 py-4" style="background: var(--color-bg-secondary);">
             {fn.type === "function" && (
               <div class="mb-3">
-                <pre class="rounded-none! border-0! m-0! p-0! text-xs" style="background: transparent;">
-                  <code style="background: transparent; border: none; padding: 0; color: var(--color-text-tertiary); font-size: 0.78rem;">
-                    {t(`api.${fn.key}.signature` as any)}
-                  </code>
-                </pre>
+                <CodeBlock lang="typescript" code={t(`api.${fn.key}.signature` as any)} />
               </div>
             )}
             <p

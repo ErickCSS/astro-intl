@@ -1,0 +1,49 @@
+---
+import LanguageGlobe from "./globe/LanguageGlobe.astro";
+import CodeExample from "./CodeExample.astro";
+const { locale, title, subtitle, description, action, titleAccent } = Astro.props;
+const es = locale === "es";
+const files = [
+  { label:"index.astro", lang:"astro", code:"---\nimport { getTranslations } from 'astro-intl';\n\nconst t = getTranslations();\n---\n\n<h1>{t('welcome')}</h1>" },
+  { label:es ? "es.json" : "en.json", lang:"json", code:JSON.stringify({ welcome:es ? "¡Qué lo que!" : "Hello there!" }, null, 2) },
+  { label:es ? "Resultado" : "Output", lang:"html", code:es ? "<h1>¡Qué lo que!</h1>" : "<h1>Hello there!</h1>" },
+];
+---
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero-copy" data-intro>
+    <h1 id="hero-title">{title} <span>{titleAccent}</span></h1>
+    <p class="subtitle">{subtitle}</p>
+    <p class="description" set:html={description} />
+    <div class="actions">
+      <a class="primary" href={`/${locale}/docs/quick-start`}>{action} <span aria-hidden="true">→</span></a>
+      <a class="secondary" href="https://github.com/ErickCSS/astro-intl" rel="noopener noreferrer" target="_blank">GitHub <span aria-hidden="true">↗</span></a>
+    </div>
+    <slot />
+  </div>
+  <LanguageGlobe locale={locale} />
+</section>
+<section class="demo" data-reveal aria-labelledby="demo-title">
+  <div><h2 id="demo-title">{es ? "Una clave, varios idiomas" : "One key, multiple languages"}</h2>
+    <p>{es ? "Abre el archivo de mensajes y compara su valor con el resultado de la página." : "Open the message file and compare its value with the rendered page."}</p>
+  </div>
+  <CodeExample files={files} locale={locale} />
+</section>
+<script>
+  import "./landing-motion.js";
+</script>
+<style>
+  .hero,.demo { max-width:76rem; margin:auto; padding-inline:clamp(1rem,4vw,3rem); display:grid; gap:clamp(2rem,5vw,5rem); align-items:center; }
+  .hero { padding-block:clamp(2.7rem,6vw,6rem); }
+  .hero-copy,.demo > div { min-width:0; }
+  h1 { font-size:clamp(3.4rem,6.2vw,5.65rem); line-height:.99; font-weight:650; letter-spacing:-.067em; }
+  h1 span { display:block; color:#c6c7bf; }
+  .subtitle { font-size:clamp(1.13rem,2vw,1.4rem); margin-top:1.5rem; line-height:1.4; color:var(--color-text); }
+  .description,.demo p { margin-top:.65rem; max-width:46ch; color:var(--color-text-tertiary); line-height:1.65; }
+  .actions { display:flex; gap:.7rem; align-items:center; margin:1.6rem 0; }
+  .actions a { display:inline-flex; gap:.8rem; align-items:center; padding:.65rem 1.05rem; font-size:.9rem; font-weight:600; border-radius:.45rem; }
+  .primary { background:var(--color-accent); color:#12251a; } .primary:hover { background:#97e0b0; color:#102016; }
+  .secondary { border:1px solid var(--color-border); color:var(--color-text); } .secondary:hover { background:var(--color-bg-hover); }
+  .demo { padding-block:clamp(2rem,5vw,4rem); border-top:1px solid var(--color-border); }
+  .demo h2 { font-size:clamp(1.55rem,3vw,2.5rem); font-weight:600; letter-spacing:-.045em; line-height:1.15; }
+  @media (min-width:850px) { .hero { grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr); } .demo { grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr); } }
+</style>

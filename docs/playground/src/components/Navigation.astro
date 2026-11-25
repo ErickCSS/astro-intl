@@ -11,9 +11,9 @@ interface Props {
 const { activePage = "home" } = Astro.props;
 ---
 
-<nav
+<nav transition:name="site-header" transition:animate="none"
   class="border-b sticky top-0 z-40"
-  style="border-color: var(--color-border); background: rgba(13,20,16,0.92); backdrop-filter: blur(14px);"
+  style="border-color: var(--color-border); background: rgba(28,28,28,0.94); backdrop-filter: blur(14px);"
 >
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-16">
@@ -121,7 +121,7 @@ const { activePage = "home" } = Astro.props;
           id="nav-mobile-toggle"
           class="md:hidden flex items-center justify-center w-9 h-9 rounded-lg transition-colors"
           style="color: var(--color-text-secondary); border: 1px solid var(--color-border);"
-          aria-label="Toggle menu"
+          aria-controls="nav-mobile-menu" aria-expanded="false" aria-label={locale === "es" ? "Menú principal" : "Main menu"}
         >
           <svg id="nav-hamburger-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"
@@ -231,11 +231,11 @@ const { activePage = "home" } = Astro.props;
 
     toggle.addEventListener("click", () => {
       const isOpen = !menu.classList.contains("hidden");
+      toggle.setAttribute("aria-expanded", String(!isOpen));
       menu.classList.toggle("hidden", isOpen);
       hamburger.classList.toggle("hidden", !isOpen);
       closeIcon.classList.toggle("hidden", isOpen);
     });
   }
-  initMobileNav();
   document.addEventListener("astro:page-load", initMobileNav);
 </script>

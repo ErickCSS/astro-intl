@@ -1,5 +1,6 @@
 ---
 import { getLocale } from "astro-intl";
+import { ClientRouter } from "astro:transitions";
 import SEO from "@/components/SEO.astro";
 import "flag-icons/css/flag-icons.min.css";
 import Analytics from "@vercel/analytics/astro";
@@ -28,6 +29,7 @@ const {
 <!doctype html>
 <html lang={locale}>
   <head>
+    <ClientRouter fallback="swap" />
     <SEO
       title={title}
       description={description}

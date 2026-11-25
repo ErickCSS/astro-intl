@@ -1,0 +1,15 @@
+{
+  "name": "@astro-intl/docs-ui",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "d3-geo": "^3.1.1",
+    "gsap": "^3.13.0",
+    "shiki": "^3.23.0",
+    "topojson-client": "^3.1.0",
+    "world-atlas": "2.0.2"
+  },
+  "devDependencies": {
+    "cldr-core": "48.0.0"
+  }
+}

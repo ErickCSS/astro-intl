@@ -1,4 +1,5 @@
 ---
+import { fade } from "astro:transitions";
 import Layout from "./Layout.astro";
 import Navigation from "@/components/Navigation.astro";
 import DocsNext from "@/components/docs/DocsNext.astro";
@@ -98,12 +99,12 @@ const pageTitle = labels[slug as keyof typeof labels] || title || tDocs("pageTit
 
     <div class="docs-layout">
       <!-- Desktop sidebar -->
-      <aside class="docs-sidebar hidden md:block">
+      <aside transition:name="docs-sidebar" transition:animate="none" class="docs-sidebar hidden md:block">
         <DocsSidebar />
       </aside>
 
       <!-- Main content -->
-      <main class="docs-main">
+      <main class="docs-main" transition:name="guide" transition:animate={fade({ duration: "180ms" })}>
         <DocsContext />
         <slot />
         <DocsNext />
@@ -182,48 +183,5 @@ const pageTitle = labels[slug as keyof typeof labels] || title || tDocs("pageTit
 </style>
 
 <script>
-  const drawer = document.getElementById("sidebar-drawer")!;
-  const overlay = document.getElementById("sidebar-overlay")!;
-  const openBtn = document.getElementById("sidebar-open")!;
-  const closeBtn = document.getElementById("sidebar-close")!;
-
-  function openSidebar() {
-    drawer.inert = false;
-    drawer.setAttribute("aria-hidden", "false");
-    openBtn.setAttribute("aria-expanded", "true");
-    drawer.style.transform = "translateX(0)";
-    closeBtn.focus();
-    overlay.classList.remove("hidden");
-    document.body.style.overflow = "hidden";
-  }
-
-  function closeSidebar() {
-    drawer.inert = true;
-    drawer.setAttribute("aria-hidden", "true");
-    openBtn.setAttribute("aria-expanded", "false");
-    drawer.style.transform = "translateX(-100%)";
-    openBtn.focus();
-    overlay.classList.add("hidden");
-    document.body.style.overflow = "";
-  }
-
-  document.addEventListener("keydown", (event) => {
-    if (drawer.inert) return;
-    if (event.key === "Escape") closeSidebar();
-    if (event.key === "Tab") {
-      const controls = Array.from(drawer.querySelectorAll<HTMLElement>("button, a[href]"));
-      const first = controls[0];
-      const last = controls[controls.length - 1];
-      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
-      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
-    }
-  });
-
-  openBtn?.addEventListener("click", openSidebar);
-  closeBtn?.addEventListener("click", closeSidebar);
-  overlay?.addEventListener("click", closeSidebar);
-
-  drawer.querySelectorAll("a").forEach((a) => {
-    a.addEventListener("click", closeSidebar);
-  });
+  import "@astro-intl/docs-ui/drawer.js";
 </script>

@@ -1,6 +1,6 @@
 ---
 import { getLocale } from "astro-intl";
-
+import CodeExample from "@astro-intl/docs-ui/CodeExample.astro";
 interface Props {
   pkg?: string;
   mode?: "astro" | "manual";
@@ -12,74 +12,5 @@ const resolved = commands ?? (mode === "manual"
   ? { npm: `npm install ${pkg}`, pnpm: `pnpm add ${pkg}`, yarn: `yarn add ${pkg}` }
   : { npm: `npx astro add ${pkg}`, pnpm: `pnpm astro add ${pkg}`, yarn: `yarn astro add ${pkg}` });
 const managers = ["npm", "pnpm", "yarn"] as const;
-const id = `commands-${crypto.randomUUID()}`;
-const es = getLocale() === "es";
-const copy = es ? "Copiar" : "Copy";
 ---
-
-<div class="install-tabs" data-copied={es ? "¡Copiado!" : "Copied!"} data-error={es ? "No se pudo copiar" : "Could not copy"}>
-  <div class="manager-tabs" role="tablist" aria-label={es ? "Gestor de paquetes" : "Package manager"}>
-    {managers.map((manager, index) => (
-      <button type="button" role="tab" id={`${id}-${manager}-tab`} aria-controls={`${id}-${manager}-panel`} aria-selected={index === 0 ? "true" : "false"} tabindex={index === 0 ? 0 : -1}>{manager}</button>
-    ))}
-  </div>
-  {managers.map((manager, index) => (
-    <div role="tabpanel" id={`${id}-${manager}-panel`} aria-labelledby={`${id}-${manager}-tab`} hidden={index !== 0} tabindex="0" data-command={resolved[manager]}>
-      <code>{resolved[manager]}</code>
-      <button type="button" class="command-copy" aria-label={es ? "Copiar comando" : "Copy command"}>{copy}</button>
-    </div>
-  ))}
-  <span class="sr-only" role="status" aria-live="polite"></span>
-</div>
-
-<style>
-  .install-tabs { border: 1px solid var(--color-border); border-radius: .75rem; overflow: hidden; background: var(--color-bg-tertiary); }
-  .manager-tabs { display: flex; gap: .25rem; padding: .5rem .75rem 0; border-bottom: 1px solid var(--color-border); }
-  [role="tab"] { padding: .4rem .9rem; font-size: .8rem; color: var(--color-text-tertiary); cursor: pointer; border: 1px solid transparent; border-radius: .4rem .4rem 0 0; }
-  [role="tab"][aria-selected="true"] { color: var(--color-text); background: var(--color-bg-secondary); border-color: var(--color-border); }
-  [role="tabpanel"] { display: flex; align-items: center; gap: .75rem; padding: 1rem; }
-  [role="tabpanel"][hidden] { display: none; }
-  code { flex: 1; min-width: 0; overflow-x: auto; white-space: pre; padding: 0; border: 0; background: transparent; color: var(--color-accent); font-size: .875rem; }
-  .command-copy { flex-shrink: 0; padding: .3rem .5rem; border-radius: .25rem; font-size: .75rem; color: var(--color-text-secondary); cursor: pointer; }
-  button:focus-visible, [role="tabpanel"]:focus-visible { outline: 2px solid var(--color-accent); outline-offset: -2px; }
-</style>
-
-<script>
-  function initializeCommandTabs() {
-    document.querySelectorAll<HTMLElement>(".install-tabs").forEach((container) => {
-      if (container.dataset.ready) return;
-      container.dataset.ready = "true";
-      const tabs = Array.from(container.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
-      const panels = Array.from(container.querySelectorAll<HTMLElement>('[role="tabpanel"]'));
-      const status = container.querySelector<HTMLElement>('[role="status"]')!;
-      function select(index: number) {
-        tabs.forEach((tab, i) => { tab.setAttribute("aria-selected", String(i === index)); tab.tabIndex = i === index ? 0 : -1; panels[i].hidden = i !== index; });
-        status.textContent = "";
-      }
-      tabs.forEach((tab, index) => {
-        tab.addEventListener("click", () => select(index));
-        tab.addEventListener("keydown", (event) => {
-          let next = index;
-          if (event.key === "ArrowRight") next = (index + 1) % tabs.length;
-          else if (event.key === "ArrowLeft") next = (index + tabs.length - 1) % tabs.length;
-          else if (event.key === "Home") next = 0;
-          else if (event.key === "End") next = tabs.length - 1;
-          else return;
-          event.preventDefault(); select(next); tabs[next].focus();
-        });
-      });
-      panels.forEach((panel) => {
-        const button = panel.querySelector<HTMLButtonElement>(".command-copy")!;
-        button.addEventListener("click", async () => {
-          try {
-            await navigator.clipboard.writeText(panel.dataset.command!);
-            status.textContent = container.dataset.copied!;
-          } catch { status.textContent = container.dataset.error!; }
-        });
-      });
-    });
-  }
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initializeCommandTabs, { once: true });
-  else initializeCommandTabs();
-  document.addEventListener("astro:page-load", initializeCommandTabs);
-</script>
+<CodeExample locale={getLocale()} commands files={managers.map(manager => ({ label: manager, lang: "shell", code: resolved[manager] }))} />
