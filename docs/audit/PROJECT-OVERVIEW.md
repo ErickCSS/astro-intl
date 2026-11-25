@@ -17,7 +17,7 @@ La superficie publicada está declarada en `packages/integration/package.json`: 
 - `src/middleware.ts` mantiene todo el render dentro de `runWithLocale()` (`src/middleware.ts:96`).
 - `src/adapters` y `src/framework-base.ts` producen rich text por framework.
 
-Astro 7 no requiere una API nueva de la librería. El pipeline completo de `astro/fetch` ejecuta el `src/middleware.ts` existente; en una composición manual el consumidor debe incluir `middleware()` para inicializar `astro-intl`. La matriz valida Vite 8/Rolldown, el compilador Rust, renderizado en cola, cache por locale y las dos formas de Advanced Routing. Astro 7 requiere Node.js 22.12.0 o superior, pero el paquete no eleva su requisito propio para no excluir consumidores Astro 4–6.
+Astro 7 no requiere una API nueva de la librería. El pipeline completo de `astro/fetch` ejecuta el `src/middleware.ts` existente; en una composición manual el consumidor debe incluir `middleware()` para inicializar `astro-intl`. La matriz valida Vite 8/Rolldown, el compilador Rust, renderizado en cola, cache por locale y las dos formas de Advanced Routing. Astro 7 requiere Node.js 22.23.4 o superior, pero el paquete no eleva su requisito propio para no excluir consumidores Astro 4–6.
 
 ## Estado y límites por runtime
 
@@ -37,7 +37,7 @@ La librería no promete SSR aislado en runtimes edge no compatibles. El render e
 
 ## Consumidores y promoción
 
-`docs/playground` es deliberadamente un canary de `workspace:*`. `docs/astro-intl-i18n` es la web oficial y usa exactamente `astro-intl@2.3.0` sobre Astro 7.2.8. Su middleware usa directamente el contexto aislado corregido de 2.2.2, sin el wrapper temporal requerido por 2.2.1.
+`docs/playground` es deliberadamente un canary de `workspace:*`. `docs/astro-intl-i18n` es la web oficial y usa exactamente `astro-intl@2.3.0` sobre Astro 7.4.13. Su middleware usa directamente el contexto aislado corregido de 2.2.2, sin el wrapper temporal requerido por 2.2.1.
 
 La librería ya fue probada, empacada y publicada. La web se actualizó a la versión exacta; los pasos restantes son crear/revisar el preview y aprobar el deploy. No existe un script que reescriba destructivamente el manifiesto.
 

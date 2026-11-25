@@ -164,8 +164,8 @@ export function getGuide(slug, locale) {
         section(
           text("3. Conecta los mensajes", "3. Connect the messages"),
           text(
-            "Completa la integración que añadió el asistente con las opciones de este ejemplo y añade los imports de mensajes. Conserva las demás integraciones y no añadas astroIntl(...) una segunda vez. locales enumera los idiomas y messages relaciona cada uno con su JSON. defaultLocale define el idioma predeterminado; no crea rutas ni redirige la raíz. El atributo with permite a Node cargar JSON desde este archivo. Este ejemplo se comprueba con Astro 7 y Node 22.12 o posterior.",
-            "Complete the integration added by the wizard with the options below and add the message imports. Keep your other integrations and do not add astroIntl(...) a second time. locales lists the languages and messages connects each one to its JSON. defaultLocale sets the default language; it does not create routes or redirect the root. The with attribute lets Node load JSON from this file. This example is checked with Astro 7 and Node 22.12 or later.",
+            "Completa la integración que añadió el asistente con las opciones de este ejemplo y añade los imports de mensajes. Conserva las demás integraciones y no añadas astroIntl(...) una segunda vez. locales enumera los idiomas y messages relaciona cada uno con su JSON. defaultLocale define el idioma predeterminado; no crea rutas ni redirige la raíz. El atributo with permite a Node cargar JSON desde este archivo. Este ejemplo se comprueba con Astro 7 y Node 22.23.4 o posterior.",
+            "Complete the integration added by the wizard with the options below and add the message imports. Keep your other integrations and do not add astroIntl(...) a second time. locales lists the languages and messages connects each one to its JSON. defaultLocale sets the default language; it does not create routes or redirect the root. The with attribute lets Node load JSON from this file. This example is checked with Astro 7 and Node 22.23.4 or later.",
           ),
           [block("astro.config.mjs", "javascript")],
           "config",

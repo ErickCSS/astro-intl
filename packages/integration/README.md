@@ -5,7 +5,7 @@ Simple and type-safe internationalization for Astro.
 ## Quick start
 
 Start with an existing, working static Astro project. You will display **Hola** at `/es/` and **Hello** at `/en/`.
-The complete example is verified with Astro 7 and Node.js 22.12 or newer. You do not need middleware, a shared layout or Astro’s built-in i18n configuration.
+The complete example is verified with Astro 7 and Node.js 22.23.4 or newer. You do not need middleware, a shared layout or Astro’s built-in i18n configuration.
 
 ### 1. Install
 

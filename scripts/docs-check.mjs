@@ -94,7 +94,7 @@ for (const path of ["README.md", "packages/integration/README.md"]) {
   }
 }
 const astro7Dependencies = [
-  ["astro", "7.2.8"],
+  ["astro", "7.4.13"],
   ["@astrojs/vercel", "11.0.3"],
   ["@astrojs/sitemap", "3.7.3"],
 ];

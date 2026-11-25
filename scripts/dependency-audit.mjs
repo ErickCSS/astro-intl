@@ -32,7 +32,7 @@ try {
         name: "astro-intl-production-audit",
         private: true,
         dependencies: {
-          astro: "7.2.8",
+          astro: "7.4.13",
           "astro-intl": `file:${resolve(tempDir, packed.filename).replace(/\\/g, "/")}`,
           react: "19.2.4",
           svelte: "5.56.5",
