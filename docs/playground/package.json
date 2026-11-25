@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "3.7.3",
-    "@astrojs/vercel": "11.0.3",
+    "@astrojs/vercel": "11.0.22",
     "@tailwindcss/vite": "^4.2.2",
     "@vercel/analytics": "^1.6.1",
     "astro": "7.4.13",

@@ -113,6 +113,6 @@
     "vitest": "^4.1.12"
   },
   "dependencies": {
-    "sanitize-html": "^2.18.0"
+    "sanitize-html": "^2.18.2"
   }
 }
