@@ -23,7 +23,7 @@ La versión 2.3.0 publicada en npm incluye la validación de catálogos. La web 
 - Lint, 165 pruebas fuente, build limpio, pack check y comprobaciones de documentación pasan.
 - Astro 4.16.19, 5.18.2, 6.4.8 y 7.2.8 pasan en consumidores instalados desde el `.tgz`.
 - Astro 7 pasa los pipelines predeterminado y compuesto de `src/fetch.ts`, cache por locale y renderizado SSR anidado/concurrente.
-- El playground compila contra el workspace y la web oficial compila contra `astro-intl@2.3.0` y Astro 7.2.8.
+- El playground compila contra el workspace y la web oficial compila contra `astro-intl@2.3.0` y Astro 7.4.13.
 - `dist` no contiene tests; el build produce 29 archivos y el tarball validado contiene 31.
 - No quedan hallazgos críticos, altos o medios confirmados sin corrección o justificación; las limitaciones se registran en [Seguridad](./SECURITY.md).
 

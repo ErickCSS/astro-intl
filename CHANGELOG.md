@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+Target version: 2.3.1.
+
+### Security
+
+- Raised the minimum `sanitize-html` version to 2.18.2 for translated markup and Svelte rich text.
+- Updated the documentation and development environments to Astro 7.4.13 and Node.js 22.23.4, and refreshed vulnerable build and test dependencies. The library retains its Astro 4–7 peer range.
+
 ## [2.3.0] - 2026-08-05
 
 ### Added
