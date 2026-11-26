@@ -1,6 +1,6 @@
 ---
 import DocsLayout from "@/layouts/DocsLayout.astro";
-import DocsReact from "@/components/docs/DocsReact.astro";
+import DocsGuide from "@/components/docs/DocsGuide.astro";
 
 export function getStaticPaths() {
   return [{ params: { lang: "en" } }, { params: { lang: "es" } }];
@@ -8,5 +8,5 @@ export function getStaticPaths() {
 ---
 
 <DocsLayout title="React Adapter">
-  <DocsReact />
+  <DocsGuide slug="react" />
 </DocsLayout>

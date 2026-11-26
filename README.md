@@ -153,17 +153,29 @@ A 404 usually means the localized page or `getStaticPaths` is missing. A visible
 - [Middleware and Node SSR](https://astro-intl.dev/en/docs/middleware)
 - [Translated routes](https://astro-intl.dev/en/docs/routing)
 - [Rich text](https://astro-intl.dev/en/docs/rich-text)
-- [React](https://astro-intl.dev/en/docs/react) and [Svelte](https://astro-intl.dev/en/docs/svelte)
+- [Testing translations](https://astro-intl.dev/en/docs/testing) · [Pruebas de traducciones](https://astro-intl.dev/es/docs/testing)
+- [React](https://astro-intl.dev/en/docs/react), [Preact](https://astro-intl.dev/en/docs/preact), [Svelte](https://astro-intl.dev/en/docs/svelte), [Vue](https://astro-intl.dev/en/docs/vue) and [SolidJS](https://astro-intl.dev/en/docs/solid)
 - [Configuration reference](https://astro-intl.dev/en/docs/configuration) and [API](https://astro-intl.dev/en/docs/api)
 - [Guía completa en español](https://astro-intl.dev/es/docs/quick-start)
+
+## React, Preact, Svelte, Vue and SolidJS inside Astro
+
+Install the integrations for your framework in your Astro project. For Preact 10 or 11, run `npx astro add astro-intl preact`. For Vue 3, run `npx astro add astro-intl vue`. For SolidJS 1.9.13, first pin its seroval dependency to 1.8.2 in the consuming project as shown in the SolidJS guide. Then run `npx astro add astro-intl solid-js`. For React or Svelte 5, use `react` or `svelte` in place of `vue`. Import `getTranslations` from `astro-intl/react`, `astro-intl/preact`, `astro-intl/svelte`, `astro-intl/vue` or `astro-intl/solid` to read translations during server rendering. Pass translated labels to interactive islands as props, or use `createGetTranslations` with an explicit catalog. See [React in Astro](https://astro-intl.dev/en/docs/react), [Preact in Astro](https://astro-intl.dev/en/docs/preact), [Svelte in Astro](https://astro-intl.dev/en/docs/svelte), [Vue in Astro](https://astro-intl.dev/en/docs/vue) and [SolidJS in Astro](https://astro-intl.dev/en/docs/solid).
+
+**En español.** Instala las integraciones desde tu proyecto Astro. Para Preact 10 u 11, ejecuta `npx astro add astro-intl preact`. Para Vue 3, ejecuta `npx astro add astro-intl vue`. Para SolidJS 1.9.13, fija primero su dependencia seroval en 1.8.2 en el proyecto consumidor como indica la guía de SolidJS. Después ejecuta `npx astro add astro-intl solid-js`. Para React o Svelte 5, sustituye `vue` por `react` o `svelte`. Importa `getTranslations` desde el adaptador de tu framework para leer las traducciones durante el renderizado en el servidor. Pasa las etiquetas traducidas a las islas interactivas como props o usa `createGetTranslations` con un catálogo explícito. Consulta [React en Astro](https://astro-intl.dev/es/docs/react), [Preact en Astro](https://astro-intl.dev/es/docs/preact), [Svelte en Astro](https://astro-intl.dev/es/docs/svelte), [Vue en Astro](https://astro-intl.dev/es/docs/vue) y [SolidJS en Astro](https://astro-intl.dev/es/docs/solid).
+
+To run the packaged-consumer test from this repository, use `pnpm islands:check`. It builds the examples and checks English and Spanish in a local browser (Edge on Windows, Chrome elsewhere).
 
 ## ✨ Features
 
 - 🔒 **Type-safe** - Autocompletion and type validation for your translations
 - 🚀 **Simple** - Intuitive API inspired by next-intl
 - 🎯 **Native integration** - Designed specifically for Astro
-- ⚛️ **React support** - Dedicated adapter with `t.rich()` for rich text. Import from `astro-intl/react`
-- 🧡 **Svelte support** - Dedicated adapter with `t.rich()` and `renderRichText()`. Import from `astro-intl/svelte`
+- ⚛️ **React components in Astro** - Dedicated adapter with `t.rich()` for rich text. Import from `astro-intl/react`
+- **Preact components in Astro** - Render rich text with native Preact children using `astro-intl/preact`
+- **SolidJS components in Astro** - Render translated messages and JSX elements with `astro-intl/solid`
+- **Vue components in Astro** - Render translated messages and native Vue nodes with `astro-intl/vue`
+- 🧡 **Svelte components in Astro** - Dedicated adapter with `t.rich()` and `renderRichText()`. Import from `astro-intl/svelte`
 - 🌍 **Flexible** - Supports multiple languages and translation structures
 - ⚡ **Performance** - Loads only the necessary translations
 - 🛠️ **TypeScript first** - Written entirely in TypeScript
@@ -172,7 +184,7 @@ A 404 usually means the localized page or `getStaticPaths` is missing. A visible
 - 🗺️ **Localized routing** - Translated URLs per locale with automatic rewrites via middleware
 - 🔗 **URL generation** - `path()` and `switchLocalePath()` to build localized URLs
 - ✅ **Catalog validation** - Detect missing keys, extra keys, type differences and incompatible placeholders before deployment
-- 📦 **Sub-path imports** - `astro-intl/react`, `astro-intl/svelte`, `astro-intl/routing`, `astro-intl/middleware`, `astro-intl/validate`
+- 📦 **Sub-path imports** - `astro-intl/react`, `astro-intl/preact`, `astro-intl/svelte`, `astro-intl/vue`, `astro-intl/solid`, `astro-intl/routing`, `astro-intl/middleware`, `astro-intl/validate`
 
 ## Catalog validation (2.3.0+)
 

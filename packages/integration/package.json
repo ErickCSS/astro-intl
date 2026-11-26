@@ -1,6 +1,6 @@
 {
   "name": "astro-intl",
-  "version": "2.3.1",
+  "version": "2.4.0",
   "type": "module",
   "description": "Simple and type-safe internationalization system for Astro.",
   "keywords": [
@@ -54,9 +54,21 @@
       "types": "./dist/adapters/react.d.ts",
       "import": "./dist/adapters/react.js"
     },
+    "./preact": {
+      "types": "./dist/adapters/preact.d.ts",
+      "import": "./dist/adapters/preact.js"
+    },
+    "./solid": {
+      "types": "./dist/adapters/solid.d.ts",
+      "import": "./dist/adapters/solid.js"
+    },
     "./svelte": {
       "types": "./dist/adapters/svelte.d.ts",
       "import": "./dist/adapters/svelte.js"
+    },
+    "./vue": {
+      "types": "./dist/adapters/vue.d.ts",
+      "import": "./dist/adapters/vue.js"
     },
     "./routing": {
       "types": "./dist/routing.d.ts",
@@ -72,14 +84,26 @@
   },
   "peerDependencies": {
     "astro": "^4 || ^5 || ^6 || ^7",
+    "preact": "^10.6.5 || ^11.0.0",
     "react": "^18 || ^19",
-    "svelte": "^5"
+    "solid-js": "^1.9.13",
+    "svelte": "^5",
+    "vue": "^3.5.24"
   },
   "peerDependenciesMeta": {
+    "preact": {
+      "optional": true
+    },
     "react": {
       "optional": true
     },
+    "solid-js": {
+      "optional": true
+    },
     "svelte": {
+      "optional": true
+    },
+    "vue": {
       "optional": true
     }
   },
@@ -105,12 +129,15 @@
     "eslint": "^9.39.5",
     "happy-dom": "^21.0.4",
     "prettier": "^3.8.1",
+    "preact": "11.2.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
+    "solid-js": "1.9.13",
     "svelte": "^5.56.5",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.74.0",
-    "vitest": "^4.1.12"
+    "vitest": "^4.1.12",
+    "vue": "3.5.46"
   },
   "dependencies": {
     "sanitize-html": "^2.18.2"

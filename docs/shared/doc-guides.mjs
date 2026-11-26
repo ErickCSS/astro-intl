@@ -1,4 +1,12 @@
 import { quickStartFiles as files } from "./quick-start.mjs";
+import {
+  catalogs,
+  integrationName,
+  islandConfig,
+  islandFiles,
+  solidNpmOverrides,
+  middleware,
+} from "./island-examples.mjs";
 
 const block = (file, lang) => ({ file, lang, code: files[file] });
 const pageCode = (body, expression) => `---
@@ -37,13 +45,17 @@ export const guideLabels = {
     usage: "Traducciones y variables",
     "file-structure": "Estructura de archivos",
     examples: "Ejemplos",
+    testing: "Pruebas de traducciones",
     "message-loading": "Carga personalizada",
     middleware: "Middleware y SSR",
     routing: "Rutas traducidas",
     "auto-redirect": "Redirección automática",
     "rich-text": "Contenido enriquecido",
-    react: "React",
-    svelte: "Svelte",
+    react: "React en Astro",
+    preact: "Preact en Astro",
+    vue: "Vue en Astro",
+    solid: "SolidJS en Astro",
+    svelte: "Svelte en Astro",
     configuration: "Opciones de configuración",
     installation: "Instalación",
     api: "API",
@@ -61,13 +73,17 @@ export const guideLabels = {
     usage: "Translations and variables",
     "file-structure": "File structure",
     examples: "Examples",
+    testing: "Testing translations",
     "message-loading": "Custom message loading",
     middleware: "Middleware and SSR",
     routing: "Translated routes",
     "auto-redirect": "Automatic redirects",
     "rich-text": "Rich text",
-    react: "React",
-    svelte: "Svelte",
+    react: "React in Astro",
+    preact: "Preact in Astro",
+    vue: "Vue in Astro",
+    solid: "SolidJS in Astro",
+    svelte: "Svelte in Astro",
     configuration: "Configuration options",
     installation: "Installation",
     api: "API",
@@ -78,7 +94,7 @@ export const guideLabels = {
 };
 export const guideGroups = [
   { label: "start", pages: ["quick-start"] },
-  { label: "everyday", pages: ["usage", "file-structure", "examples"] },
+  { label: "everyday", pages: ["usage", "file-structure", "examples", "testing"] },
   {
     label: "advanced",
     pages: [
@@ -89,21 +105,25 @@ export const guideGroups = [
       "rich-text",
     ],
   },
-  { label: "integrations", pages: ["react", "svelte"] },
+  { label: "integrations", pages: ["react", "svelte", "preact", "vue", "solid"] },
   { label: "reference", pages: ["installation", "configuration", "api"] },
 ];
 export const nextPages = {
   "quick-start": "usage",
   usage: "file-structure",
   "file-structure": "examples",
-  examples: "rich-text",
+  examples: "testing",
+  testing: "rich-text",
   "message-loading": "middleware",
   middleware: "routing",
   routing: "auto-redirect",
   "auto-redirect": "api",
   "rich-text": "react",
   react: "svelte",
-  svelte: "api",
+  svelte: "preact",
+  preact: "vue",
+  vue: "solid",
+  solid: "api",
   installation: "quick-start",
   configuration: "message-loading",
   api: "examples",
@@ -112,11 +132,12 @@ export const nextPages = {
 export function getGuide(slug, locale) {
   const es = locale === "es";
   const text = (a, b) => (es ? a : b);
-  const section = (title, description, blocks = [], id) => ({
+  const section = (title, description, blocks = [], id, guideLink) => ({
     title,
     description,
     blocks,
     id,
+    guideLink,
   });
   const json = (value) =>
     ["en", "es"].map((lang) => ({
@@ -124,7 +145,191 @@ export function getGuide(slug, locale) {
       lang: "json",
       code: JSON.stringify(value[lang], null, 2),
     }));
+  const frameworks = { react: "React", preact: "Preact", svelte: "Svelte 5", vue: "Vue 3", solid: "SolidJS" };
+  if (Object.hasOwn(frameworks, slug)) {
+    const name = frameworks[slug];
+    const integration = integrationName(slug);
+    const [heading, button, page] = islandFiles(slug);
+    return {
+      intro: text(
+        `En tu proyecto Astro, muestra la misma traducción en la página y en un componente ${name}. El encabezado se renderiza en el servidor. El botón se activa en el navegador y conserva el idioma de la página.`,
+        `Use the page’s translations in a ${name} component inside your Astro project. Astro renders the heading on the server. The button becomes interactive in the browser and keeps the page’s language.`,
+      ),
+      sections: [
+        ...(slug === "solid" ? [section(
+          text("Configura el serializador de SolidJS 1.9.13", "Configure the serializer for SolidJS 1.9.13"),
+          text("SolidJS 1.9.13 depende de una versión de seroval con avisos de seguridad. Antes de instalar la integración, añade el ajuste de tu gestor al proyecto Astro para usar seroval 1.8.2. Conserva las demás opciones de tu archivo y guarda el lockfile actualizado.",
+            "SolidJS 1.9.13 depends on a version of seroval with published security advisories. Before installing the integration, add the setting for your package manager to the Astro project to use seroval 1.8.2. Keep the rest of your configuration and commit the updated lockfile."),
+          [{ file: "SolidJS", tabLabel: text("Gestor de paquetes", "Package manager"), variants: [
+            { label: "npm · package.json", lang: "json", code: JSON.stringify({ overrides: solidNpmOverrides }, null, 2) },
+            { label: "pnpm · pnpm-workspace.yaml", lang: "yaml", code: 'overrides:\n  "solid-js@1.9.13>seroval": "1.8.2"' },
+            { label: "Yarn · package.json", lang: "json", code: JSON.stringify({ resolutions: { "solid-js/seroval": "1.8.2" } }, null, 2) },
+          ] }]
+        )] : []),
+        section(
+          text(
+            "Añade las integraciones a Astro",
+            "Add the integrations to Astro",
+          ),
+          slug === "solid" ? text(
+            "Añade astro-intl y la integración oficial @astrojs/solid-js. El comando instala una versión compatible de SolidJS (1.x a partir de 1.9.13). @astrojs/solid-js compila tus componentes JSX y astro-intl les da acceso a los mensajes de la página.",
+            "Add astro-intl and the official @astrojs/solid-js integration. The command installs a compatible version of SolidJS (1.x starting at 1.9.13). @astrojs/solid-js compiles your JSX components and astro-intl gives them access to the page’s messages.",
+          ) : slug === "vue" ? text(
+            "Desde tu proyecto Astro, añade astro-intl y la integración oficial @astrojs/vue. El adaptador admite Vue 3 a partir de 3.5.24. Conserva las demás opciones de astro.config.mjs.",
+            "From your Astro project, add astro-intl and the official @astrojs/vue integration. The adapter supports Vue 3 starting at 3.5.24. Keep your other astro.config.mjs options.",
+          ) : text(
+            "Desde tu proyecto Astro, instala las integraciones que te falten y conserva las opciones que ya tengas en astro.config.mjs.",
+            "From your Astro project, install any missing integrations and keep your existing options in astro.config.mjs.",
+          ),
+          [
+            {
+              file: "Terminal",
+              commands: {
+                npm: `npx astro add astro-intl ${integration}`,
+                pnpm: `pnpm astro add astro-intl ${integration}`,
+                yarn: `yarn astro add astro-intl ${integration}`,
+              },
+            },
+            {
+              file: "astro.config.mjs",
+              lang: "javascript",
+              code: islandConfig([slug]),
+            },
+          ],
+        ),
+        section(
+          text(
+            "Carga los mensajes de la petición",
+            "Load messages for the request",
+          ),
+          text(
+            "Añade demo a tus catálogos. El middleware selecciona un catálogo a partir de la URL y lo comparte con los componentes durante el renderizado. Si ya configuraste el middleware de astro-intl, conserva el que tienes.",
+            "Add demo to your catalogs. The middleware selects a catalog from the URL and shares it with components during rendering. If your project already configures the astro-intl middleware, keep it.",
+          ),
+          [
+            ...json(catalogs),
+            { file: "src/middleware.js", lang: "javascript", code: middleware },
+          ],
+        ),
+        section(
+          text(
+            "Traduce el encabezado en el servidor",
+            "Translate the heading on the server",
+          ),
+          slug === "vue"
+            ? text(
+                "Llama a getTranslations dentro de <script setup> para leer el catálogo de la petición. En Description, t.rich recorre el mensaje en el orden de su idioma y h crea los elementos strong y a que renderiza Vue.",
+                "Call getTranslations inside <script setup> to read the request’s catalog. In Description, t.rich follows the order of the translated message and h creates the strong and a elements that Vue renders.",
+              )
+            : slug !== "svelte"
+            ? text(
+                `getTranslations lee los mensajes de la petición. t.rich convierte las etiquetas del mensaje en elementos de ${name}.`,
+                `getTranslations reads the request’s messages. t.rich maps message tags to ${name} elements.`,
+              )
+            : text(
+                "Indica las etiquetas del mensaje al llamar a t.rich. renderRichText convierte los segmentos en HTML saneado para mostrar la negrita y el enlace.",
+                "Pass the message’s tag names to t.rich. renderRichText renders the segments as sanitized HTML for the bold text and link.",
+              ),
+          [heading],
+        ),
+        section(
+          text(
+            "Hidrata el botón con las traducciones de Astro",
+            "Hydrate the button with translations from Astro",
+          ),
+          slug === "solid" ? text(
+            "Abre /es/solid/ o /en/solid/. La página pasa las dos etiquetas traducidas al botón como props. Después de client:load, createSignal guarda si ya sigues la cuenta. Cada clic cambia la etiqueta entre «Seguir» y «Siguiendo», o entre «Follow» y «Following».",
+            "Open /es/solid/ or /en/solid/. The page passes both translated labels to the button as props. After client:load, createSignal tracks whether you follow the account. Each click switches between “Follow” and “Following”, or “Seguir” and “Siguiendo”.",
+          ) : text(
+            `Abre /es/${slug}/ y /en/${slug}/. La página lee el idioma y pasa al botón las dos etiquetas traducidas como props. client:load activa el botón en el navegador.`,
+            `Open /es/${slug}/ and /en/${slug}/. The page reads the locale and passes both translated button labels as props. client:load activates the button in the browser.`,
+          ),
+          [button, page],
+        ),
+        section(
+          text("Prueba tus traducciones", "Test your translations"),
+          text("Pasa tus catálogos a createGetTranslations para comprobar qué texto recibe un componente sin montarlo.", "Pass your catalogs to createGetTranslations to check the text a component receives without mounting it."),
+          [], undefined, "testing"
+        ),
+        ...(slug === "preact" || slug === "solid"
+          ? [
+              section(
+                slug === "solid" ? text("SolidJS con React o Preact", "SolidJS with React or Preact") : text(
+                  "Preact y React en el mismo proyecto",
+                  "Preact and React in the same project",
+                ),
+                text(
+                  "Si usas varios frameworks JSX, guarda los componentes de cada integración en su propia carpeta. include indica a Astro qué transformación debe aplicar a cada archivo.",
+                  "If you use multiple JSX frameworks, keep each integration’s components in its own directory. The include patterns tell Astro which transform to use for each file.",
+                ),
+                [
+                  {
+                    file: "astro.config.mjs",
+                    lang: "javascript",
+                    code: islandConfig(slug === "solid" ? ["react", "preact", "solid"] : ["react", "preact"]),
+                  },
+                ],
+              ),
+            ]
+          : []),
+      ],
+    };
+  }
   const guides = {
+    testing: {
+      intro: text(
+        "¿Tu página debería decir «Bienvenido» en español y «Welcome» en inglés? Puedes comprobarlo en Node sin iniciar Astro, abrir un navegador ni montar componentes. Usa los mismos archivos de mensajes que lee tu proyecto.",
+        "Should your page say “Bienvenido” in Spanish and “Welcome” in English? Check it in Node without starting Astro, opening a browser or mounting components. Use the same message files your project reads."
+      ),
+      sections: [
+        section(text("Prepara los mensajes", "Prepare the messages"),
+          text("Añade estos mensajes a tus JSON. demo es un grupo que tú nombras y title es la clave dentro de ese grupo. Elige después el ejemplo de tu adaptador o el de Astro puro.",
+            "Add these messages to your JSON files. You choose the group name demo and the key title inside it. Then choose the example for your adapter or for Astro itself."),
+          json({ en: { demo: { title: "Welcome" } }, es: { demo: { title: "Bienvenido" } } })),
+        section(text("React, Svelte, Preact, Vue y SolidJS", "React, Svelte, Preact, Vue and SolidJS"),
+          text('Elige tu adaptador y guarda el ejemplo en tests/translations.test.mjs. La prueba pasa los dos catálogos a createGetTranslations y fija el inglés como idioma predeterminado. translate("es", "demo") elige el grupo demo del catálogo español. tDemo("title") lee su título. La segunda aserción comprueba qué ocurre al omitir el idioma.',
+            'Choose your adapter and save the example as tests/translations.test.mjs. The test passes both catalogs to createGetTranslations and sets English as the default. translate("es", "demo") selects the demo group in the Spanish catalog. tDemo("title") reads its title. The second assertion checks what happens when you omit the locale.'),
+          [{ file: "tests/translations.test.mjs", variants: Object.entries(frameworks).map(([adapter, label]) => ({ adapter, label, lang: "javascript", code: `import { test } from "node:test";
+import assert from "node:assert/strict";
+import { createGetTranslations } from "astro-intl/${adapter}";
+import en from "../src/i18n/messages/en.json" with { type: "json" };
+import es from "../src/i18n/messages/es.json" with { type: "json" };
+
+test("${text("lee el título en español y usa inglés por defecto", "reads the Spanish title and defaults to English")}", () => {
+  const translate = createGetTranslations({ en, es }, "en");
+  const tDemo = translate("es", "demo");
+  assert.equal(tDemo("title"), "Bienvenido");
+
+  const tDefault = translate(undefined, "demo");
+  assert.equal(tDefault("title"), "Welcome");
+});` })) }], "adapters"),
+        section(text("Astro puro", "Astro without a UI framework"),
+          text("En una página .astro, getTranslations lee el idioma del contexto. Para reproducirlo en una prueba, runWithLocale toma el idioma de la URL y ejecuta tu función con el catálogo que le pasas. La URL solo aporta la ruta: no se hace una petición de red.",
+            "In an .astro page, getTranslations reads the locale from context. In a test, runWithLocale takes the locale from a URL and runs your function with the catalog you supply. The URL provides the path without making a network request."),
+          [{ file: "tests/astro.test.mjs", lang: "javascript", code: `import { test } from "node:test";
+import assert from "node:assert/strict";
+import { getTranslations, runWithLocale } from "astro-intl";
+import en from "../src/i18n/messages/en.json" with { type: "json" };
+import es from "../src/i18n/messages/es.json" with { type: "json" };
+
+const catalogs = { en, es };
+
+test("${text("lee el título con el idioma de la página", "reads the title in the page’s language")}", async () => {
+  for (const [lang, expected] of [["es", "Bienvenido"], ["en", "Welcome"]]) {
+    const title = await runWithLocale(
+      new URL("/" + lang + "/", "https://example.test"),
+      () => getTranslations("demo")("title"),
+      (locale) => ({ locale, messages: catalogs[locale] })
+    );
+    assert.equal(title, expected);
+  }
+});` }], "astro"),
+        section(text("Ejecuta la prueba", "Run the test"),
+          text("Guarda el ejemplo elegido en la carpeta tests de tu proyecto Astro. Desde la raíz, ejecuta el comando con Node 22.23.4 o posterior. Si el texto cambia, la prueba mostrará el valor esperado y el obtenido.",
+            "Save your chosen example in your Astro project’s tests directory. From the project root, run the command with Node 22.23.4 or later. If the text changes, the test reports the expected and actual values."),
+          [{ file: "Terminal", lang: "shell", code: "node --test" }]),
+      ],
+    },
     "quick-start": {
       intro: text(
         "Vas a mostrar «Hola» en /es/ y «Hello» en /en/, con enlaces para cambiar de idioma. Parte de un proyecto Astro estático que ya funciona. Solo necesitas dos archivos JSON, la integración y una página.",
@@ -271,6 +476,9 @@ export function getGuide(slug, locale) {
             "Variables accept string, number and boolean. If you omit a variable or pass null/undefined, its placeholder stays in the text. For HTML tags and components, continue to Rich text.",
           ),
         ),
+        section(text("Prueba el texto de una página", "Test a page’s translations"),
+          text("Usa runWithLocale para comprobar en Node lo que devuelve getTranslations para cada idioma.", "Use runWithLocale to check in Node what getTranslations returns for each locale."),
+          [], undefined, "testing"),
       ],
     },
     "file-structure": {

@@ -2,6 +2,7 @@
 import { getLocale } from "astro-intl";
 import InstallTabs from "../InstallTabs.astro";
 import CodeBlock from "../CodeBlock.astro";
+import CodeExample from "@astro-intl/docs-ui/CodeExample.astro";
 import { getGuide, guideLabels } from "../../../../shared/doc-guides.mjs";
 
 interface Props { slug: string; }
@@ -23,7 +24,12 @@ const labels = guideLabels[locale];
     <section id={section.id ?? `${slug}-${index + 1}`}>
       <h2>{section.title}</h2>
       <p>{section.description}</p>
-      {section.blocks.map(block => <div class="example">{"commands" in block ? <InstallTabs commands={block.commands} /> : <CodeBlock title={block.file} lang={block.lang} code={block.code} />}</div>)}
+      {section.guideLink && <a href={`/${locale}/docs/${section.guideLink}`}>{labels[section.guideLink as keyof typeof labels]}</a>}
+      {section.blocks.map(block => <div class="example">{
+        "commands" in block ? <InstallTabs commands={block.commands} /> :
+        "variants" in block ? <CodeExample locale={locale} files={block.variants} tabLabel={block.tabLabel ?? (locale === "es" ? "Adaptador" : "Adapter")} /> :
+        <CodeBlock title={block.file} lang={block.lang} code={block.code} />
+      }</div>)}
     </section>
   ))}
 </article>

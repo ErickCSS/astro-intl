@@ -27,6 +27,7 @@ jobs:
         with:
           node-version: '22.23.4'
           cache: 'pnpm'
+      - run: node scripts/prepare-release-install.mjs
       - run: pnpm install --frozen-lockfile
       - run: pnpm check
 
@@ -47,6 +48,7 @@ jobs:
         with:
           node-version: '22.23.4'
           cache: 'pnpm'
+      - run: node scripts/prepare-release-install.mjs
       - run: pnpm install --frozen-lockfile
       - run: node scripts/compat-check.mjs ${{ matrix.astro }}
 
@@ -63,5 +65,7 @@ jobs:
         with:
           node-version: '22.23.4'
           cache: 'pnpm'
+      - run: node scripts/prepare-release-install.mjs
       - run: pnpm install --frozen-lockfile
+      - run: pnpm audit
       - run: pnpm audit:prod

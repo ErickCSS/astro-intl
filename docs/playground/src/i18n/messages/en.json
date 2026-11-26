@@ -21,16 +21,16 @@
     "title": "Why Astro-intl?",
     "subtitle": "Everything you need for internationalization",
     "noPropsDrilling": {
-      "title": "No Props Drilling",
-      "description": "Access translations anywhere without passing locale through components"
+      "title": "Translations during server rendering",
+      "description": "Read the page’s locale in server-rendered components. Pass translated labels to interactive islands."
     },
     "typeSafe": {
       "title": "Type-Safe",
-      "description": "Full TypeScript support with autocomplete for translation keys"
+      "description": "Get autocomplete for translation keys from a typed catalog."
     },
     "dynamicLoading": {
       "title": "Dynamic Loading",
-      "description": "Messages are loaded only when needed, optimizing bundle size"
+      "description": "Configure your message loader to import a catalog when its locale is requested."
     },
     "namespaces": {
       "title": "Namespaces",
@@ -38,7 +38,7 @@
     },
     "richText": {
       "title": "Rich Text Support",
-      "description": "Interpolate HTML or React components directly in translations"
+      "description": "Use message tags for bold text and links. Each adapter renders them in the order set by the translation."
     },
     "simple": {
       "title": "Simple API",
@@ -112,7 +112,7 @@
       "configuration": "Configure locales, messages, and middleware options.",
       "usage": "Learn how to use translations, interpolation, and markup.",
       "routing": "Set up localized URLs and route translations.",
-      "frameworks": "Use astro-intl with React, Svelte, and more.",
+      "frameworks": "Translate React, Preact, Svelte, Vue, and SolidJS components inside your Astro project.",
       "api": "Complete API reference for all exported functions and types.",
       "examples": "Real-world examples and common patterns.",
       "autoRedirect": "Auto-detect browser language and redirect without blank pages."
@@ -192,46 +192,6 @@
       "rawNumbersTitle": "Accessing Numbers",
       "rawNumbersDescription": "Numbers stay as numbers — useful for calculations or passing to components that expect numeric values."
     },
-    "react": {
-      "title": "React Adapter",
-      "intro": "Use <code>astro-intl/react</code> to access translations inside React components with full rich text support.",
-      "importTitle": "Import",
-      "importDescription": "Import from the <code>astro-intl/react</code> subpath. This is available since v2.0.0.",
-      "storeTitle": "Store-backed (Astro Islands)",
-      "storeDescription": "Use <code>getTranslations(namespace)</code> inside React components rendered as Astro islands. The store is automatically populated by <code>setRequestLocale</code> or <code>createIntlMiddleware</code>. Before using these examples, add a hero object with title, subtitle and description to both JSON files.",
-      "standaloneTitle": "Standalone (No Store)",
-      "standaloneDescription": "Use <code>createGetTranslations(ui, defaultLocale)</code> when you need translations without the global store — for example in tests or outside Astro's request lifecycle.",
-      "richTitle": "Rich Text with t.rich()",
-      "richDescription": "Use <code>t.rich(key, tags)</code> to interpolate React components inside translation strings. Tags receive the inner text as children and return a <code>ReactNode</code>.",
-      "tipHydrationTitle": "Hydration Tip",
-      "tipHydration": "Use client:load or client:visible only when you need interaction. The server store is not transferred to the browser: pass translated text as props or use createGetTranslations with messages available on the client.",
-      "tipStoreTitle": "When to use standalone vs store",
-      "tipStore": "Use the <strong>store-backed</strong> version (<code>getTranslations</code>) in Astro islands where the locale context is already set. Use <strong>standalone</strong> (<code>createGetTranslations</code>) in unit tests, Storybook, or any context outside Astro's request lifecycle.",
-      "breakingTitle": "Breaking Change (v2.0.0)",
-      "breakingDescription": "React helpers moved from the package root to <code>astro-intl/react</code>. See the v1→v2 migration guide for historical signatures."
-    },
-    "svelte": {
-      "title": "Svelte Adapter",
-      "intro": "Use <code>astro-intl/svelte</code> to access translations inside Svelte components with rich text support via segments or HTML strings.",
-      "importTitle": "Import",
-      "importDescription": "Import from the <code>astro-intl/svelte</code> subpath. Requires <code>svelte@^5</code> as a peer dependency.",
-      "storeTitle": "Store-backed (Astro Islands)",
-      "storeDescription": "Use <code>getTranslations(namespace)</code> inside Svelte components rendered as Astro islands. Works the same way as the React adapter. Before using these examples, add a hero object with title, subtitle and description to both JSON files.",
-      "standaloneTitle": "Standalone (No Store)",
-      "standaloneDescription": "Use <code>createGetTranslations(ui, defaultLocale)</code> when you need translations without the global store.",
-      "richTitle": "Rich Text with t.rich()",
-      "richDescription": "<code>t.rich(key, tagNames?)</code> returns an array of <code>RichSegment[]</code> — each segment is either plain text or a tagged chunk. You can render them in two ways.",
-      "renderHtmlTitle": "Option A: renderRichText() → HTML string",
-      "renderHtmlDescription": "Use <code>renderRichText(segments, options)</code> to convert segments into an HTML string. Text and chunks are escaped, native tag mappings are restricted to safe elements, and the final HTML is sanitized. Pass <code>tags</code> for native HTML elements or <code>components</code> for trusted custom rendering.",
-      "richTextComponentTitle": "Option B: RichText.svelte component",
-      "richTextComponentDescription": "Import the <code>RichText</code> component for declarative rendering. Pass <code>tags</code> for native HTML elements and <code>components</code> for Svelte component rendering.",
-      "tipHydrationTitle": "Hydration Tip",
-      "tipHydration": "Use client:load or client:visible only when you need interaction. The server store is not transferred to the browser: pass translated text as props or use createGetTranslations with messages available on the client.",
-      "tipRichTextTitle": "RichText vs renderRichText",
-      "tipRichText": "Use <strong>RichText.svelte</strong> when you need Svelte component interpolation (e.g., custom tooltip or icon components). Use <strong>renderRichText()</strong> when simple HTML tags like <code>&lt;strong&gt;</code> or <code>&lt;a&gt;</code> are enough — it's lighter and works with <code>{@html}</code>.",
-      "tipSvelte5Title": "Svelte 5 Required",
-      "tipSvelte5": "The adapter declares svelte@^5 as a peer dependency. Use Svelte 5 for this guide’s examples."
-    },
     "api": {
       "title": "API Reference",
       "setRequestLocale": {
@@ -307,12 +267,27 @@
       "createGetTranslationsReact": {
         "name": "createGetTranslations (React)",
         "signature": "createGetTranslations<UI, DefaultLocale>(ui: UI, defaultLocale: DefaultLocale)",
-        "description": "Creates a standalone translation function for React without relying on the global store. Returns <code>getTranslations(lang, namespace)</code> with <code>t.rich()</code> support returning <code>ReactNode[]</code>. Import from <code>astro-intl/react</code>."
+        "description": "Use an explicit catalog in React islands in your Astro project or in tests. Returns <code>getTranslations(lang, namespace)</code> with <code>t.rich()</code> support returning <code>ReactNode[]</code>. Import from <code>astro-intl/react</code>."
+      },
+      "createGetTranslationsPreact": {
+        "name": "createGetTranslations (Preact)",
+        "signature": "createGetTranslations(ui, defaultLocale)(lang, namespace)",
+        "description": "Import this function from <code>astro-intl/preact</code> to translate with an explicit catalog in Preact 10 and 11. <code>t.rich()</code> returns renderable Preact children."
+      },
+      "createGetTranslationsSolid": {
+        "name": "createGetTranslations (SolidJS)",
+        "signature": "createGetTranslations(ui, defaultLocale)(lang, namespace)",
+        "description": "Import this function from <code>astro-intl/solid</code> to test a SolidJS catalog with an explicit locale. <code>t.rich()</code> returns <code>JSX.Element[]</code> you can render in a component."
+      },
+      "createGetTranslationsVue": {
+        "name": "createGetTranslations (Vue)",
+        "signature": "createGetTranslations(ui, defaultLocale)(lang, namespace)",
+        "description": "Import this function from <code>astro-intl/vue</code> to translate with an explicit catalog in Vue 3. <code>t.rich()</code> returns <code>VNodeChild[]</code> for Vue render functions."
       },
       "createGetTranslationsSvelte": {
         "name": "createGetTranslations (Svelte)",
         "signature": "createGetTranslations<UI, DefaultLocale>(ui: UI, defaultLocale: DefaultLocale)",
-        "description": "Creates a standalone translation function for Svelte without relying on the global store. Returns <code>getTranslations(lang, namespace)</code> with <code>t.rich()</code> support returning <code>RichSegment[]</code>. Import from <code>astro-intl/svelte</code>."
+        "description": "Use an explicit catalog in Svelte islands in your Astro project or in tests. Returns <code>getTranslations(lang, namespace)</code> with <code>t.rich()</code> support returning <code>RichSegment[]</code>. Import from <code>astro-intl/svelte</code>."
       },
       "renderRichText": {
         "name": "renderRichText",
@@ -462,16 +437,16 @@
     ]
   },
   "frameworks": {
-    "title": "Framework Support",
-    "subtitle": "Use astro-intl with your favorite UI framework",
-    "available": "Available",
-    "comingSoon": "Coming Soon",
+    "title": "Translate components in your Astro project",
+    "subtitle": "Use your Astro project’s translations in .astro, React, Preact, Svelte, Vue, and SolidJS components.",
+    "available": "Available adapter",
     "astro": "Astro",
     "react": "React",
     "svelte": "Svelte",
     "preact": "Preact",
     "vue": "Vue",
-    "solidjs": "SolidJS"
+    "solidjs": "SolidJS",
+    "native": "Native support"
   },
   "changelog": {
     "pageTitle": "Changelog",

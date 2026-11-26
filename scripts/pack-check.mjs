@@ -12,6 +12,8 @@ import {
 import { tmpdir } from "node:os";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { getGuide } from "../docs/shared/doc-guides.mjs";
+import { solidNpmOverrides } from "../docs/shared/island-examples.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const packageDir = resolve(root, "packages/integration");
@@ -71,11 +73,15 @@ try {
         name: "astro-intl-smoke-consumer",
         private: true,
         type: "module",
+        overrides: solidNpmOverrides,
         dependencies: {
           "astro-intl": `file:${tarball.replace(/\\/g, "/")}`,
           astro: "7.4.13",
+          preact: "11.2.0",
           react: "19.2.4",
+          "solid-js": "1.9.13",
           svelte: "5.56.5",
+          vue: "3.5.46",
         },
       },
       null,
@@ -86,7 +92,7 @@ try {
     resolve(consumerDir, "smoke.mjs"),
     `import { existsSync } from "node:fs";\n` +
       `import { fileURLToPath } from "node:url";\n` +
-      `for (const id of ["astro-intl", "astro-intl/middleware", "astro-intl/routing", "astro-intl/react", "astro-intl/svelte", "astro-intl/validate"]) {\n` +
+      `for (const id of ["astro-intl", "astro-intl/middleware", "astro-intl/routing", "astro-intl/react", "astro-intl/preact", "astro-intl/svelte", "astro-intl/vue", "astro-intl/solid", "astro-intl/validate"]) {\n` +
       `  const mod = await import(id); if (Object.keys(mod).length === 0) throw new Error("Empty export: " + id);\n` +
       `}\n` +
       `const component = import.meta.resolve("astro-intl/components");\n` +
@@ -99,6 +105,30 @@ try {
     cwd: consumerDir,
     stdio: "inherit",
   });
+
+  // Run the files readers copy from each localized testing guide against this tarball.
+  for (const locale of ["en", "es"]) {
+    const guideDir = resolve(consumerDir, locale);
+    const tests = [];
+    for (const { blocks } of getGuide("testing", locale).sections) {
+      for (const block of blocks) {
+        if (block.file === "Terminal") continue;
+        const path = resolve(guideDir, block.file);
+        mkdirSync(dirname(path), { recursive: true });
+        if (block.variants) {
+          for (const { adapter, code } of block.variants) {
+            const test = resolve(dirname(path), adapter + ".test.mjs");
+            writeFileSync(test, code);
+            tests.push(test);
+          }
+        } else {
+          writeFileSync(path, block.code);
+          if (path.endsWith(".test.mjs")) tests.push(path);
+        }
+      }
+    }
+    execFileSync(process.execPath, ["--test", ...tests], { cwd: guideDir, stdio: "inherit" });
+  }
 
   const messagesDir = resolve(consumerDir, "messages");
   mkdirSync(messagesDir, { recursive: true });

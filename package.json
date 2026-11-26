@@ -10,6 +10,7 @@
     "catalogs:check": "pnpm build && node packages/integration/dist/cli.js validate --dir docs/playground/src/i18n/messages --reference en && node packages/integration/dist/cli.js validate --dir docs/astro-intl-i18n/src/i18n/messages --reference en",
     "pack:check": "pnpm --filter astro-intl pack:check",
     "compat:check": "node scripts/compat-check.mjs",
+    "islands:check": "node scripts/compat-check.mjs islands",
     "audit:prod": "node scripts/dependency-audit.mjs",
     "consumers:check": "pnpm --dir docs/playground build && pnpm --dir docs/astro-intl-i18n build",
     "docs:check": "node scripts/docs-check.mjs",
@@ -19,7 +20,8 @@
   },
   "pnpm": {
     "overrides": {
-      "path-to-regexp@>=4.0.0 <6.3.0": "6.3.0"
+      "path-to-regexp@>=4.0.0 <6.3.0": "6.3.0",
+      "solid-js@1.9.13>seroval": "1.8.2"
     }
   }
 }

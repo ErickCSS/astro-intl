@@ -1,21 +1,17 @@
-# Guía interna de publicación en npm
+# Publicación de astro-intl y de la documentación
 
-Esta guía describe la promoción controlada de `astro-intl`. Preparar un candidato no autoriza publicarlo. La publicación npm y el despliegue de la web oficial requieren aprobaciones explícitas y separadas.
+## Versión 2.4.0
 
-## Compatibilidad del candidato 2.3.1
+La web oficial fija `astro-intl@2.4.0` por versión e integridad. El playground usa `workspace:*`. La publicación del paquete precede al despliegue de la web para que los comandos de las guías funcionen al abrirlas.
 
-- Astro 4.16.19, 5.18.2, 6.4.8 y 7.4.13.
-- Astro 7 requiere Node.js 22.23.4 o superior por requisito del propio Astro.
-- React y Svelte continúan como peers opcionales.
-- El parche eleva el mínimo de `sanitize-html` a 2.18.2.
-- La CLI y los exports conservan sus interfaces de la versión 2.3.0.
-- No se elimina ni modifica de forma incompatible ninguna API existente.
+El paquete mantiene su compatibilidad con Astro 4–7 e incluye cinco adaptadores opcionales para componentes dentro de Astro. La guía de SolidJS 1.9.13 incluye la configuración del serializador en el proyecto consumidor. Consulta el [registro del candidato](../../docs/audit/RELEASE-CANDIDATE-2.4.0.md) para identificar el archivo aprobado.
 
-## Preparación
+## Preparar y validar
 
-Desde la raíz del repositorio:
+Desde la raíz del repositorio, con Node.js 22.23.4 o posterior y pnpm 10.28.0, ejecuta los mismos controles que CI.
 
 ```sh
+node scripts/prepare-release-install.mjs
 pnpm install --frozen-lockfile
 pnpm check
 pnpm compat:check
@@ -23,49 +19,22 @@ pnpm audit
 pnpm audit:prod
 ```
 
-`pnpm check` ejecuta lint, las pruebas fuente, el build limpio, la validación del tarball, la documentación y los dos consumidores. `pnpm compat:check` instala el `.tgz` en consumidores temporales de las cuatro versiones de Astro.
+Si la versión exacta de la web todavía no existe en npm, el primer comando compila la integración desde el checkout y contrasta el SHA-512 del tarball con el lockfile. Después carga ese archivo en la caché de pnpm. Cuando la versión ya está en npm, la instalación congelada la obtiene del registro.
 
-Antes de continuar también se deben comprobar dos builds limpios consecutivos y registrar que sus inventarios y SHA-256 son idénticos.
+`pnpm check` verifica el inventario de distribución y ejecuta los ejemplos bilingües desde una instalación del tarball. La matriz prueba Astro 4.16.19, 5.18.2, 6.4.8 y 7.4.13. En Astro 7 también comprueba las islas con JavaScript desactivado y después de la hidratación.
 
-## Revisión del tarball
+## Guardar el archivo de distribución
 
 ```sh
-pnpm pack:check
+node -e "require('node:fs').mkdirSync('dist/npm', {recursive:true})"
+npm pack ./packages/integration --pack-destination dist/npm
+npm publish ./dist/npm/astro-intl-2.4.0.tgz --dry-run --ignore-scripts --access public
 ```
 
-La validación debe confirmar:
+Compara la integridad de la simulación con el lockfile y el registro del candidato. Después de fusionar los cambios, repite la comprobación desde el commit de entrega. Si cambian los bytes, vuelve a validar el candidato y actualiza su integridad antes de publicarlo.
 
-- 31 archivos exactamente, según `package-files.json`;
-- ningún test, declaración de test, fuente interna o tarball anidado;
-- presencia de `AutoRedirect.astro` después de un build desde cero;
-- imports funcionales de `.`, `/middleware`, `/routing`, `/react`, `/svelte`, `/validate` y `/components` desde una instalación temporal;
-- ejecución válida e inválida del comando de catálogos desde una instalación temporal;
-- SHA-1, integridad SHA-512, tamaño y commit de origen registrados en `docs/audit/RELEASE-CANDIDATE-2.3.1.md`.
+## Publicar y desplegar
 
-El `.tgz` de revisión se genera en una carpeta temporal y no se versiona.
-
-## Aprobación y publicación
-
-Solo después de revisar el diff, el changelog, la auditoría de seguridad y la identidad del tarball:
-
-1. Fusionar la PR aprobada y verificar el commit resultante de main.
-2. Repetir `pnpm check`, `pnpm compat:check` y `pnpm audit:prod` desde ese commit.
-3. Generar nuevamente el tarball y comparar su identidad con el registro aprobado.
-4. Solicitar aprobación explícita para publicar.
-5. Publicar el tarball verificado y etiquetar el commit de la versión aprobada.
-6. Leer de vuelta metadata, integridad y archivos desde npm.
-
-No existe publicación automática desde CI en esta fase.
-
-## Promoción de la web oficial
-
-La web `docs/astro-intl-i18n` usa la versión publicada en npm con estas dependencias exactas.
-
-- `astro-intl@2.3.0` exacta;
-- Astro 7.4.13;
-- `@astrojs/vercel@11.0.22`;
-- `@astrojs/sitemap@3.7.3`.
-
-La instalación debe conservar un lockfile reproducible. Después se crea y revisa un preview; el despliegue de producción requiere una aprobación distinta.
-
-El playground `docs/playground` es el canary de `workspace:*` y puede adelantarse a la web oficial.
+1. Con la aprobación de publicación, ejecuta `npm publish ./dist/npm/astro-intl-2.4.0.tgz --ignore-scripts --access public` desde la raíz.
+2. Comprueba `npm view astro-intl@2.4.0 dist.integrity` y contrasta el resultado con el SHA-512 registrado.
+3. Compila la web con `pnpm install --frozen-lockfile` y `pnpm --dir docs/astro-intl-i18n build`. Revisa el changelog en español e inglés, las cinco guías y la página de pruebas en el preview. Despliega el sitio con la aprobación de producción.

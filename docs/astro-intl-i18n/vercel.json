@@ -1,0 +1,4 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "npx --yes --package=pnpm@10.28.0 -c 'if [ \"$VERCEL_ENV\" = preview ]; then pnpm -w exec node scripts/prepare-release-install.mjs; fi && pnpm -w install --frozen-lockfile'"
+}

@@ -4,8 +4,9 @@ interface Props {
   files: { label: string; code: string; lang: string }[];
   locale: string;
   commands?: boolean;
+  tabLabel?: string;
 }
-const { files, locale, commands = false } = Astro.props;
+const { files, locale, commands = false, tabLabel } = Astro.props;
 const es = locale === "es";
 const id = "example-" + crypto.randomUUID();
 const multi = files.length > 1;
@@ -15,7 +16,7 @@ const copy = es ? "Copiar" : "Copy";
 <code-example class:list={["example-frame", { "install-tabs": commands }]} data-copy={copy} data-done={es ? "¡Copiado!" : "Copied!"} data-error={es ? "Error al copiar" : "Copy failed"}>
   <div class="example-bar">
     {multi ? (
-      <div class="example-tabs" role="tablist" aria-label={commands ? (es ? "Gestor de paquetes" : "Package manager") : (es ? "Archivos" : "Files")}>
+      <div class="example-tabs" role="tablist" aria-label={tabLabel ?? (commands ? (es ? "Gestor de paquetes" : "Package manager") : (es ? "Archivos" : "Files"))}>
         {files.map((file, i) => <button type="button" role="tab" id={id+"-tab-"+i} aria-controls={id+"-panel-"+i} aria-selected={i === 0 ? "true" : "false"} tabindex={i === 0 ? 0 : -1}>{file.label}</button>)}
       </div>
     ) : <span class="filename">{files[0].label}</span>}
