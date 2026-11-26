@@ -9,6 +9,7 @@ Esta carpeta documenta el saneamiento de `astro-intl` realizado para preparar la
 - [Seguridad](./SECURITY.md)
 - [Oportunidades de mejora](./IMPROVEMENT-OPPORTUNITIES.md)
 - [Roadmap](./ROADMAP.md)
+- [Candidato 2.4.0](./RELEASE-CANDIDATE-2.4.0.md)
 - [Candidato 2.3.1](./RELEASE-CANDIDATE-2.3.1.md)
 - [Candidato 2.3.0](./RELEASE-CANDIDATE-2.3.0.md)
 - [Candidato 2.2.2](./RELEASE-CANDIDATE-2.2.2.md)
@@ -17,9 +18,9 @@ Esta carpeta documenta el saneamiento de `astro-intl` realizado para preparar la
 
 Se revisaron la librería de `packages/integration`, sus exports, estado SSR, traducciones HTML, adaptadores, routing, build, tarball, CI, playground y web oficial. Los hallazgos de seguridad se validaron con pruebas unitarias, consumidores reales y builds SSR; no se consideró suficiente que lint o TypeScript aprobaran. Para Astro 7 también se cubrieron Vite 8/Rolldown, el compilador Rust, renderizado en cola, Advanced Routing y cache estable descritos en el [anuncio oficial](https://astro.build/blog/astro-7/).
 
-La versión 2.3.0 publicada en npm incluye la validación de catálogos. La web oficial usa esa versión exacta sobre Astro 7 y el playground consume la integración local mediante `workspace:*`. El preview y el despliegue de producción continúan siendo acciones separadas.
+La versión 2.3.0 incorporó la validación de catálogos. Para la entrega 2.4.0, la web oficial fija la versión y la integridad del candidato y el playground consume la integración local mediante `workspace:*`.
 
-## Resultado
+## Resultado de la revisión anterior
 
 - Lint, 165 pruebas fuente, build limpio, pack check y comprobaciones de documentación pasan.
 - Astro 4.16.19, 5.18.2, 6.4.8 y 7.2.8 pasan en consumidores instalados desde el `.tgz`.

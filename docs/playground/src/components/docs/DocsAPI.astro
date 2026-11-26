@@ -1,8 +1,10 @@
 ---
 import CodeBlock from "../CodeBlock.astro";
-import { getTranslations } from "astro-intl";
+import { getLocale, getTranslations } from "astro-intl";
+import { guideLabels } from "../../../../shared/doc-guides.mjs";
 
 const t = getTranslations("docs");
+const locale = getLocale() === "es" ? "es" : "en";
 
 const functions = [
   {
@@ -71,14 +73,32 @@ const functions = [
   },
   {
     key: "createGetTranslationsReact",
+    guide: "react",
+    type: "function",
+  },
+  {
+    key: "createGetTranslationsPreact",
+    guide: "preact",
+    type: "function",
+  },
+  {
+    key: "createGetTranslationsSolid",
+    guide: "solid",
+    type: "function",
+  },
+  {
+    key: "createGetTranslationsVue",
+    guide: "vue",
     type: "function",
   },
   {
     key: "createGetTranslationsSvelte",
+    guide: "svelte",
     type: "function",
   },
   {
     key: "renderRichText",
+    guide: "svelte",
     type: "function",
   },
   {
@@ -161,6 +181,11 @@ const functions = [
                 code: (c: string) => `<code>${c}</code>`,
               })}
             />
+            {"guide" in fn && (
+              <a class="mt-2 inline-block text-sm underline" href={`/${locale}/docs/${fn.guide}`}>
+                {guideLabels[locale][fn.guide]}
+              </a>
+            )}
           </div>
         </div>
       ))

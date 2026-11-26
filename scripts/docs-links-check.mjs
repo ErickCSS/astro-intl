@@ -4,11 +4,36 @@ import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const { exports: packageExports } = JSON.parse(
+  readFileSync(resolve(root, "packages/integration/package.json"), "utf8"),
+);
+const adapterSlugs = Object.entries(packageExports)
+  .filter(([, target]) => target.import?.startsWith("./dist/adapters/"))
+  .map(([subpath]) => subpath.slice(2));
 let count = 0;
 for (const project of ["astro-intl-i18n", "playground"]) {
   const dist = resolve(root, "docs", project, "dist");
   for (const locale of ["en", "es"]) {
     const docs = resolve(dist, locale, "docs");
+    const index = readFileSync(resolve(docs, "index.html"), "utf8");
+    const home = readFileSync(resolve(dist, locale, "index.html"), "utf8");
+    const testing = readFileSync(resolve(docs, "testing", "index.html"), "utf8");
+    const cards = home.match(/<section\b[^>]*\bid="frameworks"[^>]*>([\s\S]*?)<\/section>/)?.[1];
+    assert.ok(cards, `${project}/${locale}: missing home framework cards`);
+    assert.deepEqual(
+      Array.from(cards.matchAll(/<a\b[^>]*\bhref="([^"]+)"/g), ([, href]) => href).sort(),
+      adapterSlugs.map((slug) => `/${locale}/docs/${slug}`).sort(),
+      `${project}/${locale}: advertised adapters differ from the package exports`,
+    );
+    for (const slug of adapterSlugs) {
+      assert.ok(testing.includes(`astro-intl/${slug}`), `${project}/${locale}: missing ${slug} import on testing page`);
+      assert.ok(
+        index.includes(`id="${slug}" href="/${locale}/docs/${slug}"`),
+        `${project}/${locale}: adapter ${slug} is missing from the documentation index`,
+      );
+      const guide = readFileSync(resolve(docs, slug, "index.html"), "utf8");
+      assert.ok(guide.includes(`astro-intl/${slug}`), `${project}/${locale}: missing adapter usage for ${slug}`);
+    }
     const pages = [
       "",
       ...readdirSync(docs, { withFileTypes: true })

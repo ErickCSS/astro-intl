@@ -5,6 +5,7 @@ import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { solidNpmOverrides } from "../docs/shared/island-examples.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const packageDir = resolve(root, "packages/integration");
@@ -31,11 +32,15 @@ try {
       {
         name: "astro-intl-production-audit",
         private: true,
+        overrides: solidNpmOverrides,
         dependencies: {
           astro: "7.4.13",
           "astro-intl": `file:${resolve(tempDir, packed.filename).replace(/\\/g, "/")}`,
+          preact: "11.2.0",
           react: "19.2.4",
+          "solid-js": "1.9.13",
           svelte: "5.56.5",
+          vue: "3.5.46",
         },
       },
       null,

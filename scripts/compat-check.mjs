@@ -14,6 +14,7 @@ import {
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { validateIslands } from "./islands-check.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const packageDir = resolve(root, "packages/integration");
@@ -285,7 +286,12 @@ try {
     packOutput.slice(packOutput.indexOf("["), packOutput.lastIndexOf("]") + 1)
   )[0];
   const tarball = resolve(tempRoot, packResult.filename);
-  for (const major of majors) await validateVersion(major, tarball);
+  if (requested !== "islands") {
+    for (const major of majors) await validateVersion(major, tarball);
+  }
+  if (requested === "islands" || majors.includes("7")) {
+    await validateIslands(resolve(tempRoot, "islands"), tarball, versions[7], npm, waitForServer);
+  }
 } finally {
   if (existsSync(tempRoot)) rmSync(tempRoot, { recursive: true, force: true });
 }

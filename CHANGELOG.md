@@ -7,8 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [2.4.0] - 2026-11-25
+
 ### Added
 
+- Added optional Preact 10 and 11, Vue 3 and SolidJS 1.x adapters alongside React and Svelte for components rendered inside Astro. Import them from `astro-intl/preact`, `astro-intl/vue` and `astro-intl/solid` to read request translations and render rich text.
+- Added English and Spanish guides for all five adapters. Each guide renders a translated heading on the server and passes translated labels to an interactive island.
+- Added a testing guide with runnable examples for all five adapters using `createGetTranslations` and explicit catalogs, plus a native Astro example using `runWithLocale`.
 - Added a five-language globe to the documentation landing page and playground, starting with Dominican Spanish.
 
 ### Changed
@@ -19,6 +24,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Fixed
 
 - The site language selector now shows a centered chevron that follows its open and closed states.
+
+### Security
+
+- Documented the project-level `seroval@1.8.2` override for SolidJS 1.9.13 and applied it to the tested configurations.
 
 ## [2.3.1] - 2026-11-24
 

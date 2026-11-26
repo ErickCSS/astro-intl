@@ -2,11 +2,11 @@
 
 ## Producto
 
-`astro-intl` es una librería de internacionalización tipada para Astro. La versión publicada actual es 2.3.0 y conserva la compatibilidad pública de la serie 2.x. Soporta Astro 4, 5, 6 y 7 mediante el peer `^4 || ^5 || ^6 || ^7`. Sus consumidores principales son sitios Astro multilingües; React y Svelte se soportan mediante subpaths opcionales.
+`astro-intl` es una librería de internacionalización tipada para Astro. La versión 2.4.0 conserva la compatibilidad pública de la serie 2.x y el peer de Astro `^4 || ^5 || ^6 || ^7`. Ofrece adaptadores opcionales de React, Preact, Svelte, Vue y SolidJS para componentes dentro de sitios Astro multilingües.
 
-Las capacidades vigentes incluyen carga de mensajes, namespaces, interpolación, `t.raw()`, `t.markup()`, rich text para React y Svelte, middleware localizado, rutas traducidas, cambio de locale y `AutoRedirect`.
+Las capacidades vigentes incluyen carga de mensajes, namespaces, interpolación, `t.raw()`, `t.markup()`, texto enriquecido en los cinco adaptadores, middleware localizado, rutas traducidas, cambio de locale y `AutoRedirect`.
 
-La superficie publicada está declarada en `packages/integration/package.json`: `.`, `/middleware`, `/routing`, `/react`, `/svelte` y `/components`.
+Las exportaciones de `packages/integration/package.json` son `.`, `/middleware`, `/routing`, `/react`, `/preact`, `/svelte`, `/vue`, `/solid`, `/validate` y `/components`.
 
 ## Arquitectura
 
@@ -31,13 +31,13 @@ La librería no promete SSR aislado en runtimes edge no compatibles. El render e
 - Tipos `DotPaths`, `ExtractParams` y `ParamsForRoute`.
 - Bloqueo de `__proto__`, `constructor` y `prototype` al resolver claves.
 - Routing localizado con parámetros codificados y pruebas de query/hash.
-- React y Svelte como peers opcionales reales.
+- React, Preact, Svelte, Vue y SolidJS como peers opcionales.
 - Sanitización basada en parser, escape por contexto y regresiones XSS.
 - Suite unitaria estable y consumidores reales desde tarball.
 
 ## Consumidores y promoción
 
-`docs/playground` es deliberadamente un canary de `workspace:*`. `docs/astro-intl-i18n` es la web oficial y usa exactamente `astro-intl@2.3.0` sobre Astro 7.4.13. Su middleware usa directamente el contexto aislado corregido de 2.2.2, sin el wrapper temporal requerido por 2.2.1.
+`docs/playground` consume `workspace:*`. La web oficial de `docs/astro-intl-i18n` fija `astro-intl@2.4.0` sobre Astro 7.4.13. Su middleware usa el contexto aislado por petición.
 
 La librería ya fue probada, empacada y publicada. La web se actualizó a la versión exacta; los pasos restantes son crear/revisar el preview y aprobar el deploy. No existe un script que reescriba destructivamente el manifiesto.
 
